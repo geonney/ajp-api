@@ -14,4 +14,5 @@ java 17
 springboot 3.2.4
 
 springdoc-openapi-starter-webmvc-ui 2.2.0
+lombok 1.18.30
 ```
