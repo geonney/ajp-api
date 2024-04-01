@@ -1,6 +1,10 @@
 spring:
   application:
     name: api
+  profiles:
+    active: develop
+  jpa:
+    open-in-view: false
 server:
   port: 13713
   servlet:
@@ -16,7 +20,7 @@ springdoc:
   default-produces-media-type: application/json
   swagger-ui:
     path: / #swagger redirect /swagger-ui.html
-    operations-sorter: alpha
+    operations-sorter: method
     tags-sorter: alpha
     display-request-duration: true
     doc-expansion: none
@@ -28,7 +32,7 @@ springdoc:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: develop
   datasource:
     url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB"
     driver-class-name: "org.mariadb.jdbc.Driver"
