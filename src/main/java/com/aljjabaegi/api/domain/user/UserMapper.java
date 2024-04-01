@@ -26,6 +26,10 @@ public interface UserMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
+    @Mappings({
+            @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
+            @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
+    })
     UserSearchResponse toSearchResponse(User entity);
 
     /**
