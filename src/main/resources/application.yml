@@ -22,3 +22,17 @@ springdoc:
     doc-expansion: none
     display-operation-id: true
     filter: true
+
+--- #develop
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB"
+    driver-class-name: "org.mariadb.jdbc.Driver"
+    username: api_test
+    password: api_test
+  jpa:
+    show-sql: true
