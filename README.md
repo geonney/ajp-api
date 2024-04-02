@@ -3,10 +3,24 @@
 API 기능 구현 프로젝트
 ----
 ```
-2024-04-01 Project start!
-           JPA, Mapstruct.
-2024-04-02 Global Exception Handler.
-           Response standardization. (ing)
+Swagger
+- Information setting
+- grouping
+- Operation sorting
+- tag sorting
+- display-resquest-duration
+- filter
+
+JPA
+- BaseEntity (@MappedSuperclass)
+- Mapstruct
+
+Exception
+- GlobalExceptionHandler
+- Custom Exception (ServiceException)
+
+Standardization
+- response (item, items, error)
 ```
 
 #Specification
