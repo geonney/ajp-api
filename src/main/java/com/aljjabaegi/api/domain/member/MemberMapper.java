@@ -1,8 +1,8 @@
-package com.aljjabaegi.api.domain.user;
+package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
-import com.aljjabaegi.api.domain.user.record.*;
-import com.aljjabaegi.api.entity.User;
+import com.aljjabaegi.api.domain.member.record.*;
+import com.aljjabaegi.api.entity.Member;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -15,8 +15,8 @@ import java.util.List;
  * @since 2024-04-01
  */
 @Mapper(componentModel = "spring", imports = Converter.class)
-public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+public interface MemberMapper {
+    MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     /**
      * entity to search response
@@ -30,7 +30,7 @@ public interface UserMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserSearchResponse toSearchResponse(User entity);
+    UserSearchResponse toSearchResponse(Member entity);
 
     /**
      * entity list to search response list
@@ -40,7 +40,7 @@ public interface UserMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
-    List<UserSearchResponse> toSearchResponseList(List<User> list);
+    List<UserSearchResponse> toSearchResponseList(List<Member> list);
 
     /**
      * entity to create response
@@ -55,7 +55,7 @@ public interface UserMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserCreateResponse toCreateResponse(User entity);
+    UserCreateResponse toCreateResponse(Member entity);
 
     /**
      * entity to modify response
@@ -70,7 +70,7 @@ public interface UserMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserModifyResponse toModifyResponse(User entity);
+    UserModifyResponse toModifyResponse(Member entity);
 
     /**
      * createRequest to entity
@@ -83,7 +83,7 @@ public interface UserMapper {
     @Mappings({
             @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userCreateRequest.isUse()))"),
     })
-    User toEntity(UserCreateRequest userCreateRequest);
+    Member toEntity(UserCreateRequest userCreateRequest);
 
     /**
      * update from record
@@ -96,6 +96,6 @@ public interface UserMapper {
      */
     @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userModifyRequest.isUse()))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
-    User updateFromRequest(UserModifyRequest userModifyRequest, @MappingTarget User entity);
+    Member updateFromRequest(UserModifyRequest userModifyRequest, @MappingTarget Member entity);
 
 }

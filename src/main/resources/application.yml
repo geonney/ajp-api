@@ -26,6 +26,10 @@ springdoc:
     doc-expansion: none
     display-operation-id: true
     filter: true
+security:
+  jwt:
+    secret-key: Y29tLnRpc3RvcnkuYWxqamFiYWVnaWNvbS50aXN0b3J5LmFsamphYmFlZ2ljb20udGlzdG9yeS5hbGpqYWJhZWdp #base64 encoding
+    issuer: aljjabaegi.tistory.com
 
 --- #develop
 
@@ -35,7 +39,7 @@ spring:
       on-profile: develop
   datasource:
     #    url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB" #mariadb
-#    driver-class-name: "org.mariadb.jdbc.Driver" #mariadb
+    #    driver-class-name: "org.mariadb.jdbc.Driver" #mariadb
     url: "jdbc:postgresql://localhost:15432/test_db"
     driver-class-name: "org.postgresql.Driver"
     username: aljjabaegi

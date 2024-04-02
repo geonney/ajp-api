@@ -1,9 +1,7 @@
 package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,17 +15,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "member")
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "user_id")
-    private String userId;
+    private String memberId;
 
     @Column(name = "user_password")
     private String password;
 
     @Column(name = "user_name")
-    private String userName;
+    private String memberName;
 
     private String cellphone;
 
@@ -37,4 +35,8 @@ public class User extends BaseEntity {
     private String accessToken;
 
     private String refreshToken;
+
+    @OneToOne
+    @JoinColumn(name = "authority_cd")
+    private Authority authority;
 }

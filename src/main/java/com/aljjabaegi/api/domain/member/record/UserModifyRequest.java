@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.domain.user.record;
+package com.aljjabaegi.api.domain.member.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

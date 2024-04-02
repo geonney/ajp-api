@@ -1,8 +1,8 @@
-package com.aljjabaegi.api.domain.user;
+package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
-import com.aljjabaegi.api.domain.user.record.*;
+import com.aljjabaegi.api.domain.member.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +23,8 @@ import java.util.List;
 @RestController
 @Tag(name = "사용자 정보 조회 / 편집", description = "담당자: GEONLEE")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class MemberController {
+    private final MemberService userService;
 
     @GetMapping(value = "/v1/users")
     @Operation(summary = "전체 사용자 조회", operationId = "API-USER-01")

@@ -1,7 +1,7 @@
-package com.aljjabaegi.api.domain.user;
+package com.aljjabaegi.api.domain.member;
 
-import com.aljjabaegi.api.domain.user.record.*;
-import com.aljjabaegi.api.entity.User;
+import com.aljjabaegi.api.domain.member.record.*;
+import com.aljjabaegi.api.entity.Member;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class MemberService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final MemberRepository userRepository;
+    private final MemberMapper userMapper = MemberMapper.INSTANCE;
 
     /**
      * 전체 사용자 조회
@@ -39,7 +39,7 @@ public class UserService {
      * @since 2024-04-01
      */
     public UserSearchResponse getUser(String userId) {
-        User entity = userRepository.findById(userId)
+        Member entity = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId));
         return userMapper.toSearchResponse(entity);
     }
@@ -64,8 +64,8 @@ public class UserService {
         if (userRepository.existsById(parameter.userId())) {
             throw new EntityExistsException(parameter.userId());
         }
-        User createRequestEntity = userMapper.toEntity(parameter);
-        User createdEntity = userRepository.save(createRequestEntity);
+        Member createRequestEntity = userMapper.toEntity(parameter);
+        Member createdEntity = userRepository.save(createRequestEntity);
         return userMapper.toCreateResponse(createdEntity);
     }
 
@@ -76,9 +76,9 @@ public class UserService {
      * @since 2024-04-01
      */
     public UserModifyResponse modifyUser(UserModifyRequest parameter) {
-        User entity = userRepository.findById(parameter.userId())
+        Member entity = userRepository.findById(parameter.userId())
                 .orElseThrow(() -> new EntityNotFoundException(parameter.userId()));
-        User modifiedEntity = userMapper.updateFromRequest(parameter, entity);
+        Member modifiedEntity = userMapper.updateFromRequest(parameter, entity);
         modifiedEntity = userRepository.saveAndFlush(modifiedEntity);
         return userMapper.toModifyResponse(modifiedEntity);
     }
@@ -90,7 +90,7 @@ public class UserService {
      * @since 2024-04-01
      */
     public Long deleteUser(String userId) {
-        User entity = userRepository.findById(userId)
+        Member entity = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId));
         userRepository.delete(entity);
         return 1L;

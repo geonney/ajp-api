@@ -4,6 +4,7 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.code.ErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ErrorResponse;
+import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.postgresql.util.PSQLException;
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler {
      * @author GEONLEE
      * @since 2024-04-02
      */
-    @ExceptionHandler(value = {PSQLException.class})
+    @ExceptionHandler(value = {PSQLException.class, IOException.class})
     public ResponseEntity<ErrorResponse> handleUncheckedException(Exception e) {
         CommonErrorCode errorCode = CommonErrorCode.SERVICE_ERROR;
         return handleExceptionInternal(errorCode, e);
