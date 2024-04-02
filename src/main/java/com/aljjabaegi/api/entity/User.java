@@ -11,11 +11,12 @@ import lombok.Setter;
  * User Entity
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 2024-04-02 GEONLEE - DB migration 으로 테이블 명칭 변경<br />
  */
 @Getter
 @Setter
-@Entity(name = "user")
+@Entity(name = "member")
 public class User extends BaseEntity {
 
     @Id
@@ -31,7 +32,7 @@ public class User extends BaseEntity {
     private String cellphone;
 
     @Column(name = "use_yn")
-    private boolean isUse;
+    private String useYn;
 
     private String accessToken;
 

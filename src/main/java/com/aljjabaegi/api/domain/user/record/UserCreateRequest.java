@@ -21,6 +21,8 @@ public record UserCreateRequest(
         @NotNull
         String userName,
         @Schema(description = "전화번호", example = "010-1234-5678")
-        String cellphone
+        String cellphone,
+        @Schema(description = "사용여부", example = "true")
+        boolean isUse
 ) {
 }

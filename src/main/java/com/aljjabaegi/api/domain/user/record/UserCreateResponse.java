@@ -16,6 +16,8 @@ public record UserCreateResponse(
         String userName,
         @Schema(description = "전화번호", example = "010-1234-5678")
         String cellphone,
+        @Schema(description = "사용여부", example = "true")
+        boolean isUse,
         @Schema(description = "생성 일시", example = "2024-04-01 00:00:00")
         String createDate,
         @Schema(description = "수정 일시", example = "2024-04-01 00:00:00")

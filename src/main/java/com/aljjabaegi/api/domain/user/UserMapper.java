@@ -51,6 +51,7 @@ public interface UserMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
+            @Mapping(target = "isUse", expression = "java(Converter.stringToBoolean(entity.getUseYn()))"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -65,6 +66,7 @@ public interface UserMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
+            @Mapping(target = "isUse", expression = "java(Converter.stringToBoolean(entity.getUseYn()))"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -78,6 +80,9 @@ public interface UserMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
+    @Mappings({
+            @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userCreateRequest.isUse()))"),
+    })
     User toEntity(UserCreateRequest userCreateRequest);
 
     /**
@@ -89,6 +94,7 @@ public interface UserMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
+    @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userModifyRequest.isUse()))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     User updateFromRequest(UserModifyRequest userModifyRequest, @MappingTarget User entity);
 

@@ -6,6 +6,7 @@ import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ErrorResponse;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) //추가 시 Swagger Response 에 등록됨.
     public ResponseEntity<ErrorResponse> handleCheckedException(ServiceException e) {
         return handleExceptionInternal(e.errorCode, e);
+    }
+
+    /**
+     * Unchecked Exception 관련 처리
+     *
+     * @author GEONLEE
+     * @since 2024-04-02
+     */
+    @ExceptionHandler(value = {PSQLException.class})
+    public ResponseEntity<ErrorResponse> handleUncheckedException(Exception e) {
+        CommonErrorCode errorCode = CommonErrorCode.SERVICE_ERROR;
+        return handleExceptionInternal(errorCode, e);
     }
 
     /**

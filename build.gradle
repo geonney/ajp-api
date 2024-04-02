@@ -31,8 +31,11 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: "${springBootVersion}"
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    // JDBC
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    // mariadb client
+//    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    // Postgresql client
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+    runtimeOnly 'org.postgresql:postgresql'
     // lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
     annotationProcessor 'org.projectlombok:lombok'

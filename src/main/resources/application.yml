@@ -34,9 +34,13 @@ spring:
     activate:
       on-profile: develop
   datasource:
-    url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB"
-    driver-class-name: "org.mariadb.jdbc.Driver"
-    username: api_test
-    password: api_test
+    #    url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB" #mariadb
+#    driver-class-name: "org.mariadb.jdbc.Driver" #mariadb
+    url: "jdbc:postgresql://localhost:15432/test_db"
+    driver-class-name: "org.postgresql.Driver"
+    username: aljjabaegi
+    password: aljjabaegi123!@#
   jpa:
     show-sql: true
+#    hibernate:
+#      ddl-auto: create
