@@ -45,6 +45,16 @@ public class UserService {
     }
 
     /**
+     * 사용자 ID 중복 확인
+     *
+     * @author GEONLEE
+     * @since 2024-04-01
+     */
+    public boolean checkUserId(String userId) {
+        return userRepository.existsById(userId);
+    }
+
+    /**
      * 사용자 추가
      *
      * @author GEONLEE
