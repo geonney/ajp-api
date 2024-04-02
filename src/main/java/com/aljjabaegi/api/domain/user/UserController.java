@@ -6,7 +6,6 @@ import com.aljjabaegi.api.domain.user.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +52,7 @@ public class UserController {
 
     @GetMapping(value = "/v1/check/user-id/{userId}")
     @Operation(summary = "사용자 ID 중복 여부 조회", operationId = "API-USER-03")
-    public ResponseEntity<ItemResponse<Boolean>> checkUserId(@PathVariable @NotNull String userId) {
+    public ResponseEntity<ItemResponse<Boolean>> checkUserId(@PathVariable String userId) {
         boolean isDuplication = userService.checkUserId(userId);
         String message = (isDuplication) ? "중복된 ID가 존재합니다." : "사용 가능한 ID 입니다.";
         return ResponseEntity.ok()
