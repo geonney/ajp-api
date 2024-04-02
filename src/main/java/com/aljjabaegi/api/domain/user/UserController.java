@@ -4,6 +4,7 @@ import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.user.record.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,7 @@ public class UserController {
 
     @PostMapping(value = "/v1/user")
     @Operation(summary = "사용자 정보 추가", operationId = "API-USER-04")
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<UserCreateResponse>> createUser(@RequestBody @Valid UserCreateRequest parameter) {
         UserCreateResponse createdUser = userService.createUser(parameter);
         return ResponseEntity.ok()
@@ -75,6 +77,7 @@ public class UserController {
 
     @PutMapping(value = "/v1/user")
     @Operation(summary = "사용자 정보 수정", operationId = "API-USER-05")
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<UserModifyResponse>> modifyUser(@RequestBody @Valid UserModifyRequest parameter) {
         UserModifyResponse modifiedUser = userService.modifyUser(parameter);
         return ResponseEntity.ok()
@@ -86,8 +89,8 @@ public class UserController {
 
     @DeleteMapping(value = "/v1/users/{userId}")
     @Operation(summary = "사용자 삭제", operationId = "API-USER-06")
+    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<Long>> deleteUser(@PathVariable String userId) {
-        System.out.println(userId);
         Long deleteCount = userService.deleteUser(userId);
         return ResponseEntity.ok()
                 .body(ItemResponse.<Long>builder()

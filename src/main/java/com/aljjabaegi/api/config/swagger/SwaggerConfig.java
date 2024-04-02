@@ -4,7 +4,9 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.code.ErrorCode;
 import com.aljjabaegi.api.common.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -24,7 +26,8 @@ import java.util.Map;
  * Swagger setting
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 2024-04-02 GEONLEE - apply JWT Authentication<br />
  */
 @Configuration
 @OpenAPIDefinition(
@@ -33,6 +36,12 @@ import java.util.Map;
                         - <a href="https://aljjabaegi.tistory.com/search/swagger" target="_blank">Swagger</a>
                         """, version = "v1.0.0"),
         servers = @Server(url = "/ajp-api") //ip:port 까지 입력할 경우 CORS 발생
+)
+@SecurityScheme(
+        name = "JWT",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
 )
 public class SwaggerConfig {
 
