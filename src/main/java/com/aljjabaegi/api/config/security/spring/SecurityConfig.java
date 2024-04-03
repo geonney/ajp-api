@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * 인증처리와 401,403 에러 처리, 암호화 Security Filter
  *
  * @author GEONLEE
- * @since 2023-01-11
+ * @since 2024-04-02
  */
 @Configuration
 @EnableWebSecurity
@@ -50,8 +50,7 @@ public class SecurityConfig {
                     auth
                             .requestMatchers(IGNORE_URIS).permitAll()
                             .requestMatchers(SWAGGER_URIS).permitAll()
-//                            .anyRequest().authenticated();
-                            .anyRequest().permitAll();
+                            .anyRequest().authenticated();
                 })
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(c ->

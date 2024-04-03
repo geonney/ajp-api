@@ -29,8 +29,13 @@ import static com.aljjabaegi.api.config.security.jwt.TokenProvider.AUTHORIZATION
 import static com.aljjabaegi.api.config.security.spring.SecurityConfig.IGNORE_URIS;
 
 /**
- * JWT Filter
- * Cookie 에서 Access Token 을 추출해 유효성 검증 및 중복 로그인 여부를 체크
+ * JWT Filter<br />
+ * Cookie 에서 Access Token 을 추출해 유효성 검증 및 중복 로그인 여부를 체크<br />
+ * Access Token 이 만료된 경우 만료 코드를 프론트로 전달. 프론트는 Access Token 만료 시<br />
+ * 로그인 시 받은 Refresh Token 을 Header Bearer 에 담에 전송.<br />
+ * Cookie Access Token 만료 -> Header Bearer Refresh Token 유효 -> Access Token 갱신, 만료 시 로그인 페이지로 이동<br />
+ * Access Token 이 DB 의 Access Token 과 다를 경우 중복 로그인으로 판단. Refresh Token 도 동일<br />
+ * 최종 로그인 한 token 이 유효<br />
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
@@ -56,6 +61,7 @@ public class JwtFilter extends GenericFilterBean {
             JwtValidDto valid = new JwtValidDto(false, null, accessToken);
             /*2. Access Token 유효성 체크*/
             if (StringUtils.hasText(accessToken)) {
+                LOGGER.info("Check Access Token validation");
                 checkTokenValidity(valid, httpServletRequest, httpServletResponse);
             }
             /*3. 중복 로그인인지 체크*/
@@ -72,10 +78,12 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     /**
-     * AccessToken 유효성 체크
+     * AccessToken 유효성 체크<br />
+     * Cookie 내 Access Token 의 유효성을 검사하고 header 에 refresh Token 이 유효할 경우<br />
+     * 새로운 토큰을 생성하여 Cookie 의 Access token 을 갱신<br />
      *
      * @author GEONLEE
-     * @since 2024-03-28
+     * @since 2024-04-02
      */
     private void checkTokenValidity(
             JwtValidDto valid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
