@@ -32,6 +32,10 @@ JWT (config/security/jwt)
 - TokenProvider
 - JwtAccessDeniedHandler
 - JwtAuthenticationEntryPoint
+
+Jasypt (config/security/jasypt)
+- application setting file encryption (ENC)
+
 ```
 **#JWT Authentication Process**
 ```
@@ -52,4 +56,5 @@ lombok 1.18.30
 validation 3.2.4
 Spring security 3.2.4
 JJWT 0.12.5
+jasypt 3.0.5
 ```
