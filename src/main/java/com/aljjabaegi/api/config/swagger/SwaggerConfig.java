@@ -33,7 +33,8 @@ import java.util.Map;
 @OpenAPIDefinition(
         info = @Info(title = "Aljjabaegi Programmer API Documentation",
                 description = """
-                        - <a href="https://aljjabaegi.tistory.com/search/swagger" target="_blank">Swagger</a>
+                        - <a href="https://github.com/aljjabaegiProgrammer" target="_blank">Git</a>
+                        - <a href="https://aljjabaegi.tistory.com" target="_blank">Blog</a>
                         """, version = "v1.0.0"),
         servers = @Server(url = "/ajp-api") //ip:port 까지 입력할 경우 CORS 발생
 )
