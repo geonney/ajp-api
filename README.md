@@ -35,7 +35,7 @@ JWT (config/security/jwt)
 ```
 **#JWT Authentication Process**
 ```
-![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/b5d076de-8478-4783-b7b1-231339943353)
+![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/4e79d85a-a8db-4699-b110-5254f964d675)
 ```
 
 **#Specification**
