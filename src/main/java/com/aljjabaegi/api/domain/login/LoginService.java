@@ -32,7 +32,7 @@ public class LoginService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
-    private final PasswordEncoder encoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public ResponseEntity<ItemResponse<TokenResponse>> login(
@@ -41,7 +41,7 @@ public class LoginService {
         Member entity = memberRepository.findById(parameter.id())
                 .orElseThrow(() -> new EntityNotFoundException(parameter.id()));
         //2. Password 가 일치하는지 체크
-        if (!encoder.matches(parameter.password(), entity.getPassword())) {
+        if (!passwordEncoder.matches(parameter.password(), entity.getPassword())) {
             throw new ServiceException(CommonErrorCode.WRONG_PASSWORD, null);
         }
         //3. 사용자 권한 체크
