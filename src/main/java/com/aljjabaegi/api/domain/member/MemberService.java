@@ -13,14 +13,15 @@ import java.util.List;
  * 사용자 Service
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 2024-04-03 GEONLEE user->member 명칭 변경<br />
  */
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository userRepository;
-    private final MemberMapper userMapper = MemberMapper.INSTANCE;
+    private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper = MemberMapper.INSTANCE;
 
     /**
      * 전체 사용자 조회
@@ -28,8 +29,8 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public List<UserSearchResponse> getUserList() {
-        return userMapper.toSearchResponseList(userRepository.findAll());
+    public List<MemberSearchResponse> getMemberList() {
+        return memberMapper.toSearchResponseList(memberRepository.findAll());
     }
 
     /**
@@ -38,10 +39,10 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public UserSearchResponse getUser(String userId) {
-        Member entity = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(userId));
-        return userMapper.toSearchResponse(entity);
+    public MemberSearchResponse getMembers(String memberId) {
+        Member entity = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(memberId));
+        return memberMapper.toSearchResponse(entity);
     }
 
     /**
@@ -50,8 +51,8 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public boolean checkUserId(String userId) {
-        return userRepository.existsById(userId);
+    public boolean checkMemberId(String memberId) {
+        return memberRepository.existsById(memberId);
     }
 
     /**
@@ -60,13 +61,13 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public UserCreateResponse createUser(UserCreateRequest parameter) {
-        if (userRepository.existsById(parameter.userId())) {
-            throw new EntityExistsException(parameter.userId());
+    public MemberCreateResponse createMember(MemberCreateRequest parameter) {
+        if (memberRepository.existsById(parameter.memberId())) {
+            throw new EntityExistsException(parameter.memberId());
         }
-        Member createRequestEntity = userMapper.toEntity(parameter);
-        Member createdEntity = userRepository.save(createRequestEntity);
-        return userMapper.toCreateResponse(createdEntity);
+        Member createRequestEntity = memberMapper.toEntity(parameter);
+        Member createdEntity = memberRepository.save(createRequestEntity);
+        return memberMapper.toCreateResponse(createdEntity);
     }
 
     /**
@@ -75,12 +76,12 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public UserModifyResponse modifyUser(UserModifyRequest parameter) {
-        Member entity = userRepository.findById(parameter.userId())
-                .orElseThrow(() -> new EntityNotFoundException(parameter.userId()));
-        Member modifiedEntity = userMapper.updateFromRequest(parameter, entity);
-        modifiedEntity = userRepository.saveAndFlush(modifiedEntity);
-        return userMapper.toModifyResponse(modifiedEntity);
+    public MemberModifyResponse modifyMember(MemberModifyRequest parameter) {
+        Member entity = memberRepository.findById(parameter.memberId())
+                .orElseThrow(() -> new EntityNotFoundException(parameter.memberId()));
+        Member modifiedEntity = memberMapper.updateFromRequest(parameter, entity);
+        modifiedEntity = memberRepository.saveAndFlush(modifiedEntity);
+        return memberMapper.toModifyResponse(modifiedEntity);
     }
 
     /**
@@ -89,10 +90,10 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
-    public Long deleteUser(String userId) {
-        Member entity = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(userId));
-        userRepository.delete(entity);
+    public Long deleteMember(String memberId) {
+        Member entity = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(memberId));
+        memberRepository.delete(entity);
         return 1L;
     }
 }

@@ -28,8 +28,10 @@ springdoc:
     filter: true
 security:
   jwt:
-    secret-key: Y29tLnRpc3RvcnkuYWxqamFiYWVnaWNvbS50aXN0b3J5LmFsamphYmFlZ2ljb20udGlzdG9yeS5hbGpqYWJhZWdp #base64 encoding
+    secret-key: ${jwt-key} #base64 encoding
     issuer: aljjabaegi.tistory.com
+  jasypt:
+    secret-key: ${jasypt-key}
 
 --- #develop
 
@@ -43,7 +45,7 @@ spring:
     url: "jdbc:postgresql://localhost:15432/test_db"
     driver-class-name: "org.postgresql.Driver"
     username: aljjabaegi
-    password: aljjabaegi123!@#
+    password: ENC(xLC9ZsqaoOZJ/udaUpOeYOrqdTFsMS+O4JZ483N7AUM=)
   jpa:
     show-sql: true
 #    hibernate:

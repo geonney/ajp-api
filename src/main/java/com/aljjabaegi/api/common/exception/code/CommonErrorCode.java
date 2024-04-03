@@ -13,7 +13,7 @@ public enum CommonErrorCode implements ErrorCode {
     NOT_AUTHENTICATION("ER_AT_01", "자격 증명에 실패하였습니다."),
     WRONG_PASSWORD("ER_AT_02", "자격증명에 실패하였습니다."),
     DUPLICATION_LOGIN("ER_AT_03", "자격증명에 실패하였습니다."),
-    FORBIDDEN("NS_ER_FD", "사용자 접근이 거부 되었습니다.");
+    FORBIDDEN("ER_FD", "사용자 접근이 거부 되었습니다.");
 
     private final String status;
     private final String message;

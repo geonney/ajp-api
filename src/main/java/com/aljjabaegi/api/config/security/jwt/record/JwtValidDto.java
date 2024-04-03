@@ -17,6 +17,6 @@ import lombok.ToString;
 @ToString
 public class JwtValidDto {
     private boolean valid;
-    private String userId;
+    private String memberId;
     private String accessToken;
 }

@@ -3,8 +3,6 @@ package com.aljjabaegi.api.domain.login;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
-import com.aljjabaegi.api.domain.member.record.UserCreateRequest;
-import com.aljjabaegi.api.domain.member.record.UserCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

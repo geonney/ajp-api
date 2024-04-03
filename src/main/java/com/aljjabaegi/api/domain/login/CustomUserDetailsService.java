@@ -42,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Security User 정보를 리턴
      *
      * @param entity user entity
-     * @param userId userId
+     * @param userId memberId
      * @return UserDetail
      * @author GEONLEE
      * @since 2024-04-02<br />

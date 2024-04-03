@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 /**
- * User mapper
+ * Member mapper
  *
  * @author GEONLEE
  * @since 2024-04-01
@@ -21,8 +21,8 @@ public interface MemberMapper {
     /**
      * entity to search response
      *
-     * @param entity user entity
-     * @return UserSearchResponse
+     * @param entity member entity
+     * @return memberSearchResponse
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
@@ -30,23 +30,23 @@ public interface MemberMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserSearchResponse toSearchResponse(Member entity);
+    MemberSearchResponse toSearchResponse(Member entity);
 
     /**
      * entity list to search response list
      *
-     * @param list user entity list
-     * @return UserSearchResponse list
+     * @param list member entity list
+     * @return memberSearchResponse list
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
-    List<UserSearchResponse> toSearchResponseList(List<Member> list);
+    List<MemberSearchResponse> toSearchResponseList(List<Member> list);
 
     /**
      * entity to create response
      *
-     * @param entity user entity
-     * @return UserCreateResponse
+     * @param entity member entity
+     * @return memberCreateResponse
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
@@ -55,13 +55,13 @@ public interface MemberMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserCreateResponse toCreateResponse(Member entity);
+    MemberCreateResponse toCreateResponse(Member entity);
 
     /**
      * entity to modify response
      *
-     * @param entity user entity
-     * @return UserModifyResponse
+     * @param entity member entity
+     * @return memberModifyResponse
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
@@ -70,32 +70,32 @@ public interface MemberMapper {
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    UserModifyResponse toModifyResponse(Member entity);
+    MemberModifyResponse toModifyResponse(Member entity);
 
     /**
      * createRequest to entity
      *
-     * @param userCreateRequest user create request
-     * @return User
+     * @param memberCreateRequest member create request
+     * @return member
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
     @Mappings({
-            @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userCreateRequest.isUse()))"),
+            @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberCreateRequest.isUse()))"),
     })
-    Member toEntity(UserCreateRequest userCreateRequest);
+    Member toEntity(MemberCreateRequest memberCreateRequest);
 
     /**
      * update from record
      *
-     * @param userModifyRequest update request record
-     * @param entity            update request entity
-     * @return User
+     * @param memberModifyRequest update request record
+     * @param entity              update request entity
+     * @return member
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
-    @Mapping(target = "useYn", expression = "java(Converter.booleanToString(userModifyRequest.isUse()))")
+    @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberModifyRequest.isUse()))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
-    Member updateFromRequest(UserModifyRequest userModifyRequest, @MappingTarget Member entity);
+    Member updateFromRequest(MemberModifyRequest memberModifyRequest, @MappingTarget Member entity);
 
 }

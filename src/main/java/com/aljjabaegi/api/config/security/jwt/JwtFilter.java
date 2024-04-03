@@ -56,7 +56,7 @@ public class JwtFilter extends GenericFilterBean {
         if (!ignoreUris.contains(requestURI) && !requestURI.startsWith("/swagger-") && !requestURI.startsWith("/api-docs")) {
             LOGGER.info("Request URI : '{}', Start to check access token. ▼", requestURI);
             String accessToken = null;
-            /*1. Cookie 에서 Access Token 추출 (NS_AUT)*/
+            /*1. Cookie 에서 Access Token 추출 (AJP_AUT)*/
             accessToken = tokenProvider.getTokenFromCookie(httpServletRequest);
             JwtValidDto valid = new JwtValidDto(false, null, accessToken);
             /*2. Access Token 유효성 체크*/
@@ -69,7 +69,7 @@ public class JwtFilter extends GenericFilterBean {
             /*4. Spring security 에 권한 정보 저장
              * 권한 정보가 없을 경우 JwtAuthenticationEntryPoint 로 전달.(security config 에 설정)*/
             if (valid.isValid()) {
-                LOGGER.info("User's token validation success: '{}'", valid.getUserId());
+                LOGGER.info("Member's token validation success: '{}'", valid.getMemberId());
                 Authentication authentication = tokenProvider.generateAuthorityFromToken(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -96,29 +96,29 @@ public class JwtFilter extends GenericFilterBean {
                 if (StringUtils.hasText(refreshToken) || tokenProvider.validateToken(refreshToken)) {
                     /*refreshToken 에서 권힌 정보를 추출해 새로운 Access Token 생성*/
                     Authentication authentication = tokenProvider.generateAuthorityFromToken(refreshToken);
-                    String userId = tokenProvider.getIdFromToken(refreshToken);
-                    valid.setUserId(userId);
+                    String memberId = tokenProvider.getIdFromToken(refreshToken);
+                    valid.setMemberId(memberId);
                     String newAccessToken = tokenProvider.generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS);
                     /*쿠키 Access Token 정보 갱신*/
                     tokenProvider.renewalAccessTokenInCookie(httpServletResponse, newAccessToken);
                     /*Refresh Token 으로 User 를 조회 해  Access Token 갱신*/
                     MemberRepository memberRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
-                    memberRepository.findOneByMemberIdAndRefreshToken(valid.getUserId(), refreshToken)
+                    memberRepository.findOneByMemberIdAndRefreshToken(valid.getMemberId(), refreshToken)
                             .ifPresentOrElse(member -> {
                                 member.setAccessToken(newAccessToken);
                                 memberRepository.save(member);
                                 valid.setAccessToken(newAccessToken);
                                 valid.setValid(true);
-                                LOGGER.info("Renew user's access token with refresh token: '{}'", valid.getUserId());
-                            }, () -> LOGGER.error("User's refresh token is different. (Duplicated login): '{}'", valid.getUserId()));
+                                LOGGER.info("Renew user's access token with refresh token: '{}'", valid.getMemberId());
+                            }, () -> LOGGER.error("User's refresh token is different. (Duplicated login): '{}'", valid.getMemberId()));
                 }
             } catch (NullPointerException e) {
                 LOGGER.error("Refresh token extraction failed.");
             }
         } else {
-            String userId = tokenProvider.getIdFromToken(valid.getAccessToken());
+            String memberId = tokenProvider.getIdFromToken(valid.getAccessToken());
             valid.setValid(true);
-            valid.setUserId(userId);
+            valid.setMemberId(memberId);
         }
     }
 
@@ -131,9 +131,9 @@ public class JwtFilter extends GenericFilterBean {
      */
     private void checkDuplicationLogin(JwtValidDto valid, HttpServletRequest httpServletRequest) {
         MemberRepository userRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
-        Optional<Member> optionalMember = userRepository.findOneByMemberIdAndAccessToken(valid.getUserId(), valid.getAccessToken());
+        Optional<Member> optionalMember = userRepository.findOneByMemberIdAndAccessToken(valid.getMemberId(), valid.getAccessToken());
         if (optionalMember.isEmpty()) {
-            LOGGER.error("User's access token is different. (Duplicated login): '{}'", valid.getUserId());
+            LOGGER.error("User's access token is different. (Duplicated login): '{}'", valid.getMemberId());
             valid.setValid(false);
             httpServletRequest.getSession().setAttribute(AUTHORIZATION_FAIL_TYPE, CommonErrorCode.DUPLICATION_LOGIN);
         }

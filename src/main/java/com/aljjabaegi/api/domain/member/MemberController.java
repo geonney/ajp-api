@@ -26,35 +26,35 @@ import java.util.List;
 public class MemberController {
     private final MemberService userService;
 
-    @GetMapping(value = "/v1/users")
-    @Operation(summary = "전체 사용자 조회", operationId = "API-USER-01")
-    public ResponseEntity<ItemsResponse<UserSearchResponse>> getUserList() {
-        List<UserSearchResponse> userSearchResponseList = userService.getUserList();
+    @GetMapping(value = "/v1/members")
+    @Operation(summary = "전체 사용자 조회", operationId = "API-MEMBER-01")
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList() {
+        List<MemberSearchResponse> userSearchResponseList = userService.getMemberList();
         long size = userSearchResponseList.size();
         return ResponseEntity.ok()
-                .body(ItemsResponse.<UserSearchResponse>builder()
+                .body(ItemsResponse.<MemberSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
                         .size(size)
                         .items(userSearchResponseList).build());
     }
 
-    @GetMapping(value = "/v1/users/{userId}")
-    @Operation(summary = "사용자 ID로 조회", operationId = "API-USER-02")
-    public ResponseEntity<ItemResponse<UserSearchResponse>> getUser(@PathVariable String userId) {
-        UserSearchResponse userSearchResponse = userService.getUser(userId);
+    @GetMapping(value = "/v1/members/{memberId}")
+    @Operation(summary = "사용자 ID로 조회", operationId = "API-MEMBER-02")
+    public ResponseEntity<ItemResponse<MemberSearchResponse>> getMembers(@PathVariable String memberId) {
+        MemberSearchResponse userSearchResponse = userService.getMembers(memberId);
 
         return ResponseEntity.ok()
-                .body(ItemResponse.<UserSearchResponse>builder()
+                .body(ItemResponse.<MemberSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
                         .item(userSearchResponse).build());
     }
 
-    @GetMapping(value = "/v1/check/user-id/{userId}")
-    @Operation(summary = "사용자 ID 중복 여부 조회", operationId = "API-USER-03")
-    public ResponseEntity<ItemResponse<Boolean>> checkUserId(@PathVariable String userId) {
-        boolean isDuplication = userService.checkUserId(userId);
+    @GetMapping(value = "/v1/check/member-id/{memberId}")
+    @Operation(summary = "사용자 ID 중복 여부 조회", operationId = "API-MEMBER-03")
+    public ResponseEntity<ItemResponse<Boolean>> checkMemberId(@PathVariable String memberId) {
+        boolean isDuplication = userService.checkMemberId(memberId);
         String message = (isDuplication) ? "중복된 ID가 존재합니다." : "사용 가능한 ID 입니다.";
         return ResponseEntity.ok()
                 .body(ItemResponse.<Boolean>builder()
@@ -63,35 +63,35 @@ public class MemberController {
                         .item(isDuplication).build());
     }
 
-    @PostMapping(value = "/v1/user")
-    @Operation(summary = "사용자 정보 추가", operationId = "API-USER-04")
+    @PostMapping(value = "/v1/member")
+    @Operation(summary = "사용자 정보 추가", operationId = "API-MEMBER-04")
     @SecurityRequirement(name = "JWT")
-    public ResponseEntity<ItemResponse<UserCreateResponse>> createUser(@RequestBody @Valid UserCreateRequest parameter) {
-        UserCreateResponse createdUser = userService.createUser(parameter);
+    public ResponseEntity<ItemResponse<MemberCreateResponse>> createMember(@RequestBody @Valid MemberCreateRequest parameter) {
+        MemberCreateResponse createdMember = userService.createMember(parameter);
         return ResponseEntity.ok()
-                .body(ItemResponse.<UserCreateResponse>builder()
+                .body(ItemResponse.<MemberCreateResponse>builder()
                         .status("OK")
                         .message("데이터를 추가하는데 성공하였습니다.")
-                        .item(createdUser).build());
+                        .item(createdMember).build());
     }
 
-    @PutMapping(value = "/v1/user")
+    @PutMapping(value = "/v1/member")
     @Operation(summary = "사용자 정보 수정", operationId = "API-USER-05")
     @SecurityRequirement(name = "JWT")
-    public ResponseEntity<ItemResponse<UserModifyResponse>> modifyUser(@RequestBody @Valid UserModifyRequest parameter) {
-        UserModifyResponse modifiedUser = userService.modifyUser(parameter);
+    public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(@RequestBody @Valid MemberModifyRequest parameter) {
+        MemberModifyResponse modifiedMember = userService.modifyMember(parameter);
         return ResponseEntity.ok()
-                .body(ItemResponse.<UserModifyResponse>builder()
+                .body(ItemResponse.<MemberModifyResponse>builder()
                         .status("OK")
                         .message("데이터를 수정하는데 성공하였습니다.")
-                        .item(modifiedUser).build());
+                        .item(modifiedMember).build());
     }
 
-    @DeleteMapping(value = "/v1/users/{userId}")
+    @DeleteMapping(value = "/v1/member/{memberId}")
     @Operation(summary = "사용자 삭제", operationId = "API-USER-06")
     @SecurityRequirement(name = "JWT")
-    public ResponseEntity<ItemResponse<Long>> deleteUser(@PathVariable String userId) {
-        Long deleteCount = userService.deleteUser(userId);
+    public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String memberId) {
+        Long deleteCount = userService.deleteMember(memberId);
         return ResponseEntity.ok()
                 .body(ItemResponse.<Long>builder()
                         .status("OK")
