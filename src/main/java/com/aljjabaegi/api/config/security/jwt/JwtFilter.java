@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import static com.aljjabaegi.api.config.security.jwt.TokenProvider.ACCESS_EXPIRATION_MILLISECONDS;
 import static com.aljjabaegi.api.config.security.jwt.TokenProvider.AUTHORIZATION_FAIL_TYPE;
-import static com.aljjabaegi.api.config.security.spring.SecurityConfig.IGNORE_URIS;
+import static com.aljjabaegi.api.config.security.springSecurity.SpringSecurityConfig.IGNORE_URIS;
 
 /**
  * JWT Filter<br />
@@ -101,7 +101,7 @@ public class JwtFilter extends GenericFilterBean {
                     String newAccessToken = tokenProvider.generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS);
                     /*쿠키 Access Token 정보 갱신*/
                     tokenProvider.renewalAccessTokenInCookie(httpServletResponse, newAccessToken);
-                    /*Refresh Token 으로 User 를 조회 해  Access Token 갱신*/
+                    /*Refresh Token 으로 Member 를 조회 해  Access Token 갱신*/
                     MemberRepository memberRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
                     memberRepository.findOneByMemberIdAndRefreshToken(valid.getMemberId(), refreshToken)
                             .ifPresentOrElse(member -> {
@@ -109,8 +109,8 @@ public class JwtFilter extends GenericFilterBean {
                                 memberRepository.save(member);
                                 valid.setAccessToken(newAccessToken);
                                 valid.setValid(true);
-                                LOGGER.info("Renew user's access token with refresh token: '{}'", valid.getMemberId());
-                            }, () -> LOGGER.error("User's refresh token is different. (Duplicated login): '{}'", valid.getMemberId()));
+                                LOGGER.info("Renew member's access token with refresh token: '{}'", valid.getMemberId());
+                            }, () -> LOGGER.error("Member's refresh token is different. (Duplicated login): '{}'", valid.getMemberId()));
                 }
             } catch (NullPointerException e) {
                 LOGGER.error("Refresh token extraction failed.");
@@ -130,10 +130,10 @@ public class JwtFilter extends GenericFilterBean {
      * @since 2024-03-28
      */
     private void checkDuplicationLogin(JwtValidDto valid, HttpServletRequest httpServletRequest) {
-        MemberRepository userRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
-        Optional<Member> optionalMember = userRepository.findOneByMemberIdAndAccessToken(valid.getMemberId(), valid.getAccessToken());
+        MemberRepository memberRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
+        Optional<Member> optionalMember = memberRepository.findOneByMemberIdAndAccessToken(valid.getMemberId(), valid.getAccessToken());
         if (optionalMember.isEmpty()) {
-            LOGGER.error("User's access token is different. (Duplicated login): '{}'", valid.getMemberId());
+            LOGGER.error("Member's access token is different. (Duplicated login or Deleted Member): '{}'", valid.getMemberId());
             valid.setValid(false);
             httpServletRequest.getSession().setAttribute(AUTHORIZATION_FAIL_TYPE, CommonErrorCode.DUPLICATION_LOGIN);
         }
