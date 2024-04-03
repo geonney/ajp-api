@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * Spring bean 이 null 일 경우 활용<br />
  * UserService userService = ApplicationContextHolder.getContext().getBean(UserService.class);<br />
  *
- * @author GEON LEE
+ * @author GEONLEE
  * @since 2024-04-02
  **/
 @Configuration

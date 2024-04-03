@@ -21,7 +21,7 @@ public class CommonUtils {
      *
      * @param key property key
      * @return string value
-     * @author GEON LEE
+     * @author GEONLEE
      * @since 2023-08-08<br />
      */
     public static String getPropertyValue(String key) {
