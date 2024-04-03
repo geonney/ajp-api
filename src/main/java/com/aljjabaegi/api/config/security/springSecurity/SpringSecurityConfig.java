@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.config.security.spring;
+package com.aljjabaegi.api.config.security.springSecurity;
 
 import com.aljjabaegi.api.config.security.jwt.JwtAccessDeniedHandler;
 import com.aljjabaegi.api.config.security.jwt.JwtAuthenticationEntryPoint;
@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SpringSecurityConfig {
     public static final String[] SWAGGER_URIS = {"swagger-ui.html", "/swagger-ui/**", "/api-docs/**"};
     public static final String[] IGNORE_URIS = {"/v1/login", "/v1/logout", "/v1/public-key", "/favicon.ico", "/error"};
     private final TokenProvider tokenProvider;
@@ -37,7 +37,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); //기본 bcrypt 사용
     }
 
     @Bean
