@@ -37,6 +37,9 @@ JWT (config/security/jwt)
 Jasypt (config/security/jasypt)
 - application setting file encryption (ENC)
 
+RSA (config/security/rsa)
+- RsaProvider
+
 ```
 **#JWT Authentication Process**
 ```
