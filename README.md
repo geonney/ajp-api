@@ -34,7 +34,7 @@ JWT (config/security/jwt)
 - JwtAuthenticationEntryPoint
 
 Jasypt (config/security/jasypt)
-- setting file encryption (ENC)
+- application setting file encryption (ENC)
 
 ```
 **#JWT Authentication Process**
