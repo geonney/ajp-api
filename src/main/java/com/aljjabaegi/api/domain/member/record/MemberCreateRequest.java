@@ -23,6 +23,8 @@ public record MemberCreateRequest(
         @Schema(description = "전화번호", example = "010-1234-5678")
         String cellphone,
         @Schema(description = "사용여부", example = "true")
-        boolean isUse
+        boolean isUse,
+        @Schema(description = "사용자 권한", hidden = true)
+        String authorityCode
 ) {
 }

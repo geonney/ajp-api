@@ -36,7 +36,7 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authority_cd")
     private Authority authority;
 }
