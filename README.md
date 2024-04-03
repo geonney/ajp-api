@@ -1,9 +1,9 @@
-#API
+**#API**
 ====
-API 기능 구현 프로젝트
+API 구현 기능
 ----
 ```
-Swagger
+Swagger (config/swagger/SwaggerConfig)
 - Information setting
 - grouping
 - Operation sorting
@@ -11,19 +11,34 @@ Swagger
 - display-resquest-duration
 - filter
 
-JPA
+JPA (common/jpa)
 - BaseEntity (@MappedSuperclass)
 - Mapstruct
 
-Exception
+Exception (common/exception)
 - GlobalExceptionHandler
 - Custom Exception (ServiceException)
 
 Standardization
 - response (item, items, error)
+
+Spring Security (config/security/spring/SecurityConfig)
+- CSRF
+- CORS
+- Filter
+
+JWT (config/security/jwt)
+- JwtFilter
+- TokenProvider
+- JwtAccessDeniedHandler
+- JwtAuthenticationEntryPoint
+```
+**#JWT Authentication Process**
+```
+![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/b5d076de-8478-4783-b7b1-231339943353)
 ```
 
-#Specification
+**#Specification**
 ==============
 ----
 ```
@@ -35,5 +50,6 @@ JPA 3.2.4
 mapstruct 1.5.5.Final
 lombok 1.18.30
 validation 3.2.4
-
+Spring security 3.2.4
+JJWT 0.12.5
 ```
