@@ -26,7 +26,7 @@ Spring Security (config/security/spring/SecurityConfig)
 - CSRF
 - CORS
 - Filter
-- DelegatingPasswordEncoder
+- DelegatingPasswordEncoder (bcrypt, sha-256 with salt)
 
 JWT (config/security/jwt)
 - JwtFilter
