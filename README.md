@@ -39,6 +39,8 @@ Jasypt (config/security/jasypt)
 
 RSA (config/security/rsa)
 - RsaProvider
+- Encrypt password with public key
+- Decrypt password with private key
 
 ```
 **#JWT Authentication Process**
