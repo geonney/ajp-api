@@ -1,6 +1,8 @@
 package com.aljjabaegi.api.common.jpa.mapstruct;
 
+import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * mapstruct 용 static converter
@@ -31,5 +33,18 @@ public class Converter {
      */
     public static String booleanToString(Boolean is) {
         return (is) ? "Y" : "N";
+    }
+
+    /**
+     * 패스워드 인코딩
+     *
+     * @param password 인코딩 전 패스워드
+     * @return 인코딩된 패스워드
+     * @author GEONLEE
+     * @since 2024-04-03
+     */
+    public static String encodePassword(String password) {
+        PasswordEncoder passwordEncoder = ApplicationContextHolder.getContext().getBean(PasswordEncoder.class);
+        return passwordEncoder.encode(password);
     }
 }
