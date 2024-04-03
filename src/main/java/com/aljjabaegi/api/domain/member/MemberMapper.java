@@ -82,6 +82,7 @@ public interface MemberMapper {
      */
     @Mappings({
             @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberCreateRequest.isUse()))"),
+            @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))")
     })
     Member toEntity(MemberCreateRequest memberCreateRequest);
 
