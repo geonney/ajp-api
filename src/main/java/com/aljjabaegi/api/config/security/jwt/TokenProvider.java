@@ -37,6 +37,7 @@ public class TokenProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
     private final String jwtCookieName = "AJP_AUT";
     private final String authorityClaimName = "AJP_ATC";
+    private final String tokenType = "Bearer";
     private final SecretKey secretKey;
     private final JwtParser jwtParser;
 
@@ -95,7 +96,7 @@ public class TokenProvider {
         return TokenResponse.builder()
                 .token(generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS))
                 .refreshToken(generateToken(authentication, REFRESH_EXPIRATION_MILLISECONDS))
-                .tokenType(TOKEN_TYPE)
+                .tokenType(this.tokenType)
                 .expirationSeconds(ACCESS_EXPIRATION_MILLISECONDS)
                 .build();
     }
@@ -154,7 +155,8 @@ public class TokenProvider {
     }
 
     /**
-     * Cookie 의 토큰을 만료시킨다.
+     * Cookie 의 토큰을 만료시킨다.<br />
+     * 로그아웃 시 활용
      *
      * @author GEONLEE
      * @since 2024-04-02
@@ -199,7 +201,7 @@ public class TokenProvider {
         String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
         String bearerToken = httpServletRequest.getHeader("Authorization");
         String token = bearerToken.substring(7);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") && !"null".equals(token)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(this.tokenType + " ") && !"null".equals(token)) {
             return bearerToken.substring(7);
         }
         LOGGER.error("Refresh token in header does not exist. request URI: {}", requestURI);
