@@ -1,66 +1,45 @@
-**#API**
-====
-API 구현 기능
-----
-```
-Swagger (config/swagger/SwaggerConfig)
-- Information setting
+# API Spec
+![Static Badge](https://img.shields.io/badge/java-v17-blue) ![Static Badge](https://img.shields.io/badge/springboot-v3.2.4-blue) ![Static Badge](https://img.shields.io/badge/mapstruct-v1.5.5.Final-blue) ![Static Badge](https://img.shields.io/badge/lombok-v1.18.30-blue)
+![Static Badge](https://img.shields.io/badge/JJWT-v0.12.5-blue) ![Static Badge](https://img.shields.io/badge/Jasypt-v3.0.5-blue)
+
+![Static Badge](https://img.shields.io/badge/API-v1.0.0-green) [![Static Badge](https://img.shields.io/badge/welcome-aljjabaegi.tistory.com-hotpink)](http://aljjabaegi.tistory.com)
+
+### Swagger (config/swagger)
+
+- Information
 - grouping
 - Operation sorting
 - tag sorting
 - display-resquest-duration
 - filter
 
-JPA (common/jpa)
+## JPA (common/jpa)
 - BaseEntity (@MappedSuperclass)
 - Mapstruct
 
-Exception (common/exception)
+## Exception (common/exception)
 - GlobalExceptionHandler
 - Custom Exception (ServiceException)
 
-Standardization
+## Standardization
 - response (item, items, error)
 
-Spring Security (config/security/spring/SecurityConfig)
+## Spring Security (config/security/spring/SecurityConfig)
 - CSRF
 - CORS
 - Filter
 - DelegatingPasswordEncoder (bcrypt, sha-256 with salt)
 
-JWT (config/security/jwt)
+## JWT (config/security/jwt)
 - JwtFilter
 - TokenProvider
 - JwtAccessDeniedHandler
 - JwtAuthenticationEntryPoint
 
-Jasypt (config/security/jasypt)
+## Jasypt (config/security/jasypt)
 - application setting file encryption (ENC)
 
-RSA (config/security/rsa)
+## RSA (config/security/rsa)
 - RsaProvider
 - Encrypt password with public key
 - Decrypt password with private key
-
-```
-**#JWT Authentication Process**
-```
-[![image]()](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/4e79d85a-a8db-4699-b110-5254f964d675)
-```
-
-**#Specification**
-==============
-----
-```
-java 17
-springboot 3.2.4
-
-springdoc-openapi-starter-webmvc-ui 2.2.0
-JPA 3.2.4
-mapstruct 1.5.5.Final
-lombok 1.18.30
-validation 3.2.4
-Spring security 3.2.4
-JJWT 0.12.5
-jasypt 3.0.5
-```
