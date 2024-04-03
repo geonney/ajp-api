@@ -1,5 +1,7 @@
 package com.aljjabaegi.api.domain.login;
 
+import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
+import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.domain.member.MemberRepository;
 import com.aljjabaegi.api.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,10 +48,16 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @return UserDetail
      * @author GEONLEE
      * @since 2024-04-02<br />
+     * 2024-04-03 GEONLEE - 권한 정보 없을 경우 Exception 추가
      **/
     private User createUser(String userId, Member entity) {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(entity.getAuthority().getAuthorityCode()));
+        try {
+            grantedAuthorities.add(new SimpleGrantedAuthority(entity.getAuthority().getAuthorityCode()));
+        } catch (NullPointerException e) {
+            LOGGER.error("No authority member: {}", userId);
+            throw new ServiceException(CommonErrorCode.FORBIDDEN);
+        }
         LOGGER.info(userId + " / Authority : {}", grantedAuthorities);
         return new User(
                 entity.getMemberId(),
