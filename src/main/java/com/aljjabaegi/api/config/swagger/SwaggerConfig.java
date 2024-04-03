@@ -82,6 +82,7 @@ public class SwaggerConfig {
     private Map<String, ApiResponse> generateDefaultResponses(HandlerMethod handlerMethod) {
         LinkedHashMap<String, ApiResponse> responses = new LinkedHashMap<>();
         responses.put("400", clientError());
+        responses.put("401", authenticationError());
         responses.put("500", serverError());
         return responses;
     }
@@ -90,7 +91,7 @@ public class SwaggerConfig {
      * 400 - 클라이언트 요청 실패 관련 Response 리턴 메서드
      *
      * @author GEONLEE
-     * @since 2024-03-19<br />
+     * @since 2024-04-02<br />
      */
     private ApiResponse clientError() {
         ApiResponse apiResponse = new ApiResponse();
@@ -99,6 +100,22 @@ public class SwaggerConfig {
                 - 요청한 정보가 올바른지 확인한다.
                 """);
         addContent(apiResponse, CommonErrorCode.INVALID_PARAMETER);
+        return apiResponse;
+    }
+
+    /**
+     * 401 - 인증 실패 관련 Response 리턴 메서드
+     *
+     * @author GEONLEE
+     * @since 2024-04-03<br />
+     */
+    private ApiResponse authenticationError() {
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setDescription("""
+                UnAuthorized
+                - 인증 정보가 올바른지 확인한다. (or 중복 로그인)
+                """);
+        addContent(apiResponse, CommonErrorCode.UNAUTHORIZED);
         return apiResponse;
     }
 
@@ -122,7 +139,7 @@ public class SwaggerConfig {
      * response 에 content 를 추가 메서드
      *
      * @author GEONLEE
-     * @since 2024-03-19<br />
+     * @since 2024-04-02<br />
      */
     @SuppressWarnings("rawtypes")
     private void addContent(ApiResponse apiResponse, ErrorCode errorCode) {

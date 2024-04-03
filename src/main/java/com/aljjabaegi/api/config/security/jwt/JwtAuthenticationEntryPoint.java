@@ -26,7 +26,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) {
         CommonErrorCode errorCode = (CommonErrorCode) request.getSession().getAttribute(AUTHORIZATION_FAIL_TYPE);
         if (errorCode != CommonErrorCode.DUPLICATION_LOGIN) {
-            errorCode = CommonErrorCode.NOT_AUTHENTICATION;
+            errorCode = CommonErrorCode.UNAUTHORIZED;
         }
         CommonUtils.setResponseWriter(response, errorCode.status(), errorCode.message());
     }
