@@ -24,20 +24,19 @@ import java.util.stream.Collectors;
 
 /**
  * Token 의 생성, 인증정보 조회, 유효성 검증 등의 역할을 하는 클래스<br />
+ * jwt-key 를 환경변수에 등록한다.
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
  */
 @Component
 public class TokenProvider {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String JWT_COOKIE_NAME = "AJP_AUT";
-    private static final String AUTHORITY_CLAIM_NAME = "AJP_ATC";
     public static final String AUTHORIZATION_FAIL_TYPE = "AJP_AUT_FT";
     protected static final long ACCESS_EXPIRATION_MILLISECONDS = 24 * (1000 * 3600); //24시간
+    protected static final long REFRESH_EXPIRATION_MILLISECONDS = (24 * 7) * (1000 * 3600); //일주일
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
-    private static final String TOKEN_TYPE = "Bearer";
-    private static final long REFRESH_EXPIRATION_MILLISECONDS = (24 * 7) * (1000 * 3600); //일주일
+    private final String jwtCookieName = "AJP_AUT";
+    private final String authorityClaimName = "AJP_ATC";
     private final SecretKey secretKey;
     private final JwtParser jwtParser;
 
@@ -48,7 +47,8 @@ public class TokenProvider {
     private String contextPath;
 
     /**
-     * 설정파일의 jwt.secret-key 를 사용하여 secretKey 생성
+     * 설정파일의 jwt.secret-key 를 사용하여 secretKey 생성<br />
+     * jwt key ->  base64 encoding
      *
      * @param secretKey base64 encoded key
      * @author GEONLEE
@@ -78,7 +78,7 @@ public class TokenProvider {
                 .subject(authentication.getName())
                 .issuer(this.issuer)
                 .signWith(this.secretKey)
-                .claim(AUTHORITY_CLAIM_NAME, authority)
+                .claim(authorityClaimName, authority)
                 .expiration(validity)
                 .compact();
     }
@@ -135,7 +135,7 @@ public class TokenProvider {
     public Authentication generateAuthorityFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority((String) claims.get(AUTHORITY_CLAIM_NAME)));
+        grantedAuthorities.add(new SimpleGrantedAuthority((String) claims.get(authorityClaimName)));
         User principal = new User(claims.getSubject(), "", grantedAuthorities);
         return new UsernamePasswordAuthenticationToken(principal, token, grantedAuthorities);
     }
@@ -147,7 +147,7 @@ public class TokenProvider {
      * @since 2024-04-02
      */
     public void renewalAccessTokenInCookie(HttpServletResponse httpServletResponse, String newAccessToken) {
-        Cookie cookie = new Cookie(JWT_COOKIE_NAME, newAccessToken);
+        Cookie cookie = new Cookie(jwtCookieName, newAccessToken);
         cookie.setHttpOnly(true);
         cookie.setPath(this.contextPath);
         httpServletResponse.addCookie(cookie);
@@ -160,7 +160,7 @@ public class TokenProvider {
      * @since 2024-04-02
      */
     public void expirationToken(HttpServletResponse httpServletResponse) {
-        Cookie cookie = new Cookie(JWT_COOKIE_NAME, null);
+        Cookie cookie = new Cookie(jwtCookieName, null);
         cookie.setMaxAge(0);
         cookie.setPath(this.contextPath);
         httpServletResponse.addCookie(cookie);
@@ -178,7 +178,7 @@ public class TokenProvider {
         String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
         if (cookies != null) {
             Optional<String> optionalAccessToken = Arrays.stream(cookies)
-                    .filter(cookie -> JWT_COOKIE_NAME.equals(cookie.getName()))
+                    .filter(cookie -> jwtCookieName.equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findFirst();
             if (optionalAccessToken.isPresent()) {
@@ -197,9 +197,9 @@ public class TokenProvider {
      */
     public String getRefreshTokenFromRequest(HttpServletRequest httpServletRequest) throws NullPointerException {
         String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
-        String bearerToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+        String bearerToken = httpServletRequest.getHeader("Authorization");
         String token = bearerToken.substring(7);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_TYPE + " ") && !"null".equals(token)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") && !"null".equals(token)) {
             return bearerToken.substring(7);
         }
         LOGGER.error("Refresh token in header does not exist. request URI: {}", requestURI);

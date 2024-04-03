@@ -28,10 +28,15 @@ springdoc:
     filter: true
 security:
   jwt:
-    secret-key: ${jwt-key} #base64 encoding
+    secret-key: ${jwt-key}
     issuer: aljjabaegi.tistory.com
   jasypt:
     secret-key: ${jasypt-key}
+  rsa:
+    algorithm: RSA
+    key-size: 2048
+    private: ${rsa-private} #config/security/rsa/RsaProvider 참고
+    public: ${rsa-public}
 
 --- #develop
 

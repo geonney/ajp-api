@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * application.yml 암호화 설정<br />
- * <a href="https://aljjabaegi.tistory.com/652">...</a>
+ * <a href="https://aljjabaegi.tistory.com/652">...</a><br />
+ * 환경변수에 키를 설정한다. jasypt-key
  *
  * @author GEONLEE
  * @since 2024-04-03

@@ -23,7 +23,7 @@ public class ServiceException extends RuntimeException {
      * @since 2024-04-02
      */
     public ServiceException(CommonErrorCode errorCode, Throwable cause) {
-        super(errorCode.message(), cause);
+        super(cause.getMessage(), cause);
         this.errorCode = errorCode;
     }
 

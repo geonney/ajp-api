@@ -5,6 +5,7 @@ import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
+import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
 import com.aljjabaegi.api.domain.member.MemberRepository;
 import com.aljjabaegi.api.entity.Member;
@@ -24,7 +25,8 @@ import org.springframework.stereotype.Service;
  * login service
  *
  * @author GEONLEE
- * @since 2024-04-02
+ * @since 2024-04-02<br />
+ * 2024-04-03 GEONLEE - RSA 복호화 코드 추가
  */
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class LoginService {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final RsaProvider rsaProvider;
 
     @Transactional
     public ResponseEntity<ItemResponse<TokenResponse>> login(
@@ -41,12 +44,13 @@ public class LoginService {
         Member entity = memberRepository.findById(parameter.id())
                 .orElseThrow(() -> new EntityNotFoundException(parameter.id()));
         //2. Password 가 일치하는지 체크
-        if (!passwordEncoder.matches(parameter.password(), entity.getPassword())) {
-            throw new ServiceException(CommonErrorCode.WRONG_PASSWORD, null);
+        String encodePassword = rsaProvider.decrypt(parameter.password());
+        if (!passwordEncoder.matches(encodePassword, entity.getPassword())) {
+            throw new ServiceException(CommonErrorCode.WRONG_PASSWORD);
         }
         //3. 사용자 권한 체크
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                parameter.id(), parameter.password());
+                parameter.id(), encodePassword);
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
