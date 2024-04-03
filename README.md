@@ -1,9 +1,8 @@
-**#API**
-====
+# API
+
 API 구현 기능
-----
-```
-Swagger (config/swagger/SwaggerConfig)
+
+Swagger [config/swagger/SwaggerConfig]
 - Information setting
 - grouping
 - Operation sorting
@@ -42,7 +41,6 @@ RSA (config/security/rsa)
 - Encrypt password with public key
 - Decrypt password with private key
 
-```
 **#JWT Authentication Process**
 ```
 [![image]()](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/4e79d85a-a8db-4699-b110-5254f964d675)
