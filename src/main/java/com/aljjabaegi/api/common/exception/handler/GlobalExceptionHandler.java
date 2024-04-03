@@ -26,7 +26,8 @@ import java.util.StringJoiner;
  * 전역 Exception 처리
  *
  * @author GEONLEE
- * @since 2024-04-02
+ * @since 2024-04-02<br />
+ * 2024-04-03 GEONLEE - 에러 로그 표출 수정 message -> enum
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,7 +51,7 @@ public class GlobalExceptionHandler {
      * @author GEONLEE
      * @since 2024-04-02
      */
-    @ExceptionHandler(value = {PSQLException.class, IOException.class})
+    @ExceptionHandler(value = {PSQLException.class, IOException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleUncheckedException(Exception e) {
         CommonErrorCode errorCode = CommonErrorCode.SERVICE_ERROR;
         return handleExceptionInternal(errorCode, e);
@@ -107,7 +108,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorResponse> handleExceptionInternal(ErrorCode errorCode, Exception e) {
         /* 모든 HTTP Status 코드는 200으로 전달하고 내부 코드를 상세히 전달 */
-        LOGGER.error("[" + errorCode.status() + "] {}", errorCode.message(), e);
+        LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
         return ResponseEntity.ok()
                 .header("Content-type", String.valueOf(MediaType.APPLICATION_JSON))
                 .body(new ErrorResponse(errorCode.status(), errorCode.message()));
