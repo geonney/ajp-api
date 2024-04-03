@@ -15,13 +15,27 @@ public class ServiceException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     public final CommonErrorCode errorCode;
 
-
+    /**
+     * CommonErrorCode 와 Exception 이 전달된 경우<br />
+     * RuntimeException 으로 message 와 Exception 전달
+     *
+     * @author GEONLEE
+     * @since 2024-04-02
+     */
     public ServiceException(CommonErrorCode errorCode, Throwable cause) {
         super(errorCode.message(), cause);
         this.errorCode = errorCode;
     }
 
+    /**
+     * CommonErrorCode 만 전달된 경우<br />
+     *
+     * @author GEONLEE
+     * @since 2024-04-02<br />
+     * RuntimeException 으로 message 전달 추가
+     */
     public ServiceException(CommonErrorCode errorCode) {
+        super(errorCode.message(), null);
         this.errorCode = errorCode;
     }
 }
