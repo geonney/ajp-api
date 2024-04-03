@@ -13,16 +13,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 인증처리와 401,403 에러 처리, 암호화 Security Filter
  *
  * @author GEONLEE
- * @since 2024-04-02
+ * @since 2024-04-02<br />
+ * 2024-04-03 GEONLEE - 2가지
  */
 @Configuration
 @EnableWebSecurity
@@ -35,9 +41,21 @@ public class SpringSecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    /**
+     * PasswordEncoder 설정<br />
+     * 참고 PasswordEncoderFactories.createDelegatingPasswordEncoder()<br />
+     * key 만 변경하면 암호화 적용
+     *
+     * @author GEONLEE
+     * @since 2024-04-03
+     */
     @Bean
+    @SuppressWarnings("deprecation")
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); //기본 bcrypt 사용
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put("bcrypt", new BCryptPasswordEncoder());
+        encoders.put("SHA-256", new MessageDigestPasswordEncoder("SHA-256"));
+        return new DelegatingPasswordEncoder("SHA-256", encoders);
     }
 
     @Bean
