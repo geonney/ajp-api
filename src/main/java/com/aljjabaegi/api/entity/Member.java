@@ -18,13 +18,13 @@ import lombok.Setter;
 public class Member extends BaseEntity {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "member_id")
     private String memberId;
 
-    @Column(name = "user_password")
+    @Column(name = "member_password")
     private String password;
 
-    @Column(name = "user_name")
+    @Column(name = "member_name")
     private String memberName;
 
     private String cellphone;
