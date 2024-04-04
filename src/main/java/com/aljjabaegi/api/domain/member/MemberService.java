@@ -27,20 +27,22 @@ public class MemberService {
      * 전체 사용자 조회
      *
      * @author GEONLEE
-     * @since 2024-04-01
+     * @since 2024-04-01<br />
+     * 2024-04-04 GEONLEE - 관리자 조회 안되게 수정<br />
      */
     public List<MemberSearchResponse> getMemberList() {
-        return memberMapper.toSearchResponseList(memberRepository.findAll());
+        return memberMapper.toSearchResponseList(memberRepository.findByAuthorityAuthorityCodeNot("ROLE_ADMIN"));
     }
 
     /**
      * 사용자 ID로 사용자 조회
      *
      * @author GEONLEE
-     * @since 2024-04-01
+     * @since 2024-04-01<br />
+     * 2024-04-04 GEONLEE - 관리자 조회 안되게 수정<br />
      */
     public MemberSearchResponse getMembers(String memberId) {
-        Member entity = memberRepository.findById(memberId)
+        Member entity = memberRepository.findByMemberIdAndAuthorityAuthorityCodeNot(memberId, "ROLE_ADMIN")
                 .orElseThrow(() -> new EntityNotFoundException(memberId));
         return memberMapper.toSearchResponse(entity);
     }
