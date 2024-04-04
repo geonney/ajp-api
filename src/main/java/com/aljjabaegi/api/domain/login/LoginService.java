@@ -7,9 +7,13 @@ import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
+import com.aljjabaegi.api.domain.login.record.LogoutResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;
 import com.aljjabaegi.api.entity.Member;
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
- * login service
+ * login, logout service
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
@@ -67,6 +72,34 @@ public class LoginService {
                         .status("OK")
                         .message("로그인에 성공하였습니다.")
                         .item(tokenResponse)
+                        .build());
+    }
+
+    @Transactional
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        String accessToken = tokenProvider.getTokenFromCookie(httpServletRequest);
+        if (StringUtils.hasText(accessToken)) {
+            try {
+                String userId = tokenProvider.getIdFromToken(accessToken);
+                // 토큰 만료 처리
+                tokenProvider.expirationToken(httpServletResponse);
+                // DB Access, Refresh Token 초기화
+                memberRepository.findById(userId).ifPresent(member -> {
+                    member.setAccessToken(null);
+                    member.setRefreshToken(null);
+                });
+            } catch (JwtException e) {
+                throw new ServiceException(CommonErrorCode.EXPIRED_TOKEN, e);
+            } catch (PersistenceException e) {
+                throw new ServiceException(CommonErrorCode.SERVICE_ERROR, e);
+            }
+        } else {
+            throw new ServiceException(CommonErrorCode.UNAUTHORIZED);
+        }
+        return ResponseEntity.ok()
+                .body(LogoutResponse.builder()
+                        .status("OK")
+                        .message("로그아웃 하였습니다.")
                         .build());
     }
 }

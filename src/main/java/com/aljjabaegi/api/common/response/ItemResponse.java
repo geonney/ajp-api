@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -17,6 +18,7 @@ public record ItemResponse<T>(
         @Schema(description = "메시지", example = "데이터를 조회하는데 성공하였습니다.")
         String message,
         @Schema(description = "응답 객체")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         T item
 ) {
 }
