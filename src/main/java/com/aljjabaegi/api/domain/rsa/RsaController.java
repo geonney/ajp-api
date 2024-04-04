@@ -19,13 +19,13 @@ import java.security.spec.InvalidKeySpecException;
  * @since 2024-04-03
  */
 @RestController
-@Tag(name = "RSA Public key 요청", description = "담당자: GEONLEE")
+@Tag(name = "RSA Public key", description = "Responsibility: GEONLEE")
 @RequiredArgsConstructor
 public class RsaController {
     private final RsaService rsaService;
 
     @PostMapping(value = "/v1/public-key")
-    @Operation(summary = "RSA Public key 요청", operationId = "API-RSA")
+    @Operation(summary = "Request RSA Public key", operationId = "API-RSA")
     public ResponseEntity<ItemResponse<PublicKeyResponse>> createUser() throws NoSuchAlgorithmException, InvalidKeySpecException {
         return rsaService.getPublicKey();
     }

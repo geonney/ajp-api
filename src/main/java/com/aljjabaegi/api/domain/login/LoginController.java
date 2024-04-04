@@ -17,20 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "로그인 / 로그아웃", description = "담당자: GEONLEE")
+@Tag(name = "Member login / logout", description = "Responsibility: GEONLEE")
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
 
     @PostMapping(value = "/v1/login")
-    @Operation(summary = "사용자 로그인", operationId = "API-LOGIN")
+    @Operation(summary = "Member login", operationId = "API-LOGIN")
     public ResponseEntity<ItemResponse<TokenResponse>> login(
             @RequestBody @Valid LoginRequest parameter, HttpServletResponse httpServletResponse) {
         return loginService.login(parameter, httpServletResponse);
     }
 
     @GetMapping(value = "/v1/logout")
-    @Operation(summary = "사용자 로그아웃", operationId = "API-LOGOUT")
+    @Operation(summary = "Member logout", operationId = "API-LOGOUT")
     public ResponseEntity<LogoutResponse> logout(
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         return loginService.logout(httpServletRequest, httpServletResponse);

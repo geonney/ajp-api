@@ -22,14 +22,14 @@ import java.util.List;
  * 2024-04-04 GEONLEE - Member Operation 전체 인증 적용
  */
 @RestController
-@Tag(name = "사용자 정보 조회 / 편집", description = "담당자: GEONLEE")
+@Tag(name = "Member Management", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService userService;
 
     @GetMapping(value = "/v1/members")
-    @Operation(summary = "전체 사용자 조회", operationId = "API-MEMBER-01")
+    @Operation(summary = "Search All Members", operationId = "API-MEMBER-01")
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList() {
         List<MemberSearchResponse> userSearchResponseList = userService.getMemberList();
         long size = userSearchResponseList.size();
@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/v1/members/{memberId}")
-    @Operation(summary = "사용자 ID로 조회", operationId = "API-MEMBER-02")
+    @Operation(summary = "Member Search By ID", operationId = "API-MEMBER-02")
     public ResponseEntity<ItemResponse<MemberSearchResponse>> getMembers(@PathVariable String memberId) {
         MemberSearchResponse userSearchResponse = userService.getMembers(memberId);
 
@@ -54,7 +54,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/v1/check/member-id/{memberId}")
-    @Operation(summary = "사용자 ID 중복 여부 조회", operationId = "API-MEMBER-03")
+    @Operation(summary = "Check for ID duplicates", operationId = "API-MEMBER-03")
     public ResponseEntity<ItemResponse<Boolean>> checkMemberId(@PathVariable String memberId) {
         boolean isDuplication = userService.checkMemberId(memberId);
         String message = (isDuplication) ? "중복된 ID가 존재합니다." : "사용 가능한 ID 입니다.";
@@ -66,7 +66,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/v1/member")
-    @Operation(summary = "사용자 정보 추가", operationId = "API-MEMBER-04")
+    @Operation(summary = "Create Member", operationId = "API-MEMBER-04")
     public ResponseEntity<ItemResponse<MemberCreateResponse>> createMember(@RequestBody @Valid MemberCreateRequest parameter) {
         MemberCreateResponse createdMember = userService.createMember(parameter);
         return ResponseEntity.ok()
@@ -77,7 +77,7 @@ public class MemberController {
     }
 
     @PutMapping(value = "/v1/member")
-    @Operation(summary = "사용자 정보 수정", operationId = "API-USER-05")
+    @Operation(summary = "Modify Member", operationId = "API-USER-05")
     public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(@RequestBody @Valid MemberModifyRequest parameter) {
         MemberModifyResponse modifiedMember = userService.modifyMember(parameter);
         return ResponseEntity.ok()
@@ -88,7 +88,7 @@ public class MemberController {
     }
 
     @DeleteMapping(value = "/v1/member/{memberId}")
-    @Operation(summary = "사용자 삭제", operationId = "API-USER-06")
+    @Operation(summary = "Delete Member", operationId = "API-USER-06")
     public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String memberId) {
         Long deleteCount = userService.deleteMember(memberId);
         return ResponseEntity.ok()
