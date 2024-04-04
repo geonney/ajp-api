@@ -1,19 +1,16 @@
-package com.aljjabaegi.api.domain.project;
+package com.aljjabaegi.api.domain.board;
 
-import com.aljjabaegi.api.entity.Project;
+import com.aljjabaegi.api.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- * Project Repository
+ * Board Repository
  *
  * @author GEONLEE
  * @since 2024-04-04
  */
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, String> {
-    @Query(value = "select CONCAT('PJ', RIGHT('000' || (CAST(SUBSTRING(MAX(project_id) FROM '\\d+') AS INTEGER) + 1), 3)) FROM project"
-            , nativeQuery = true)
-    String findByMaxProjectId();
+public interface BoardRepository extends JpaRepository<Board, Long> {
+
 }

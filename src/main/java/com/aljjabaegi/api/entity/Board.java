@@ -5,36 +5,31 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 /**
- * Project Entity (ID가 시퀀스인 경우)
+ * Board Entity (ID가 시퀀스인 경우)
  *
  * @author GEONLEE
  * @since 2024-04-04
  */
 @Getter
 @Setter
-@Entity(name = "project")
+@Entity(name = "board")
 @SequenceGenerator(
-        name = "PROJECT_SEQ_GENERATOR"
-        , sequenceName = "project_project_seq_seq"
+        name = "BOARD_SEQ_GENERATOR"
+        , sequenceName = "board_seq"
         , initialValue = 1
         , allocationSize = 1
 )
-public class Project extends BaseEntity {
+public class Board extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROJECT_SEQ_GENERATOR")
-    @Column(name = "project_seq")
-    private Long projectSequence;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQ_GENERATOR")
+    @Column(name = "board_seq")
+    private Long boardSequence;
 
-    @Column(name = "project_name")
-    private String projectName;
+    @Column(name = "board_title")
+    private String boardTitle;
 
-    @Column(name = "project_start_date")
-    private LocalDate projectStartDate;
-
-    @Column(name = "project_end_date")
-    private LocalDate projectEndDate;
+    @Column(name = "board_content")
+    private String boardContent;
 }

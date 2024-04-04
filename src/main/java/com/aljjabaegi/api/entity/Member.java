@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * User Entity
+ * User Entity (ID를 입력 전달받는 경우)
  *
  * @author GEONLEE
  * @since 2024-04-01<br />

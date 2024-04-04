@@ -1,22 +1,21 @@
-package com.aljjabaegi.api.domain.project.record;
+package com.aljjabaegi.api.domain.board.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Project 추가 요청 record
+ * Board 추가 요청 record
  *
  * @author GEONLEE
  * @since 2024-04-04<br />
  */
-@Schema(description = "Project 추가 요청 record")
-public record ProjectCreateRequest(
-        @Schema(description = "프로젝트 명", example = "프로젝트1")
+@Schema(description = "게시판 추가 요청 record")
+public record BoardCreateRequest(
+        @Schema(description = "게시판 제목", example = "제목")
         @NotNull
-        String projectName,
-        @Schema(description = "프로젝트 시작일자", example = "2024-04-04")
-        String projectStartDate,
-        @Schema(description = "프로젝트 종료일자", example = "2024-04-04")
-        String projectEndDate
+        String boardTitle,
+        @Schema(description = "게시판 내용", example = "내용")
+        @NotNull
+        String boardContent
 ) {
 }

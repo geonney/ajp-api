@@ -4,6 +4,12 @@ import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
+
 /**
  * mapstruct 용 static converter
  *
@@ -46,5 +52,44 @@ public class Converter {
     public static String encodePassword(String password) {
         PasswordEncoder passwordEncoder = ApplicationContextHolder.getContext().getBean(PasswordEncoder.class);
         return passwordEncoder.encode(password);
+    }
+
+    public static LocalDateTime dateTimeStringToLocalDateTime(String dateString) throws DateTimeParseException, IllegalArgumentException {
+        if (dateString != null && !dateString.equals("")) {
+            String replacedDateString = getStringToNumbers(dateString);
+            DateTimeFormatter toTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.KOREA);
+            return LocalDateTime.parse(replacedDateString, toTimeFormatter);
+        } else {
+            return null;
+        }
+    }
+
+    public static LocalDate dateStringToLocalDate(String dateString) throws DateTimeParseException, IllegalArgumentException {
+        if (dateString != null && !dateString.equals("")) {
+            String replacedDateString = getStringToNumbers(dateString);
+            return LocalDate.parse(replacedDateString, DateTimeFormatter.ofPattern("yyyyMMdd", Locale.KOREA));
+        } else {
+            return null;
+        }
+    }
+
+    public static String localDateTimeToString(LocalDateTime localDateTime) throws DateTimeParseException {
+        if (localDateTime != null) {
+            return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.KOREA));
+        } else {
+            return null;
+        }
+    }
+
+    public static String localDateToString(LocalDateTime localDate) throws DateTimeParseException {
+        if (localDate != null) {
+            return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA));
+        } else {
+            return null;
+        }
+    }
+
+    public static String getStringToNumbers(String str) {
+        return str.replaceAll("[^0-9]+", "");
     }
 }
