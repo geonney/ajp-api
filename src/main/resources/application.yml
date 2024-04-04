@@ -45,7 +45,7 @@ spring:
     activate:
       on-profile: develop
   datasource:
-    #    url: "jdbc:mariadb://211.41.186.111:3306/API_TEST_DB" #mariadb
+    #    url: "jdbc:mariadb://{ip}:{port}/{schema}" #mariadb
     #    driver-class-name: "org.mariadb.jdbc.Driver" #mariadb
     url: "jdbc:postgresql://localhost:15432/test_db"
     driver-class-name: "org.postgresql.Driver"
