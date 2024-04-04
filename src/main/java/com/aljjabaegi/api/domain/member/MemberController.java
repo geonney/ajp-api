@@ -18,10 +18,12 @@ import java.util.List;
  *
  * @author GEONLEE
  * @since 2024-04-01<br />
- * 2024-04-02 GEONLEE - 응답 객체 Builder Pattern 적용
+ * 2024-04-02 GEONLEE - 응답 객체 Builder Pattern 적용<br />
+ * 2024-04-04 GEONLEE - Member Operation 전체 인증 적용
  */
 @RestController
 @Tag(name = "사용자 정보 조회 / 편집", description = "담당자: GEONLEE")
+@SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService userService;
@@ -65,7 +67,6 @@ public class MemberController {
 
     @PostMapping(value = "/v1/member")
     @Operation(summary = "사용자 정보 추가", operationId = "API-MEMBER-04")
-    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<MemberCreateResponse>> createMember(@RequestBody @Valid MemberCreateRequest parameter) {
         MemberCreateResponse createdMember = userService.createMember(parameter);
         return ResponseEntity.ok()
@@ -77,7 +78,6 @@ public class MemberController {
 
     @PutMapping(value = "/v1/member")
     @Operation(summary = "사용자 정보 수정", operationId = "API-USER-05")
-    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(@RequestBody @Valid MemberModifyRequest parameter) {
         MemberModifyResponse modifiedMember = userService.modifyMember(parameter);
         return ResponseEntity.ok()
@@ -89,7 +89,6 @@ public class MemberController {
 
     @DeleteMapping(value = "/v1/member/{memberId}")
     @Operation(summary = "사용자 삭제", operationId = "API-USER-06")
-    @SecurityRequirement(name = "JWT")
     public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String memberId) {
         Long deleteCount = userService.deleteMember(memberId);
         return ResponseEntity.ok()
