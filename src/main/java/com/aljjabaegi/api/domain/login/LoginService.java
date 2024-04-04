@@ -11,7 +11,6 @@ import com.aljjabaegi.api.domain.login.record.LogoutResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;
 import com.aljjabaegi.api.entity.Member;
 import io.jsonwebtoken.JwtException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ public class LoginService {
             LoginRequest parameter, HttpServletResponse httpServletResponse) throws ServiceException {
         //1. ID가 존재하는지 체크
         Member entity = memberRepository.findById(parameter.id())
-                .orElseThrow(() -> new EntityNotFoundException(parameter.id()));
+                .orElseThrow(() -> new ServiceException(CommonErrorCode.ID_NOT_FOUND));
         //2. Password 가 일치하는지 체크
         String encodePassword = rsaProvider.decrypt(parameter.password());
         if (!passwordEncoder.matches(encodePassword, entity.getPassword())) {
