@@ -11,8 +11,9 @@ public enum CommonErrorCode implements ErrorCode {
     INVALID_PARAMETER("ER_CT_01", "적합하지 않은 인자가 전달되었습니다."),
     ENTITY_NOT_FOUND("ER_CT_02", "데이터가 존재하지 않습니다."),
     UNAUTHORIZED("ER_AT_01", "자격 증명에 실패하였습니다."),
-    WRONG_PASSWORD("ER_AT_02", "자격증명에 실패하였습니다."),
-    DUPLICATION_LOGIN("ER_AT_03", "자격증명에 실패하였습니다."),
+    EXPIRED_TOKEN("ER_AT_02", "자격 증명에 실패하였습니다."),
+    WRONG_PASSWORD("ER_AT_03", "자격증명에 실패하였습니다."),
+    DUPLICATION_LOGIN("ER_AT_04", "자격증명에 실패하였습니다."),
     FORBIDDEN("ER_FD", "사용자 접근이 거부 되었습니다.");
 
     private final String status;
