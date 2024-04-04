@@ -55,3 +55,7 @@
 - 비대칭 암호화 (private, public key)
 - Public key 전달 -> 패스워드 암호화
 - public key로 암호화된 패스워드 전달 -> private key 복호화
+
+
+#### Authentication logic
+![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/d272debc-aff8-4281-961a-0da4accdbcf9)
