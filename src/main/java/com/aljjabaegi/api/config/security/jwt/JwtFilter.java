@@ -39,6 +39,7 @@ import static com.aljjabaegi.api.config.security.springSecurity.SpringSecurityCo
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
+ * 2024-04-04 GEONLEE - Access Token 에서 권한 추출 부분, Refresh Token 검증 부분 버그 수정<br />
  */
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
@@ -70,7 +71,7 @@ public class JwtFilter extends GenericFilterBean {
              * 권한 정보가 없을 경우 JwtAuthenticationEntryPoint 로 전달.(security config 에 설정)*/
             if (valid.isValid()) {
                 LOGGER.info("Member's token validation success: '{}'", valid.getMemberId());
-                Authentication authentication = tokenProvider.generateAuthorityFromToken(accessToken);
+                Authentication authentication = tokenProvider.generateAuthorityFromToken(valid.getAccessToken());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
@@ -87,13 +88,13 @@ public class JwtFilter extends GenericFilterBean {
      */
     private void checkTokenValidity(
             JwtValidDto valid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        if (!StringUtils.hasText(valid.getAccessToken()) || !tokenProvider.validateToken(valid.getAccessToken())) {
+        if (!StringUtils.hasText(valid.getAccessToken()) || !tokenProvider.validateToken(valid.getAccessToken(), "Access")) {
             valid.setValid(false);
             String refreshToken = null;
             /*Access Token 이 만료 되었을 경우 RefreshToken 을 확인*/
             try {
                 refreshToken = tokenProvider.getRefreshTokenFromRequest(httpServletRequest);
-                if (StringUtils.hasText(refreshToken) || tokenProvider.validateToken(refreshToken)) {
+                if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken, "Refresh")) {
                     /*refreshToken 에서 권힌 정보를 추출해 새로운 Access Token 생성*/
                     Authentication authentication = tokenProvider.generateAuthorityFromToken(refreshToken);
                     String memberId = tokenProvider.getIdFromToken(refreshToken);
