@@ -4,42 +4,54 @@
 
 ![Static Badge](https://img.shields.io/badge/API-v1.0.0-green) [![Static Badge](https://img.shields.io/badge/welcome-aljjabaegi.tistory.com-hotpink)](http://aljjabaegi.tistory.com)
 
-### Swagger (config/swagger)
+## :heavy_check_mark:Swagger (config/swagger)
 
-- Information
-- grouping
-- Operation sorting
-- tag sorting
-- display-resquest-duration
-- filter
+- 기본 API Information 설정
+- JWT 인증 버튼 추가
+- API Group 설정
+- OperationCustomzier 적용, Operation 공통 response 추가
+- tag, operation sorting
+- display-request-duration 설정
+- display-operation-id 설정
+- filter 추가
 
-## JPA (common/jpa)
-- BaseEntity (@MappedSuperclass)
-- Mapstruct
+## :heavy_check_mark:JPA (common/jpa)
 
-## Exception (common/exception)
-- GlobalExceptionHandler
-- Custom Exception (ServiceException)
+- BaseEntity (@MappedSuperclass) 적용
+- Mapstruct 적용
 
-## Standardization
-- response (item, items, error)
+## :heavy_check_mark:Exception (common/exception)
+- 전역 Exception Handler 적용, GlobalExceptionHandler
+- Custom Exception 활용, checked Exception 처리, ServiceException
 
-## Spring Security (config/security/spring/SecurityConfig)
+## :heavy_check_mark:Standardization (common/response)
+- 공통 에러 코드 enum 정의, CommonErrorCode
+- 공통 response 구조체 정의
+  - 단수 객체 ItemResponse
+  - 복수 객체 ItemsResponse
+  - 오류 객체 ErrorResponse
+
+## :closed_lock_with_key:Security (config/security)
+
+#### Spring Security
 - CSRF
 - CORS
-- Filter
-- DelegatingPasswordEncoder (bcrypt, sha-256 with salt)
-
-## JWT (config/security/jwt)
+- SecurityFilter
 - JwtFilter
-- TokenProvider
-- JwtAccessDeniedHandler
-- JwtAuthenticationEntryPoint
+- 401 Handler, JwtAuthenticationEntiryPoint
+- 403 Handler, JwtAccessDeniedHandler
+- 단방향 암호화 DelegatingPasswordEncoder 적용 (bcrypt, sha-256 with salt)
 
-## Jasypt (config/security/jasypt)
-- application setting file encryption (ENC)
+#### JWT (Java Web Token)
+- Token 유효성 검증 로직, 중복로그인 검증, JwtFilter
+- Token 생성, 추출, Token Claim 추출, Token 만료, Token 유효성 체크, TokenProvider
+- 401 Handler, JwtAuthenticationEntryPoint
+- 403 Handler, JwtAccessDeniedHandler
 
-## RSA (config/security/rsa)
-- RsaProvider
-- Encrypt password with public key
-- Decrypt password with private key
+#### Jasypt
+- application 설정파일 Text 암호화
+
+#### RSA
+- 비대칭 암호화 (private, public key)
+- Public key 전달 -> 패스워드 암호화
+- public key로 암호화된 패스워드 전달 -> private key 복호화
