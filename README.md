@@ -16,9 +16,10 @@
 - filter 추가
 
 ## :heavy_check_mark:JPA (common/jpa)
-
 - BaseEntity (@MappedSuperclass) 적용
 - Mapstruct 적용
+- @SequenceGenerator (Board Entity)
+- @GenericGenerator (Project Entity)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
