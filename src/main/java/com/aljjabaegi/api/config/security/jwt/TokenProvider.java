@@ -215,14 +215,14 @@ public class TokenProvider {
      * @author GEONLEE
      * @since 2024-04-02
      */
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, String tokenType) {
         try {
             this.jwtParser.parseSignedClaims(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             LOGGER.info("Invalid jwt signature.");
         } catch (ExpiredJwtException e) {
-            LOGGER.error("Access token is expired.");
+            LOGGER.error("{} token is expired.", tokenType);
         } catch (UnsupportedJwtException e) {
             LOGGER.info("This jwt token is not supported.");
         } catch (IllegalArgumentException e) {
