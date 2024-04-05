@@ -23,6 +23,7 @@
 - Bulk 연산 @Modifying(clearAutomatically = true)
 - 연관 관계
   - @ManyToOne - @OneToMany 양방향
+- 복합키 관련 @Embeddable, @EmbeddedId (HistoryLogin Entity)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
