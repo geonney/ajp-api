@@ -1,6 +1,7 @@
 package com.aljjabaegi.api.common.jpa.mapstruct;
 
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
+import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -42,16 +43,18 @@ public class Converter {
     }
 
     /**
-     * Spring security 에 적용된 Password Encoder 로 패스워드 인코딩
+     * Spring security 에 적용된 Password Encoder 로 패스워드 인코딩<br />
      *
      * @param password 인코딩 전 패스워드
      * @return 인코딩된 패스워드
      * @author GEONLEE
-     * @since 2024-04-03
+     * @since 2024-04-03<br />
+     * RSA 로 인코딩되어 전달된 Password 를 복호화하고, 다시 인코딩해서 전달하게 수정.
      */
     public static String encodePassword(String password) {
+        RsaProvider rsaProvider = ApplicationContextHolder.getContext().getBean(RsaProvider.class);
         PasswordEncoder passwordEncoder = ApplicationContextHolder.getContext().getBean(PasswordEncoder.class);
-        return passwordEncoder.encode(password);
+        return passwordEncoder.encode(rsaProvider.decrypt(password));
     }
 
     public static LocalDateTime dateTimeStringToLocalDateTime(String dateString) throws DateTimeParseException, IllegalArgumentException {
