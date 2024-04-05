@@ -20,6 +20,9 @@
 - Mapstruct 적용
 - @SequenceGenerator (Board Entity)
 - @GenericGenerator (Project Entity)
+- Bulk 연산 @Modifying(clearAutomatically = true)
+- 연관 관계
+  - @ManyToOne - @OneToMany 양방향
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
