@@ -83,7 +83,7 @@ public interface MemberMapper {
     @Mappings({
             @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberCreateRequest.isUse()))"),
             @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))"),
-            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_USER"),
+            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST"),
     })
     Member toEntity(MemberCreateRequest memberCreateRequest);
 

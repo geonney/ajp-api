@@ -2,6 +2,9 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +18,10 @@ import java.util.Optional;
  */
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)
+    int updateAuthority(@Param("authorityCode") String authorityCode);
     /**
      * Refresh Token 으로 Member 조회
      *
@@ -38,6 +45,16 @@ public interface MemberRepository extends JpaRepository<Member, String> {
      * @since 2024-04-04
      */
     List<Member> findByAuthorityAuthorityCodeNot(String authorityCode);
+
+    /**
+     * 전달된 권한을 가지고 있는 Member 조회
+     *
+     * @param authorityCode 권한 코드
+     * @return member list
+     * @author GEONLEE
+     * @since 2024-04-04
+     */
+    List<Member> findByAuthorityAuthorityCode(String authorityCode);
 
     Optional<Member> findByMemberIdAndAuthorityAuthorityCodeNot(String memberId, String authorityCode);
 }

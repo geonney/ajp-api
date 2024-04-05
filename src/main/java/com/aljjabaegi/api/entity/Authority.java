@@ -23,6 +23,6 @@ public class Authority extends BaseEntity {
     private String authorityCode;
     @Column(name = "authority_name")
     private String authorityName;
-    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY)
     private List<Member> members = new ArrayList<>();
 }

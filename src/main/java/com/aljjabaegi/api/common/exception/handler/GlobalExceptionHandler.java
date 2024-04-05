@@ -27,7 +27,8 @@ import java.util.StringJoiner;
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
- * 2024-04-03 GEONLEE - 에러 로그 표출 수정 message -> enum
+ * 2024-04-03 GEONLEE - 에러 로그 표출 수정 message -> enum<br />
+ * 2024-04-05 GEONLEE - Unchecked Exception 에 RuntimeException 추가
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
      * @author GEONLEE
      * @since 2024-04-02
      */
-    @ExceptionHandler(value = {PSQLException.class, IOException.class, IllegalArgumentException.class})
+    @ExceptionHandler(value = {RuntimeException.class, PSQLException.class, IOException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleUncheckedException(Exception e) {
         CommonErrorCode errorCode = CommonErrorCode.SERVICE_ERROR;
         return handleExceptionInternal(errorCode, e);

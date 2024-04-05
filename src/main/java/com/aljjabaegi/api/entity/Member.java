@@ -4,6 +4,8 @@ import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 /**
  * User Entity (ID를 입력 전달받는 경우)
@@ -38,5 +40,20 @@ public class Member extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authority_cd")
+    @NotFound(action = NotFoundAction.IGNORE)
     private Authority authority;
+
+    // 연관관계 편의 메서드
+    public void setAuthority(Authority authority) {
+        // 기존 팀과 연관관계를 제거
+        if (this.authority != null) {
+            this.authority.getMembers().remove(this);
+        }
+
+        //새로운 연관관계 설정
+        this.authority = authority;
+        if (authority != null) {
+            authority.getMembers().add(this);
+        }
+    }
 }
