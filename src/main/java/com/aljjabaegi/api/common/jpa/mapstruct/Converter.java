@@ -42,7 +42,7 @@ public class Converter {
     }
 
     /**
-     * 패스워드 인코딩
+     * Spring security 에 적용된 Password Encoder 로 패스워드 인코딩
      *
      * @param password 인코딩 전 패스워드
      * @return 인코딩된 패스워드
