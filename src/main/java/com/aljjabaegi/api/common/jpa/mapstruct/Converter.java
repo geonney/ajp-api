@@ -92,7 +92,12 @@ public class Converter {
         }
     }
 
+    public static LocalDateTime getNow() {
+        return LocalDateTime.now();
+    }
+
     public static String getStringToNumbers(String str) {
         return str.replaceAll("[^0-9]+", "");
     }
+
 }
