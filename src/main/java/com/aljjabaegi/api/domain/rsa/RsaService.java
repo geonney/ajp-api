@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
 /**
@@ -26,7 +24,7 @@ public class RsaService {
     private final RsaProvider rsaProvider;
 
     @Transactional
-    public ResponseEntity<ItemResponse<PublicKeyResponse>> getPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public ResponseEntity<ItemResponse<PublicKeyResponse>> getPublicKey() {
         PublicKey publicKey = rsaProvider.getPublicKey();
         return ResponseEntity.ok()
                 .body(ItemResponse.<PublicKeyResponse>builder()

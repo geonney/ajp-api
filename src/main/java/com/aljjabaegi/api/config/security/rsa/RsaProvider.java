@@ -134,7 +134,7 @@ public class RsaProvider {
      * @author GEONLEE
      * @since 2024-04-03
      */
-    private String encrypt(String plainText) {
+    public String encrypt(String plainText) {
         PublicKey publicKey = getPublicKey();
         try {
             Cipher cipher = Cipher.getInstance(this.algorithm);
