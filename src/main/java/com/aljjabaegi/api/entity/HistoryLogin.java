@@ -1,6 +1,36 @@
-package com.aljjabaegi.api.entity;/**
+package com.aljjabaegi.api.entity;
+
+import com.aljjabaegi.api.entity.key.HistoryLoginKey;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+/**
+ * 로그인 이력 Entity
  *
  * @author GEONLEE
  * @since 2024-04-05
-*/public class HistoryLogin {
+ */
+@Getter
+@Setter
+@Entity(name = "history_login")
+public class HistoryLogin {
+
+    @EmbeddedId
+    private HistoryLoginKey key;
+
+    @Column(name = "login_ip")
+    private String loginIp;
+
+//    @PrePersist
+//    public void prePersist() {
+//        if (key.getCreateDate() == null) {
+//            key.setCreateDate(LocalDateTime.now());
+//        }
+//    }
 }

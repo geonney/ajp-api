@@ -1,6 +1,7 @@
 package com.aljjabaegi.api.domain.historyLogin.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
 /**
  * 로그인 이력 저장 record
@@ -9,7 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2024-04-05
  */
 @Schema(description = "로그인 이력 저장 record")
-public record HistoryLoginRequest(
+@Builder
+public record HistoryLoginCreateRequest(
 
         @Schema(description = "생성 일시")
         String createDate,

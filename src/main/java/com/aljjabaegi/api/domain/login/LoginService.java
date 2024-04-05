@@ -6,6 +6,9 @@ import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
+import com.aljjabaegi.api.domain.historyLogin.HistoryLoginRepository;
+import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginCreateRequest;
+import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginMapper;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
 import com.aljjabaegi.api.domain.login.record.LogoutResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;
@@ -37,6 +40,8 @@ import org.springframework.util.StringUtils;
 public class LoginService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberRepository memberRepository;
+    private final HistoryLoginRepository historyLoginRepository;
+    private final HistoryLoginMapper historyLoginMapper = HistoryLoginMapper.INSTANCE;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final RsaProvider rsaProvider;
@@ -63,9 +68,15 @@ public class LoginService {
         //5. 로그인 성공 시 DB Token 정보 갱신
         entity.setAccessToken(tokenResponse.token());
         entity.setRefreshToken(tokenResponse.refreshToken());
-        //7. 쿠키에 Access Token 추가
+        //6. 쿠키에 Access Token 추가
         tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
-
+        //7. 로그인 이력 저장
+        historyLoginRepository.save(
+                historyLoginMapper.toEntity(
+                        HistoryLoginCreateRequest.builder()
+                                .memberId(parameter.id())
+                                .loginIp("127.0.0.1")
+                                .build()));
         return ResponseEntity.ok()
                 .body(ItemResponse.<TokenResponse>builder()
                         .status("OK")
