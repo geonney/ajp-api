@@ -24,6 +24,8 @@
 - 연관 관계
   - @ManyToOne - @OneToMany 양방향
 - 복합키 관련 @Embeddable, @EmbeddedId (HistoryLogin Entity)
+- Entity
+  - @Enumerated(EnumType.STRING)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
