@@ -12,7 +12,8 @@ import java.util.List;
  * Member mapper
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 2024-04-07 GEONLEE - @Enumerated(EnumType.STRING) UseYn 사용 테스트 추가<br />
  */
 @Mapper(componentModel = "spring", imports = Converter.class)
 public interface MemberMapper {
