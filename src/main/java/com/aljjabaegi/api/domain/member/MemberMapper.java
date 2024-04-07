@@ -51,7 +51,7 @@ public interface MemberMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
-            @Mapping(target = "isUse", expression = "java(Converter.stringToBoolean(entity.getUseYn()))"),
+            @Mapping(target = "isUse", expression = "java(Converter.useYnToBoolean(entity.getUseYn()))"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -66,7 +66,7 @@ public interface MemberMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
-            @Mapping(target = "isUse", expression = "java(Converter.stringToBoolean(entity.getUseYn()))"),
+            @Mapping(target = "isUse", expression = "java(Converter.useYnToBoolean(entity.getUseYn()))"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -81,7 +81,7 @@ public interface MemberMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
-            @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberCreateRequest.isUse()))"),
+            @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberCreateRequest.isUse()))"),
             @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))"),
             @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST"),
     })
@@ -96,7 +96,7 @@ public interface MemberMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
-    @Mapping(target = "useYn", expression = "java(Converter.booleanToString(memberModifyRequest.isUse()))")
+    @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberModifyRequest.isUse()))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     Member updateFromRequest(MemberModifyRequest memberModifyRequest, @MappingTarget Member entity);
 

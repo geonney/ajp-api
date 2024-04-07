@@ -1,6 +1,7 @@
 package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
+import com.aljjabaegi.api.entity.enumerated.UseYn;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.NotFoundAction;
  * @author GEONLEE
  * @since 2024-04-01<br />
  * 2024-04-02 GEONLEE - DB migration 으로 테이블 명칭 변경<br />
+ * 2024-04-07 GEONLEE - @Enumerated(EnumType.STRING) 테스트<br />
  */
 @Getter
 @Setter
@@ -32,7 +34,8 @@ public class Member extends BaseEntity {
     private String cellphone;
 
     @Column(name = "use_yn")
-    private String useYn;
+    @Enumerated(EnumType.STRING)
+    private UseYn useYn;
 
     private String accessToken;
 

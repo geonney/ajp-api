@@ -2,6 +2,7 @@ package com.aljjabaegi.api.common.jpa.mapstruct;
 
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
+import com.aljjabaegi.api.entity.enumerated.UseYn;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -31,6 +32,18 @@ public class Converter {
     }
 
     /**
+     * String UseYn 을 받아 true, false 로 리턴
+     *
+     * @param useYn UseYn.Y, UseYn.N
+     * @return true or false
+     * @author GEONLEE
+     * @since 2024-04-01<br />
+     */
+    public static Boolean useYnToBoolean(UseYn useYn) {
+        return useYn == UseYn.Y;
+    }
+
+    /**
      * true, false 를 받아 Y, N 으로 리턴
      *
      * @param is true or false
@@ -40,6 +53,18 @@ public class Converter {
      */
     public static String booleanToString(Boolean is) {
         return (is) ? "Y" : "N";
+    }
+
+    /**
+     * true, false 를 받아 UseYn 으로 리턴
+     *
+     * @param is true or false
+     * @return UseYn.Y, UseYn.N
+     * @author GEONLEE
+     * @since 2024-04-07<br />
+     */
+    public static UseYn booleanToUseYn(Boolean is) {
+        return (is) ? UseYn.Y : UseYn.N;
     }
 
     /**
@@ -58,7 +83,7 @@ public class Converter {
     }
 
     public static LocalDateTime dateTimeStringToLocalDateTime(String dateString) throws DateTimeParseException, IllegalArgumentException {
-        if (dateString != null && !dateString.equals("")) {
+        if (dateString != null && !dateString.isEmpty()) {
             String replacedDateString = getStringToNumbers(dateString);
             DateTimeFormatter toTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.KOREA);
             return LocalDateTime.parse(replacedDateString, toTimeFormatter);
@@ -68,7 +93,7 @@ public class Converter {
     }
 
     public static LocalDate dateStringToLocalDate(String dateString) throws DateTimeParseException, IllegalArgumentException {
-        if (dateString != null && !dateString.equals("")) {
+        if (dateString != null && !dateString.isEmpty()) {
             String replacedDateString = getStringToNumbers(dateString);
             return LocalDate.parse(replacedDateString, DateTimeFormatter.ofPattern("yyyyMMdd", Locale.KOREA));
         } else {
