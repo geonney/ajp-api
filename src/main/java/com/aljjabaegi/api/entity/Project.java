@@ -2,10 +2,7 @@ package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,7 +15,8 @@ import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATO
  * Project Entity (ID가 특정 형태인 경우 @GenericGenerator)
  *
  * @author GEONLEE
- * @since 2024-04-04
+ * @since 2024-04-04<br />
+ * 2024-04-07 GEONLEE - @Temporal(TemporalType.DATE) 추가
  */
 @Getter
 @Setter
@@ -36,8 +34,10 @@ public class Project extends BaseEntity {
     private String projectName;
 
     @Column(name = "project_start_date")
+    @Temporal(TemporalType.DATE) // 생량 할 경우 date 와 가장 유사항 timestamp 로 정의 됨.
     private LocalDate projectStartDate;
 
     @Column(name = "project_end_date")
+    @Temporal(TemporalType.DATE)
     private LocalDate projectEndDate;
 }
