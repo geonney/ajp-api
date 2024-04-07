@@ -26,6 +26,7 @@
 - 복합키 관련 @Embeddable, @EmbeddedId (HistoryLogin Entity)
 - Entity
   - @Enumerated(EnumType.STRING)
+  - @Temporal
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
