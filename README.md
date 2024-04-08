@@ -33,6 +33,7 @@
 - Entity
   - @Enumerated(EnumType.STRING)
   - @Temporal
+- namedNativeQuery
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
