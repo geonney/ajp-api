@@ -5,6 +5,8 @@ spring:
     active: develop
   jpa:
     open-in-view: false
+    mapping-resources:
+    - namedNativeQuery/query.xml
 server:
   port: 13713
   servlet:

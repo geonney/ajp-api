@@ -32,6 +32,16 @@ public class ProjectService {
     }
 
     /**
+     * ProjectName 으로 Project 조회
+     *
+     * @author GEONLEE
+     * @since 2024-04-08
+     */
+    public List<ProjectSearchResponse> getProjectByName(String projectName) {;
+        return projectRepository.findByProjectName(projectName);
+    }
+
+    /**
      * Project 추가
      *
      * @author GEONLEE

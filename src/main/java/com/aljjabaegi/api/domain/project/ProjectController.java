@@ -29,7 +29,7 @@ public class ProjectController {
 
     @GetMapping(value = "/v1/projects")
     @Operation(summary = "Search All Projects", operationId = "API-PROJECT-01")
-    public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getUserList() {
+    public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getProjectList() {
         List<ProjectSearchResponse> projectSearchResponseList = projectService.getProjectList();
         long size = projectSearchResponseList.size();
         return ResponseEntity.ok()
@@ -40,8 +40,22 @@ public class ProjectController {
                         .items(projectSearchResponseList).build());
     }
 
+    @GetMapping(value = "/v1/projects/{projectName}")
+    @Operation(summary = "Search Project by project name (NamedNativeQuery)", operationId = "API-PROJECT-02")
+    public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getProject(@PathVariable String projectName) {
+        List<ProjectSearchResponse> projectSearchResponseList = projectService.getProjectByName(projectName);
+        return ResponseEntity.ok()
+                .body(ItemsResponse.<ProjectSearchResponse>builder()
+                        .status("OK")
+                        .message("데이터를 조회하는데 성공하였습니다.")
+                        .items(projectSearchResponseList)
+                        .size((long) projectSearchResponseList.size())
+                        .build()
+                );
+    }
+
     @PostMapping(value = "/v1/project")
-    @Operation(summary = "Create Project", operationId = "API-PROJECT-02")
+    @Operation(summary = "Create Project", operationId = "API-PROJECT-03")
     public ResponseEntity<ItemResponse<ProjectCreateResponse>> createMember(@RequestBody @Valid ProjectCreateRequest parameter) {
         ProjectCreateResponse createdProject = projectService.createProject(parameter);
         return ResponseEntity.ok()
@@ -52,7 +66,7 @@ public class ProjectController {
     }
 
     @PutMapping(value = "/v1/project")
-    @Operation(summary = "Modify Project", operationId = "API-PROJECT-03")
+    @Operation(summary = "Modify Project", operationId = "API-PROJECT-04")
     public ResponseEntity<ItemResponse<ProjectModifyResponse>> modifyUser(@RequestBody @Valid ProjectModifyRequest parameter) {
         ProjectModifyResponse modifiedProject = projectService.modifyProject(parameter);
         return ResponseEntity.ok()
@@ -63,7 +77,7 @@ public class ProjectController {
     }
 
     @DeleteMapping(value = "/v1/project/{projectId}")
-    @Operation(summary = "Delete Project", operationId = "API-PROJECT-04")
+    @Operation(summary = "Delete Project", operationId = "API-PROJECT-05")
     public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String projectId) {
         Long deleteCount = projectService.deleteProject(projectId);
         return ResponseEntity.ok()
