@@ -86,6 +86,7 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01
      */
+    @Transactional
     public MemberModifyResponse modifyMember(MemberModifyRequest parameter) {
         Member entity = memberRepository.findById(parameter.memberId())
                 .orElseThrow(() -> new EntityNotFoundException(parameter.memberId()));
