@@ -41,10 +41,14 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "authority_cd")
     @NotFound(action = NotFoundAction.IGNORE)
     private Authority authority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team = new Team(); // team 이 필수인 경우 = new Team() 으로 초기화. 저장 시 Team 이 없으면 Exception  발생
 
     // 연관관계 편의 메서드
     public void setAuthority(Authority authority) {

@@ -16,6 +16,8 @@ public record MemberSearchResponse(
         String memberName,
         @Schema(description = "전화번호", example = "010-1234-5678")
         String cellphone,
+        @Schema(description = "팀 명", example = "팀 명")
+        String teamName,
         @Schema(description = "생성 일시", example = "2024-04-01 00:00:00")
         String createDate,
         @Schema(description = "수정 일시", example = "2024-04-01 00:00:00")

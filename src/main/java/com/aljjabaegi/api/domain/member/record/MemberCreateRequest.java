@@ -24,6 +24,9 @@ public record MemberCreateRequest(
         String cellphone,
         @Schema(description = "사용여부", example = "true")
         boolean isUse,
+        @Schema(description = "팀 ID", example = "1")
+        @NotNull
+        Long teamId,
         @Schema(description = "사용자 권한", hidden = true)
         String authorityCode
 ) {

@@ -22,6 +22,11 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Modifying(clearAutomatically = true)
     @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)
     int updateAuthority(@Param("authorityCode") String authorityCode);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update member set team_id = null where team_id = :teamId", nativeQuery = true)
+    int updateTeam(@Param("teamId") Long teamId);
+
     /**
      * Refresh Token 으로 Member 조회
      *

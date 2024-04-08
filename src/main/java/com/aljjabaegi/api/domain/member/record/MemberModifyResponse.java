@@ -14,6 +14,8 @@ public record MemberModifyResponse(
         String memberId,
         @Schema(description = "사용자 명", example = "홍길동")
         String memberName,
+        @Schema(description = "팀 명", example = "팀 명")
+        String teamName,
         @Schema(description = "전화번호", example = "010-1234-5678")
         String cellphone,
         @Schema(description = "사용여부", example = "true")

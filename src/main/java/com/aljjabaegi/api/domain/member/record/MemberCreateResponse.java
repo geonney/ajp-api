@@ -18,6 +18,8 @@ public record MemberCreateResponse(
         String cellphone,
         @Schema(description = "사용여부", example = "true")
         boolean isUse,
+        @Schema(description = "팀 명", example = "팀 명")
+        String teamName,
         @Schema(description = "생성 일시", example = "2024-04-01 00:00:00")
         String createDate,
         @Schema(description = "수정 일시", example = "2024-04-01 00:00:00")

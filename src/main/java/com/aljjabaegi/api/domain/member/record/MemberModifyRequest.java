@@ -20,6 +20,8 @@ public record MemberModifyRequest(
         @Schema(description = "전화번호", example = "010-1234-5678")
         String cellphone,
         @Schema(description = "사용여부", example = "true")
-        boolean isUse
+        boolean isUse,
+        @Schema(description = "팀 ID", example = "팀 ID")
+        Long teamId
 ) {
 }

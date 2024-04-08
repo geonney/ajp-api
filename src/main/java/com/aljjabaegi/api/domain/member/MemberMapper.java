@@ -28,6 +28,7 @@ public interface MemberMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
+            @Mapping(target = "teamName", source = "team.teamName"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -53,6 +54,7 @@ public interface MemberMapper {
      */
     @Mappings({
             @Mapping(target = "isUse", expression = "java(Converter.useYnToBoolean(entity.getUseYn()))"),
+            @Mapping(target = "teamName", source = "team.teamName"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -68,8 +70,9 @@ public interface MemberMapper {
      */
     @Mappings({
             @Mapping(target = "isUse", expression = "java(Converter.useYnToBoolean(entity.getUseYn()))"),
+            @Mapping(target = "teamName", source = "team.teamName"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
-            @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
+            @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     })
     MemberModifyResponse toModifyResponse(Member entity);
 
@@ -84,7 +87,7 @@ public interface MemberMapper {
     @Mappings({
             @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberCreateRequest.isUse()))"),
             @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))"),
-            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST"),
+            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST")
     })
     Member toEntity(MemberCreateRequest memberCreateRequest);
 
