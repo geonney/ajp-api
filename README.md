@@ -17,6 +17,10 @@
 
 ## :heavy_check_mark:JPA (common/jpa)
 - BaseEntity (@MappedSuperclass) 적용
+- @EnableJpaAuditing 적용
+  - 영속화 시 값 자동 바인딩
+  - AuditorAware 구현체 (SpringSecurityAuditorAware.class) - @LastModifiedBy 시 Spring Security 에서 UserId 바인딩
+  - @CreatedDate, @LastModifiedDate, @LastModifiedBy
 - Mapstruct 적용
 - @SequenceGenerator (Board Entity)
 - @GenericGenerator (Project Entity)
