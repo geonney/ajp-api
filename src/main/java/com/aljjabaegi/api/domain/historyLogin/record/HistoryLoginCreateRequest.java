@@ -3,6 +3,8 @@ package com.aljjabaegi.api.domain.historyLogin.record;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
+
 /**
  * 로그인 이력 저장 record
  *
@@ -14,7 +16,7 @@ import lombok.Builder;
 public record HistoryLoginCreateRequest(
 
         @Schema(description = "생성 일시")
-        String createDate,
+        LocalDateTime createDate,
 
         @Schema(description = "사용자 ID")
         String memberId,

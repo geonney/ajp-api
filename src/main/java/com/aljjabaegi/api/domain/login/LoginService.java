@@ -28,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
+
 /**
  * login, logout service
  *
@@ -71,10 +73,15 @@ public class LoginService {
         //6. 쿠키에 Access Token 추가
         tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
         //7. 로그인 이력 저장
-        historyLoginRepository.save(
+        /*
+         * 키 or 복합키에 @EnableJpaAuditing annotation 을 사용할 경우 동작하지 않음.
+         * 키인 경우에는 직접 값을 입력하여 처리
+         * */
+        historyLoginRepository.saveAndFlush(
                 historyLoginMapper.toEntity(
                         HistoryLoginCreateRequest.builder()
                                 .memberId(parameter.id())
+                                .createDate(LocalDateTime.now())
                                 .loginIp("127.0.0.1")
                                 .build()));
         return ResponseEntity.ok()

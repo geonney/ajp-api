@@ -4,6 +4,7 @@ import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedBy;
 
 /**
  * Board Entity (ID가 시퀀스인 경우)
@@ -32,4 +33,8 @@ public class Board extends BaseEntity {
 
     @Column(name = "board_content")
     private String boardContent;
+
+    @Column(name = "modify_member_id")
+    @LastModifiedBy
+    private String modifyMemberId;
 }

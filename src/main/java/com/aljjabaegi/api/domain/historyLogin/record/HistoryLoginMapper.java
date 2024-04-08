@@ -2,7 +2,6 @@ package com.aljjabaegi.api.domain.historyLogin.record;
 
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.entity.HistoryLogin;
-import com.aljjabaegi.api.entity.key.HistoryLoginKey;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -28,7 +27,7 @@ public interface HistoryLoginMapper {
      */
     @Mappings({
             @Mapping(target = "key.memberId", source = "memberId"),
-            @Mapping(target = "key.createDate", expression = "java(Converter.getNow())")
+            @Mapping(target = "key.createDate", source = "createDate")
     })
     HistoryLogin toEntity(HistoryLoginCreateRequest historyLoginRequest);
 }
