@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.config.security.springSecurity;
+package com.aljjabaegi.api.common.jpa.auditorAware;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.AuditorAware;
