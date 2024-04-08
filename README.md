@@ -23,7 +23,9 @@
 - Bulk 연산 @Modifying(clearAutomatically = true)
 - 연관 관계
   - @ManyToOne - @OneToMany 양방향
-- 복합키 관련 @Embeddable, @EmbeddedId (HistoryLogin Entity)
+- 복합키 관련 (HistoryLogin Entity)
+  - @Embeddable
+  - @EmbeddedId
 - Entity
   - @Enumerated(EnumType.STRING)
   - @Temporal
