@@ -33,7 +33,8 @@
 - Entity
   - @Enumerated(EnumType.STRING)
   - @Temporal
-- namedNativeQuery
+- namedNativeQuery (Project)
+- paging and sorting and condition (Login history)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
