@@ -35,6 +35,7 @@
   - @Temporal
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
+- CriteriaBuilder Specification (Team)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
