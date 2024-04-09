@@ -28,9 +28,13 @@ public class TeamController {
     private final TeamService teamService;
 
     @GetMapping(value = "/v1/teams")
-    @Operation(summary = "Search All teams", operationId = "API-TEAM-01")
-    public ResponseEntity<ItemsResponse<TeamSearchResponse>> getTeamList() {
-        List<TeamSearchResponse> teamSearchResponseList = teamService.getTeamList();
+    @Operation(summary = "Search teams by conditions with specification", operationId = "API-TEAM-01")
+    public ResponseEntity<ItemsResponse<TeamSearchResponse>> getTeamList(
+            @RequestParam(value = "teamName", required = false) String teamName,
+            @RequestParam(value = "startDate", defaultValue = "19000101000000") String startDate,
+            @RequestParam(value = "endDate", defaultValue = "21000430235959") String endDate) {
+
+        List<TeamSearchResponse> teamSearchResponseList = teamService.getTeamListBySpecification(teamName, startDate, endDate);
         long size = teamSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<TeamSearchResponse>builder()

@@ -8,9 +8,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.aljjabaegi.api.domain.team.specification.TeamSpecification.betweenCreateDate;
+import static com.aljjabaegi.api.domain.team.specification.TeamSpecification.likeTeamName;
 
 /**
  * Team Service
@@ -32,10 +36,13 @@ public class TeamService {
      * 전체 Team 조회
      *
      * @author GEONLEE
-     * @since 2024-04-08
+     * @since 2024-04-08<br />
+     * 2024-04-09 GEONLEE - Apply Specifications<br />
      */
-    public List<TeamSearchResponse> getTeamList() {
-        return teamMapper.toSearchResponseList(teamRepository.findAll());
+    public List<TeamSearchResponse> getTeamListBySpecification(String teamName, String startDate, String endDate) {
+        Specification<Team> specification = likeTeamName(teamName)
+                .and(betweenCreateDate(startDate, endDate));
+        return teamMapper.toSearchResponseList(teamRepository.findAll(specification));
     }
 
     /**
