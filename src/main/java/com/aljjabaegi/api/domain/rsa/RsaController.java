@@ -19,7 +19,7 @@ import java.security.spec.InvalidKeySpecException;
  * @since 2024-04-03
  */
 @RestController
-@Tag(name = "RSA Public key", description = "Responsibility: GEONLEE")
+@Tag(name = "00. RSA Public key", description = "Responsibility: GEONLEE")
 @RequiredArgsConstructor
 public class RsaController {
     private final RsaService rsaService;

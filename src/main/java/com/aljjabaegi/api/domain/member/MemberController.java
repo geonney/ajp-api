@@ -22,7 +22,7 @@ import java.util.List;
  * 2024-04-04 GEONLEE - Member Operation 전체 인증 적용
  */
 @RestController
-@Tag(name = "Member Management", description = "Responsibility: GEONLEE")
+@Tag(name = "02. Member Management", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class MemberController {

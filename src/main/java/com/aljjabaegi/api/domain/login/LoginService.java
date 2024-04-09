@@ -8,7 +8,7 @@ import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.historyLogin.HistoryLoginRepository;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginCreateRequest;
-import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginMapper;
+import com.aljjabaegi.api.domain.historyLogin.HistoryLoginMapper;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
 import com.aljjabaegi.api.domain.login.record.LogoutResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;

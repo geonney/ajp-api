@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-04-05
  */
 @RestController
-@Tag(name = "Authority Management", description = "Responsibility: GEONLEE")
+@Tag(name = "03. Authority Management", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class AuthorityController {

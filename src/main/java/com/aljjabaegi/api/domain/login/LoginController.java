@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Member login / logout", description = "Responsibility: GEONLEE")
+@Tag(name = "01. Member login / logout", description = "Responsibility: GEONLEE")
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;

@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2024-04-04
  */
 @RestController
-@Tag(name = "Board Management", description = "Responsibility: GEONLEE")
+@Tag(name = "06. Board Management", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class BoardController {
