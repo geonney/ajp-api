@@ -45,6 +45,7 @@
 - 공통 response 구조체 정의
   - 단수 객체 ItemResponse
   - 복수 객체 ItemsResponse
+  - 그리드 복수 객체 GridItemsResponse (with Page information)
   - 오류 객체 ErrorResponse
 
 ## :closed_lock_with_key:Security (config/security)
