@@ -32,7 +32,7 @@ public class ProjectService {
     }
 
     /**
-     * ProjectName 으로 Project 조회
+     * ProjectName 으로 Project 조회 (named native query)
      *
      * @author GEONLEE
      * @since 2024-04-08
