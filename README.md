@@ -33,6 +33,8 @@
 - Entity
   - @Enumerated(EnumType.STRING)
   - @Temporal
+  - @Id
+  - @EmbeddedId, @Embeddable
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
