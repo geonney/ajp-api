@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import java.time.LocalDate;
+
 /**
  * User Entity (ID를 입력 전달받는 경우)
  *
@@ -32,6 +34,15 @@ public class Member extends BaseEntity {
     private String memberName;
 
     private String cellphone;
+
+    @Column(name = "birth_dt")
+    private LocalDate birthDate;
+
+    @Column(name = "age")
+    private Integer age;
+
+    @Column(name = "latitude")
+    private Double latitude;
 
     @Column(name = "use_yn")
     @Enumerated(EnumType.STRING)

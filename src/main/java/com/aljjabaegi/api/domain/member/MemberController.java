@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.domain.member;
 
+import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.member.record.*;
@@ -28,10 +29,10 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping(value = "/v1/members")
-    @Operation(summary = "Search All Members", operationId = "API-MEMBER-01")
-    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList() {
-        List<MemberSearchResponse> userSearchResponseList = memberService.getMemberList();
+    @PostMapping(value = "/v1/members")
+    @Operation(summary = "Search Members with dynamic filter", operationId = "API-MEMBER-01")
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList(@RequestBody List<DynamicFilter> dynamicFilters) {
+        List<MemberSearchResponse> userSearchResponseList = memberService.getMemberList(dynamicFilters);
         long size = userSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<MemberSearchResponse>builder()

@@ -1,5 +1,7 @@
 package com.aljjabaegi.api.domain.member;
 
+import com.aljjabaegi.api.common.jpa.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.team.TeamRepository;
 import com.aljjabaegi.api.entity.Member;
@@ -7,6 +9,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,10 +35,12 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01<br />
      * 2024-04-04 GEONLEE - 관리자 조회 안되게 수정<br />
+     * 2024-04-11 GEONLEE - Apply DynamicSpecification<br />
      */
     @Transactional
-    public List<MemberSearchResponse> getMemberList() {
-        return memberMapper.toSearchResponseList(memberRepository.findByAuthorityAuthorityCodeNot("ROLE_ADMIN"));
+    public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
+        Specification<Member> specification = DynamicSpecification.getSpecification(dynamicFilters);
+        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
     }
 
     /**

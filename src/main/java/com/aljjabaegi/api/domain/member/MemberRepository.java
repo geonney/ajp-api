@@ -2,6 +2,7 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +15,11 @@ import java.util.Optional;
  * Member Repository
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 2024-04-09 GEONLEE - JpaSpecificationExecutor 적용<br />
  */
 @Repository
-public interface MemberRepository extends JpaRepository<Member, String> {
+public interface MemberRepository extends JpaRepository<Member, String>, JpaSpecificationExecutor<Member> {
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)

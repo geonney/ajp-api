@@ -29,6 +29,7 @@ public interface MemberMapper {
      */
     @Mappings({
             @Mapping(target = "teamName", source = "team.teamName"),
+            @Mapping(target = "birthDate", dateFormat = "yyyy-MM-dd"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
