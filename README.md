@@ -55,6 +55,7 @@
 
 ## :heavy_check_mark:Standardization (common/response)
 - 공통 에러 코드 enum 정의, CommonErrorCode
+- 동적인 request 처리를 위한 DynamicFilter -> DynamicSpecification
 - 공통 response 구조체 정의
   - 단수 객체 ItemResponse
   - 복수 객체 ItemsResponse
