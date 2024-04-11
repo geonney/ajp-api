@@ -36,6 +36,16 @@
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
+- Dynamic Specification (Member) :star2:
+  - Operators enum 사용
+    - equal, notEqual, like, between, in
+  - DynamicFilter 를 사용하여 동적으로 Specification 을 생성 (common/request)
+    - Case-insensitive search
+    - Reference field search (call getPath method)
+    - Null data search
+    - equal, notEqual, in -> LocalDateTime type 을 제외하고 사용 가능
+    - like -> String type 만 사용 가능
+    - Between -> String type 을 제외하고 사용 가능
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
