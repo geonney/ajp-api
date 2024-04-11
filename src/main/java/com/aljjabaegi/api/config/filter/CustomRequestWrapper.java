@@ -27,16 +27,16 @@ public class CustomRequestWrapper extends HttpServletRequestWrapper {
     private final Charset encoding;
     private final byte[] rawData;
 
-    public CustomRequestWrapper(HttpServletRequest request) {
-        super(request);
+    public CustomRequestWrapper(HttpServletRequest httpServletRequest) {
+        super(httpServletRequest);
 
-        String characterEncoding = request.getCharacterEncoding();
+        String characterEncoding = httpServletRequest.getCharacterEncoding();
         if (StringUtils.isBlank(characterEncoding)) {
             characterEncoding = StandardCharsets.UTF_8.name();
         }
         this.encoding = Charset.forName(characterEncoding);
 
-        try (InputStream inputStream = request.getInputStream()) {
+        try (InputStream inputStream = httpServletRequest.getInputStream()) {
             this.rawData = IOUtils.toByteArray(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
