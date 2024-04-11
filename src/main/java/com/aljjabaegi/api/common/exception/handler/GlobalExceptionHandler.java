@@ -158,6 +158,6 @@ public class GlobalExceptionHandler {
         } catch (IOException e) {
             LOGGER.error(StringUtils.EMPTY);
         }
-        LOGGER.error(stringBuilder.toString());
+        LOGGER.error("Invalid Json format request -> " + stringBuilder.toString());
     }
 }
