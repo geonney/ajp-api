@@ -4,21 +4,26 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.code.ErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ErrorResponse;
-import io.jsonwebtoken.io.IOException;
+import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -28,7 +33,8 @@ import java.util.StringJoiner;
  * @author GEONLEE
  * @since 2024-04-02<br />
  * 2024-04-03 GEONLEE - 에러 로그 표출 수정 message -> enum<br />
- * 2024-04-05 GEONLEE - Unchecked Exception 에 RuntimeException 추가
+ * 2024-04-05 GEONLEE - Unchecked Exception 에 RuntimeException 추가<br />
+ * 2024-04-11 GEONLEE - handleJsonParseException 추가
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -72,6 +78,20 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * requestBody 처리 시 발생하는 Json parsing 에러 처리 (요청 구조체 오류)
+     *
+     * @author GEONLEE
+     * @since 2024-04-11
+     */
+    @ExceptionHandler(value = {HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleJsonParseException(JsonParseException e, HttpServletRequest httpServletRequest) {
+        CommonErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        printRequestPayload(httpServletRequest);
+        return handleExceptionInternal(errorCode, e);
+    }
+
+    /**
      * 데이터 없음 관련 처리
      *
      * @author GEONLEE
@@ -107,11 +127,37 @@ public class GlobalExceptionHandler {
         return handleExceptionInternal(errorCode, e);
     }
 
+    /**
+     * ErrorResponse return method
+     *
+     * @author GEONLEE
+     * @since 2024-04-11
+     */
     private ResponseEntity<ErrorResponse> handleExceptionInternal(ErrorCode errorCode, Exception e) {
         /* 모든 HTTP Status 코드는 200으로 전달하고 내부 코드를 상세히 전달 */
         LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
         return ResponseEntity.ok()
                 .header("Content-type", String.valueOf(MediaType.APPLICATION_JSON))
                 .body(new ErrorResponse(errorCode.status(), errorCode.message()));
+    }
+
+    /**
+     * Print invalid json format method<br />
+     * RequestFilter, CustomRequestWrapper 필요<br />
+     *
+     * @author GEONLEE
+     * @since 2024-04-11
+     */
+    private void printRequestPayload(HttpServletRequest httpServletRequest) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader bufferedReader = httpServletRequest.getReader()) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            LOGGER.error(StringUtils.EMPTY);
+        }
+        LOGGER.error(stringBuilder.toString());
     }
 }

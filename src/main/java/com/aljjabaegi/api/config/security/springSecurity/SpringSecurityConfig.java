@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.config.security.springSecurity;
 
+import com.aljjabaegi.api.config.filter.RequestFilter;
 import com.aljjabaegi.api.config.security.jwt.JwtAccessDeniedHandler;
 import com.aljjabaegi.api.config.security.jwt.JwtAuthenticationEntryPoint;
 import com.aljjabaegi.api.config.security.jwt.JwtFilter;
@@ -73,8 +74,10 @@ public class SpringSecurityConfig {
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(c ->
                         c.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 //                .apply(new JwtSecurityConfig(tokenProvider, messageConfig)); /*spring 6.2 deprecated*/
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new RequestFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
