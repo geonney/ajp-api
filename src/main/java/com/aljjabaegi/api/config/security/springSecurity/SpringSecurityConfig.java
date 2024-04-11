@@ -29,7 +29,8 @@ import java.util.Map;
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
- * 2024-04-03 GEONLEE - 2가지
+ * 2024-04-03 GEONLEE - 2가지 passwordEncoder test<br />
+ * 2024-04-11 GEONLEE - RequestFilter 추가<br />
  */
 @Configuration
 @EnableWebSecurity

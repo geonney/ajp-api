@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Print invalid json format method<br />
+     * Method to logging invalid json format<br />
      * RequestFilter, CustomRequestWrapper 필요<br />
      *
      * @author GEONLEE
