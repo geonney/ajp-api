@@ -5,6 +5,8 @@ import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.member.record.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,7 +32,82 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/v1/members")
-    @Operation(summary = "Search Members with dynamic filter", operationId = "API-MEMBER-01")
+    @Operation(summary = "Search Members with dynamic filter", operationId = "API-MEMBER-01", description = """
+            Searchable Field
+             - memberId
+             - memberName
+             - cellphone
+             - useYn ('Y', 'N')
+             - createDate
+             - updateDate
+             - authority.authorityCode (Referenced entity field)
+             - team.teamName (Referenced entity field)
+             
+            Operators (See examples)
+             - eq (equal)
+             - neq (notEqual)
+             - contains (like)
+             - between (between)
+             - in (in)
+            """)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "eq (equal)", value = """
+                                    [
+                                        {
+                                            "field":"memberId",
+                                            "operator":"eq",
+                                            "value":"honggildong123"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "neq (notEqual)", value = """
+                                    [
+                                        {
+                                            "field":"memberId",
+                                            "operator":"neq",
+                                            "value":"honggildong123"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "contains (like)", value = """
+                                    [
+                                        {
+                                            "field":"memberName",
+                                            "operator":"contains",
+                                            "value":"길동"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "between (between)", value = """
+                                    [
+                                        {
+                                            "field":"createDate",
+                                            "operator":"between",
+                                            "value":"20240408182256,20240408235959"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "in (in)", value = """
+                                    [
+                                        {
+                                            "field":"birthDate",
+                                            "operator":"in",
+                                            "value":"19900305,19860107"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "Reference entity field", value = """
+                                    [
+                                        {
+                                            "field":"team.teamName",
+                                            "operator":"contains",
+                                            "value":"명1"
+                                        }
+                                    ]
+                            """),
+            }
+    ))
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList(@RequestBody List<DynamicFilter> dynamicFilters) {
         List<MemberSearchResponse> userSearchResponseList = memberService.getMemberList(dynamicFilters);
         long size = userSearchResponseList.size();
