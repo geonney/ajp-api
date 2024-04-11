@@ -69,6 +69,9 @@
 - CORS
 - SecurityFilter
 - JwtFilter
+- RequestFilter
+  - request.getReader() 를 복수 호출 할 수 있도록 HttpServletRequestWrapper Filter 추가
+  - Invalid json format exception 발생 시 해당 json 로깅
 - 401 Handler, JwtAuthenticationEntiryPoint
 - 403 Handler, JwtAccessDeniedHandler
 - 단방향 암호화 DelegatingPasswordEncoder 적용 (bcrypt, sha-256 with salt)
