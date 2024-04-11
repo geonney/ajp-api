@@ -8,7 +8,9 @@ import java.io.Serial;
  * RuntimeException 처리용 Exception, Checked Exception
  *
  * @author GEONLEE
- * @since 2024-04-02
+ * @since 2024-04-02<br />
+ * 2024-04-11 GEONLEE - apply ServiceException(CommonErrorCode errorCode, String message)<br />
+ * For custom message logging<br />
  */
 public class ServiceException extends RuntimeException {
     @Serial
@@ -24,6 +26,17 @@ public class ServiceException extends RuntimeException {
      */
     public ServiceException(CommonErrorCode errorCode, Throwable cause) {
         super(cause.getMessage(), cause);
+        this.errorCode = errorCode;
+    }
+
+    /**
+     * CommonErrorCode, custom Message 가 전달된 경우<br />
+     *
+     * @author GEONLEE
+     * @since 2024-04-11
+     */
+    public ServiceException(CommonErrorCode errorCode, String message) {
+        super(message, null);
         this.errorCode = errorCode;
     }
 
