@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.common.jpa.base;
 
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
  *
  * @author GEONLEE
  * @since 2024-04-01<br />
- * 2024-04-05 GEONLEE - createDate updatable = false 추가
+ * 2024-04-05 GEONLEE - createDate updatable = false 추가<br />
+ * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -24,9 +26,11 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "create_dt", updatable = false)
+    @SearchableField
     private LocalDateTime createDate;
 
     @LastModifiedDate
     @Column(name = "update_dt")
+    @SearchableField
     private LocalDateTime modifyDate;
 }

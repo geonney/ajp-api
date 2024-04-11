@@ -2,12 +2,15 @@ package com.aljjabaegi.api.common.jpa.specification;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.enumeration.Operators;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -49,6 +52,7 @@ public class DynamicSpecification {
                     }
                     //Possible search to Referenced entity attributes
                     Path<String> path = getPath(root, dynamicFilter.field());
+                    checkSearchableField(path.getParentPath(), dynamicFilter.field().substring(dynamicFilter.field().indexOf(".") + 1));
                     String fieldType = path.getModel().getBindableJavaType().getSimpleName();
                     //Possible search to without case sensitivity
                     String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value().toLowerCase();
@@ -153,5 +157,37 @@ public class DynamicSpecification {
             return getPath(path.get(entityField[0]), fieldName.substring(fieldName.indexOf(".") + 1));
         }
         return path.get(fieldName);
+    }
+
+    /**
+     * SearchableField annotation 을 확인하여 조회할 수 있는 컬럼인지 체크<br />
+     * BaseEntity field 인 경우 superclass 로 치환<br />
+     *
+     * @author GEONLEE
+     * @since 2024-04-11
+     */
+    private static void checkSearchableField(Path<?> path, String fieldName) {
+        Class<?> entity = path.getJavaType();
+        //BaseEntity field 조회 할 경우 상속받은 BaseEntity 로 변경
+        if ("createDate".equals(fieldName) || "updateDate".equals(fieldName)) {
+            entity = path.getJavaType().getSuperclass();
+        }
+        boolean searchableField = false;
+        try {
+            Field field = entity.getDeclaredField(fieldName);
+            Annotation[] annotations = field.getAnnotations();
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof SearchableField) {
+                    searchableField = true;
+                    break;
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
+                    , "'" + fieldName + "' does not exist in the '" + entity.getSimpleName() + "' entity.");
+        }
+        if (!searchableField) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "'" + fieldName + "' field that cannot be searched.");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,8 @@ import java.util.List;
 
 /**
  * @author GEONLEE
- * @since 2024-04-08
+ * @since 2024-04-08<br />
+ * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
  */
 @Getter
 @Setter
@@ -32,5 +34,6 @@ public class Team extends BaseEntity {
     private Long teamId;
 
     @Column(name = "team_name")
+    @SearchableField
     private String teamName;
 }

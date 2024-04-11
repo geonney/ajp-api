@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.entity.enumerated.UseYn;
 import jakarta.persistence.*;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
  * @since 2024-04-01<br />
  * 2024-04-02 GEONLEE - DB migration 으로 테이블 명칭 변경<br />
  * 2024-04-07 GEONLEE - @Enumerated(EnumType.STRING) 테스트<br />
+ * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
  */
 @Getter
 @Setter
@@ -25,20 +27,25 @@ public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")
+    @SearchableField
     private String memberId;
 
     @Column(name = "member_password")
     private String password;
 
     @Column(name = "member_name")
+    @SearchableField
     private String memberName;
 
+    @SearchableField
     private String cellphone;
 
     @Column(name = "birth_dt")
+    @SearchableField
     private LocalDate birthDate;
 
     @Column(name = "age")
+    @SearchableField
     private Integer age;
 
     @Column(name = "latitude")
@@ -46,6 +53,7 @@ public class Member extends BaseEntity {
 
     @Column(name = "use_yn")
     @Enumerated(EnumType.STRING)
+    @SearchableField
     private UseYn useYn;
 
     private String accessToken;

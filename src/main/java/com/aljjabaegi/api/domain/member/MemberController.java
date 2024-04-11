@@ -37,10 +37,11 @@ public class MemberController {
              - memberId
              - memberName
              - cellphone
+             - birthDate
+             - age
              - useYn ('Y', 'N')
              - createDate
              - updateDate
-             - authority.authorityCode (Referenced entity field)
              - team.teamName (Referenced entity field)
              
             Operators (See examples)
@@ -106,6 +107,15 @@ public class MemberController {
                                         }
                                     ]
                             """),
+                    @ExampleObject(name = "Not searchable field", value = """
+                                    [
+                                        {
+                                            "field":"password",
+                                            "operator":"contains",
+                                            "value":"pass"
+                                        }
+                                    ]
+                            """)
             }
     ))
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList(@RequestBody List<DynamicFilter> dynamicFilters) {
