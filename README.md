@@ -75,6 +75,8 @@
 - Token 생성, 추출, Token Claim 추출, Token 만료, Token 유효성 체크, TokenProvider
 - 401 Handler, JwtAuthenticationEntryPoint
 - 403 Handler, JwtAccessDeniedHandler
+- 로그인 한 브라우져 간 인증 유지 -> Cookie 에 Access token 을 담아 전달
+- Refresh token -> 로그인 시 전달. Access token 만료 시 Header Bearer 에 refresh token을 전달하면 자동으로 AccessToken 갱신.
 
 #### Jasypt
 - application 설정파일 Text 암호화
