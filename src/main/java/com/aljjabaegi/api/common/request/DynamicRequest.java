@@ -20,4 +20,7 @@ public record DynamicRequest(
         List<DynamicFilter> filter,
         @Schema(description = "Sort array")
         List<DynamicSorter> sorter) {
+        public DynamicRequest {
+                pageSize = (pageSize == 0) ? 10 : pageSize;
+        }
 }

@@ -58,7 +58,7 @@ public class MemberService {
     @Transactional
     public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
         Sort sort = DynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
-        Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), (dynamicRequest.pageSize() == 0) ? 10 : dynamicRequest.pageSize(), sort);
+        Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);
         Specification<Member> specification = DynamicSpecification.generateSpecification(dynamicRequest.filter());
 
         Page<Member> page = memberRepository.findAll(specification, pageable);
