@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = {EntityExistsException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleEntityExistsException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleEntityExistsException(EntityExistsException e) {
         CommonErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e);
     }
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         CommonErrorCode errorCode = CommonErrorCode.ENTITY_NOT_FOUND;
         return handleExceptionInternal(errorCode, e);
     }
