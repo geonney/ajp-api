@@ -2,6 +2,8 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.jpa.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.team.TeamRepository;
 import com.aljjabaegi.api.entity.Member;
@@ -9,6 +11,10 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +36,7 @@ public class MemberService {
     private final MemberMapper memberMapper = MemberMapper.INSTANCE;
 
     /**
-     * 전체 사용자 조회
+     * 전체 사용자 조회 (Dynamic Filter list 활용)
      *
      * @author GEONLEE
      * @since 2024-04-01<br />
@@ -39,8 +45,36 @@ public class MemberService {
      */
     @Transactional
     public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
-        Specification<Member> specification = DynamicSpecification.getSpecification(dynamicFilters);
+        Specification<Member> specification = DynamicSpecification.generateSpecification(dynamicFilters);
         return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
+    }
+
+    /**
+     * 전체 사용자 조회 (Dynamic request 활용)
+     *
+     * @author GEONLEE
+     * @since 2024-04-012<br />
+     */
+    @Transactional
+    public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
+        Sort sort = DynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
+        Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), (dynamicRequest.pageSize() == 0) ? 10 : dynamicRequest.pageSize(), sort);
+        Specification<Member> specification = DynamicSpecification.generateSpecification(dynamicRequest.filter());
+
+        Page<Member> page = memberRepository.findAll(specification, pageable);
+
+        int totalPage = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        List<MemberSearchResponse> memberSearchResponseList = memberMapper.toSearchResponseList(page.getContent());
+
+        return GridItemsResponse.<MemberSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .totalSize(totalElements)
+                .totalPageSize(totalPage)
+                .size(page.getNumberOfElements())
+                .items(memberSearchResponseList)
+                .build();
     }
 
     /**

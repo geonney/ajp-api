@@ -1,6 +1,8 @@
 package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.request.DynamicFilter;
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.member.record.*;
@@ -32,7 +34,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/v1/members")
-    @Operation(summary = "Search Members with dynamic filter", operationId = "API-MEMBER-01", description = """
+    @Operation(summary = "Search Members with dynamic filter list", operationId = "API-MEMBER-01", description = """
             Searchable Field
              - memberId
              - memberName
@@ -129,8 +131,70 @@ public class MemberController {
                         .items(userSearchResponseList).build());
     }
 
+    @PostMapping(value = "/v1/members-dynamicRequest")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"홍"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "filtering with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"홍"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "Empty parameter", value = """
+                                    {
+                                        
+                                    }
+                            """),
+            }
+    ))
+    @Operation(summary = "Search Members with dynamic request", operationId = "API-MEMBER-02")
+    public ResponseEntity<GridItemsResponse<MemberSearchResponse>> getUserListUsingDynamicRequest(@RequestBody DynamicRequest dynamicRequest) {
+        GridItemsResponse<MemberSearchResponse> gridItemsResponse =
+                memberService.getUserListUsingDynamicRequest(dynamicRequest);
+        return ResponseEntity.ok()
+                .body(gridItemsResponse);
+    }
+
     @GetMapping(value = "/v1/members/{memberId}")
-    @Operation(summary = "Member Search By ID", operationId = "API-MEMBER-02")
+    @Operation(summary = "Member Search By ID", operationId = "API-MEMBER-03")
     public ResponseEntity<ItemResponse<MemberSearchResponse>> getMembers(@PathVariable String memberId) {
         MemberSearchResponse userSearchResponse = memberService.getMembers(memberId);
 
@@ -142,7 +206,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/v1/check/member-id/{memberId}")
-    @Operation(summary = "Check for ID duplicates", operationId = "API-MEMBER-03")
+    @Operation(summary = "Check for ID duplicates", operationId = "API-MEMBER-04")
     public ResponseEntity<ItemResponse<Boolean>> checkMemberId(@PathVariable String memberId) {
         boolean isDuplication = memberService.checkMemberId(memberId);
         String message = (isDuplication) ? "중복된 ID가 존재합니다." : "사용 가능한 ID 입니다.";
@@ -154,7 +218,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/v1/member")
-    @Operation(summary = "Create Member", operationId = "API-MEMBER-04")
+    @Operation(summary = "Create Member", operationId = "API-MEMBER-05")
     public ResponseEntity<ItemResponse<MemberCreateResponse>> createMember(@RequestBody @Valid MemberCreateRequest parameter) {
         MemberCreateResponse createdMember = memberService.createMember(parameter);
         return ResponseEntity.ok()
@@ -165,7 +229,7 @@ public class MemberController {
     }
 
     @PutMapping(value = "/v1/member")
-    @Operation(summary = "Modify Member", operationId = "API-MEMBER-05")
+    @Operation(summary = "Modify Member", operationId = "API-MEMBER-06")
     public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(@RequestBody @Valid MemberModifyRequest parameter) {
         MemberModifyResponse modifiedMember = memberService.modifyMember(parameter);
         return ResponseEntity.ok()
@@ -176,7 +240,7 @@ public class MemberController {
     }
 
     @DeleteMapping(value = "/v1/member/{memberId}")
-    @Operation(summary = "Delete Member", operationId = "API-MEMBER-06")
+    @Operation(summary = "Delete Member", operationId = "API-MEMBER-07")
     public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String memberId) {
         Long deleteCount = memberService.deleteMember(memberId);
         return ResponseEntity.ok()
