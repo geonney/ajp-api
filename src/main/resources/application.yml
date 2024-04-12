@@ -6,7 +6,7 @@ spring:
   jpa:
     open-in-view: false
     mapping-resources:
-    - namedNativeQuery/query.xml
+      - namedNativeQuery/query.xml
 server:
   port: 13713
   servlet:
@@ -55,5 +55,8 @@ spring:
     password: ENC(xLC9ZsqaoOZJ/udaUpOeYOrqdTFsMS+O4JZ483N7AUM=)
   jpa:
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 #    hibernate:
 #      ddl-auto: create
