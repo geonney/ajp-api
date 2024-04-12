@@ -5,7 +5,9 @@ import com.aljjabaegi.api.common.exception.code.ErrorCode;
 import com.aljjabaegi.api.common.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.media.Content;
@@ -28,6 +30,7 @@ import java.util.Map;
  * @author GEONLEE
  * @since 2024-04-01<br />
  * 2024-04-02 GEONLEE - apply JWT Authentication<br />
+ * 2024-04-12 GEONLEE - License, contact 추가<br />
  */
 @Configuration
 @OpenAPIDefinition(
@@ -35,7 +38,11 @@ import java.util.Map;
                 description = """
                         - <a href="https://github.com/aljjabaegiProgrammer" target="_blank">Git</a>
                         - <a href="https://aljjabaegi.tistory.com" target="_blank">Blog</a>
-                        """, version = "v1.0.0"),
+                        """,
+                version = "v1.0.0",
+                license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0"),
+                contact = @Contact(url = "https://aljjabaegi.tistory.com", name = "GEON LEE", email = "geonlee@kakao.com")
+        ),
         servers = @Server(url = "/ajp-api") //ip:port 까지 입력할 경우 CORS 발생
 )
 @SecurityScheme(
