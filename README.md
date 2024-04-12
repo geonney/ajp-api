@@ -39,6 +39,7 @@
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
 - Dynamic Specification (Member) :star2:
+  - filtering, sorting, paging 동적 처리
   - Operators enum 사용
     - equal, notEqual, like, between, in
   - DynamicFilter 를 사용하여 동적으로 Specification 을 생성 (common/request)
@@ -48,6 +49,7 @@
     - equal, notEqual, in -> LocalDateTime type 을 제외하고 사용 가능
     - like -> String type 만 사용 가능
     - Between -> String type 을 제외하고 사용 가능
+  - DynamicSoter 를 사용하여 동적으로 Sort 생성
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
@@ -56,6 +58,7 @@
 ## :heavy_check_mark:Standardization (common/response)
 - 공통 에러 코드 enum 정의, CommonErrorCode
 - 동적 request 처리를 위한 DynamicFilter -> DynamicSpecification 에서 처리
+  - Dynamic Request (pageNo, pageSize, DynamicFilter list, DynamicSorter list)
 - 공통 response 구조체 정의
   - 단수 객체 ItemResponse
   - 복수 객체 ItemsResponse
