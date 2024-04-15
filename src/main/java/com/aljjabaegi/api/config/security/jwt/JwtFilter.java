@@ -84,28 +84,30 @@ public class JwtFilter extends GenericFilterBean {
      * 새로운 토큰을 생성하여 Cookie 의 Access token 을 갱신<br />
      *
      * @author GEONLEE
-     * @since 2024-04-02
+     * @since 2024-04-02<br />
+     * 2024-04-15 GEONLEE - token 갱신 시 member id 와 refresh token 체크를 먼저 하도록 변경
      */
     private void checkTokenValidity(
             JwtValidDto valid, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         if (!StringUtils.hasText(valid.getAccessToken()) || !tokenProvider.validateToken(valid.getAccessToken(), "Access")) {
             valid.setValid(false);
             String refreshToken = null;
-            /*Access Token 이 만료 되었을 경우 RefreshToken 을 확인*/
+            /*Access Token 이 만료 되었을 경우 Header Bearer 에 RefreshToken 을 확인*/
             try {
                 refreshToken = tokenProvider.getRefreshTokenFromRequest(httpServletRequest);
                 if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken, "Refresh")) {
-                    /*refreshToken 에서 권힌 정보를 추출해 새로운 Access Token 생성*/
+                    // Refresh token 이 유효 할 경우 memberId 추출
                     Authentication authentication = tokenProvider.generateAuthorityFromToken(refreshToken);
                     String memberId = tokenProvider.getIdFromToken(refreshToken);
-                    valid.setMemberId(memberId);
-                    String newAccessToken = tokenProvider.generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS);
-                    /*쿠키 Access Token 정보 갱신*/
-                    tokenProvider.renewalAccessTokenInCookie(httpServletResponse, newAccessToken);
-                    /*Refresh Token 으로 Member 를 조회 해  Access Token 갱신*/
                     MemberRepository memberRepository = ApplicationContextHolder.getContext().getBean(MemberRepository.class);
+                    // member id 와 refresh token 으로 최종 로그인 한 정보인지 확인
                     memberRepository.findOneByMemberIdAndRefreshToken(valid.getMemberId(), refreshToken)
                             .ifPresentOrElse(member -> {
+                                // 최종 로그인 한 member 라면 token 을 갱신
+                                valid.setMemberId(memberId);
+                                String newAccessToken = tokenProvider.generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS, member);
+                                // 쿠키 Access Token 정보 갱신
+                                tokenProvider.renewalAccessTokenInCookie(httpServletResponse, newAccessToken);
                                 member.setAccessToken(newAccessToken);
                                 memberRepository.save(member);
                                 valid.setAccessToken(newAccessToken);

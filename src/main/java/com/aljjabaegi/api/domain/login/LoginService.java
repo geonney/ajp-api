@@ -6,9 +6,9 @@ import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
+import com.aljjabaegi.api.domain.historyLogin.HistoryLoginMapper;
 import com.aljjabaegi.api.domain.historyLogin.HistoryLoginRepository;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginCreateRequest;
-import com.aljjabaegi.api.domain.historyLogin.HistoryLoginMapper;
 import com.aljjabaegi.api.domain.login.record.LoginRequest;
 import com.aljjabaegi.api.domain.login.record.LogoutResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;
@@ -35,7 +35,8 @@ import java.time.LocalDateTime;
  *
  * @author GEONLEE
  * @since 2024-04-02<br />
- * 2024-04-03 GEONLEE - RSA 복호화 코드 추가
+ * 2024-04-03 GEONLEE - RSA 복호화 코드 추가<br />
+ * 2024-04-15 GEONLEE - generateTokenResponse 응답 생성 시 member entity parameter 추가
  */
 @Service
 @RequiredArgsConstructor
@@ -66,7 +67,7 @@ public class LoginService {
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //4. JWT 토큰 생성
-        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication);
+        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication, entity);
         //5. 로그인 성공 시 DB Token 정보 갱신
         entity.setAccessToken(tokenResponse.token());
         entity.setRefreshToken(tokenResponse.refreshToken());

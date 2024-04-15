@@ -1,6 +1,7 @@
 package com.aljjabaegi.api.config.security.jwt;
 
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
+import com.aljjabaegi.api.entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -65,11 +66,13 @@ public class TokenProvider {
      *
      * @param authentication security Authentication
      * @param milliseconds   만료 초
+     * @param entity         member entity
      * @return 생성된 token
      * @author GEONLEE
      * @since 2024-04-02<br />
+     * 2024-04-15 GEONLEE - member entity parameter 추가
      */
-    public String generateToken(Authentication authentication, long milliseconds) {
+    public String generateToken(Authentication authentication, long milliseconds, Member entity) {
         String authority = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -80,6 +83,7 @@ public class TokenProvider {
                 .issuer(this.issuer)
                 .signWith(this.secretKey)
                 .claim(authorityClaimName, authority)
+                .claim("name", entity.getMemberName())
                 .expiration(validity)
                 .compact();
     }
@@ -88,14 +92,16 @@ public class TokenProvider {
      * Generate Access and refresh token
      *
      * @param authentication Security 인증정보
+     * @param entity         member entity
      * @return TokenResponse 토큰 응답 record
      * @author GEONLEE
      * @since 2022-11-11<br />
+     * 2024-04-15 GEONLEE - member entity parameter 추가
      */
-    public TokenResponse generateTokenResponse(Authentication authentication) {
+    public TokenResponse generateTokenResponse(Authentication authentication, Member entity) {
         return TokenResponse.builder()
-                .token(generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS))
-                .refreshToken(generateToken(authentication, REFRESH_EXPIRATION_MILLISECONDS))
+                .token(generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS, entity))
+                .refreshToken(generateToken(authentication, REFRESH_EXPIRATION_MILLISECONDS, entity))
                 .tokenType(this.tokenType)
                 .expirationSeconds(ACCESS_EXPIRATION_MILLISECONDS)
                 .build();
@@ -123,6 +129,19 @@ public class TokenProvider {
      */
     public String getIdFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
+    }
+
+    /**
+     * token 에서 Name 추출
+     *
+     * @param token token 값
+     * @return user name
+     * @author GEONLEE
+     * @since 2024-04-15
+     */
+    public String getNameFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return String.valueOf(claims.get("name"));
     }
 
     /**
