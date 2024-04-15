@@ -38,7 +38,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
     public static final String[] SWAGGER_URIS = {"swagger-ui.html", "/swagger-ui/**", "/api-docs/**"};
-    public static final String[] IGNORE_URIS = {"/v1/login", "/v1/logout", "/v1/public-key", "/favicon.ico", "/error"};
+    public static final String[] IGNORE_URIS = {"/v1/login", "/v1/public-key", "/favicon.ico", "/error"};
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
