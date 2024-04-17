@@ -83,7 +83,9 @@ public class MemberService {
      * @author GEONLEE
      * @since 2024-04-01<br />
      * 2024-04-04 GEONLEE - 관리자 조회 안되게 수정<br />
+     * 2024-04-16 GEONLEE - @Transactional 추가<br />
      */
+    @Transactional
     public MemberSearchResponse getMembers(String memberId) {
         Member entity = memberRepository.findByMemberIdAndAuthorityAuthorityCodeNot(memberId, "ROLE_ADMIN")
                 .orElseThrow(() -> new EntityNotFoundException(memberId));
