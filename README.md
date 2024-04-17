@@ -65,6 +65,14 @@
   - 그리드 복수 객체 GridItemsResponse (with Page information)
   - 오류 객체 ErrorResponse
 
+## :heavy_check_mark:Logging (resources/logback/logback-spring.xml)
+  - folder : base driver/logs/AJP-${active}
+  - Info level log 는 시간 단위 TimeBaseRollingPolicy
+  - Error level log 는 분 단위 TimeBaseRollingPolicy
+  - Request, Response log 는 시간 단위 TimeBaseRollingPolicy (only file)
+    - AOP 로 동작
+    - 별도의 파일로만 관리
+
 ## :closed_lock_with_key:Security (config/security)
 
 #### Spring Security
