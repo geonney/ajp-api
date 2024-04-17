@@ -16,7 +16,8 @@ import java.util.Locale;
  * mapstruct 용 static converter
  *
  * @author GEONLEE
- * @since 2024-04-01
+ * @since 2024-04-01<br />
+ * 20240-04-17 GEONLEE - Add getToday method<br />
  */
 public class Converter {
     /**
@@ -82,9 +83,15 @@ public class Converter {
         return passwordEncoder.encode(rsaProvider.decrypt(password));
     }
 
-    public static LocalDateTime dateTimeStringToLocalDateTime(String dateString) throws DateTimeParseException, IllegalArgumentException {
-        if (dateString != null && !dateString.isEmpty()) {
-            String replacedDateString = getStringToNumbers(dateString);
+    /**
+     * Date time string(yyyyMMddHHmmss) to LocalDateTime
+     *
+     * @param dateTimeString date time string
+     * @return parsed LocalDateTime
+     */
+    public static LocalDateTime dateTimeStringToLocalDateTime(String dateTimeString) throws DateTimeParseException, IllegalArgumentException {
+        if (!StringUtils.isEmpty(dateTimeString)) {
+            String replacedDateString = getStringToNumbers(dateTimeString);
             DateTimeFormatter toTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.KOREA);
             return LocalDateTime.parse(replacedDateString, toTimeFormatter);
         } else {
@@ -92,15 +99,26 @@ public class Converter {
         }
     }
 
+    /**
+     * Date string(yyyyMMdd) to LocalDate
+     *
+     * @param dateString date string
+     * @return parsed LocalDate
+     */
     public static LocalDate dateStringToLocalDate(String dateString) throws DateTimeParseException, IllegalArgumentException {
-        if (dateString != null && !dateString.isEmpty()) {
+        if (!StringUtils.isEmpty(dateString)) {
             String replacedDateString = getStringToNumbers(dateString);
             return LocalDate.parse(replacedDateString, DateTimeFormatter.ofPattern("yyyyMMdd", Locale.KOREA));
         } else {
             return null;
         }
     }
-
+    /**
+     * Date string(yyyyMMdd) to LocalDate
+     *
+     * @param localDateTime LocalDateTime
+     * @return formatted
+     */
     public static String localDateTimeToString(LocalDateTime localDateTime) throws DateTimeParseException {
         if (localDateTime != null) {
             return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.KOREA));
@@ -117,8 +135,22 @@ public class Converter {
         }
     }
 
+    /**
+     * 현재 시간 리턴
+     *
+     * @return current date time
+     */
     public static LocalDateTime getNow() {
         return LocalDateTime.now();
+    }
+
+    /**
+     * 금일 날짜 리턴
+     *
+     * @return today localDate
+     */
+    public static LocalDate getToday() {
+        return LocalDate.now();
     }
 
     public static String getStringToNumbers(String str) {
