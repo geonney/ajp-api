@@ -19,6 +19,7 @@ import java.time.LocalDate;
  * 2024-04-02 GEONLEE - DB migration 으로 테이블 명칭 변경<br />
  * 2024-04-07 GEONLEE - @Enumerated(EnumType.STRING) 테스트<br />
  * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
+ * 2024-04-17 GEONLEE - passwordUpdateDate 추가<br />
  */
 @Getter
 @Setter
@@ -59,6 +60,9 @@ public class Member extends BaseEntity {
     private String accessToken;
 
     private String refreshToken;
+
+    @Column(name = "password_update_dt")
+    private LocalDate passwordUpdateDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "authority_cd")

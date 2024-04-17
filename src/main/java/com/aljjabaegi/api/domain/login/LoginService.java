@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -36,7 +38,8 @@ import java.time.LocalDateTime;
  * @author GEONLEE
  * @since 2024-04-02<br />
  * 2024-04-03 GEONLEE - RSA 복호화 코드 추가<br />
- * 2024-04-15 GEONLEE - generateTokenResponse 응답 생성 시 member entity parameter 추가
+ * 2024-04-15 GEONLEE - generateTokenResponse 응답 생성 시 member entity parameter 추가<br />
+ * 2024-04-17 GEONLEE - 비밀번호 변경 주기 로직 추가<br />
  */
 @Service
 @RequiredArgsConstructor
@@ -49,31 +52,36 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final RsaProvider rsaProvider;
 
+    @Value("${security.password.cycle}")
+    int passwordUpdateCycle;
+
     @Transactional
     public ResponseEntity<ItemResponse<TokenResponse>> login(
             LoginRequest parameter, HttpServletResponse httpServletResponse) throws ServiceException {
-        //1. ID가 존재하는지 체크
+        // 1. ID가 존재하는지 체크
         Member entity = memberRepository.findById(parameter.id())
                 .orElseThrow(() -> new ServiceException(CommonErrorCode.ID_NOT_FOUND));
-        //2. Password 가 일치하는지 체크
+        // 2. Password 가 일치하는지 체크
         String encodePassword = rsaProvider.decrypt(parameter.password());
         if (!passwordEncoder.matches(encodePassword, entity.getPassword())) {
             throw new ServiceException(CommonErrorCode.WRONG_PASSWORD);
         }
-        //3. 사용자 권한 체크
+        // 3. 사용자 권한 체크
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 parameter.id(), encodePassword);
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        //4. JWT 토큰 생성
-        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication, entity);
-        //5. 로그인 성공 시 DB Token 정보 갱신
+        // 4. 패스워드 변경 주기 체크
+        boolean isChangePassword = LocalDate.now().isAfter(entity.getPasswordUpdateDate().plusDays(passwordUpdateCycle));
+        // 5. JWT 토큰 응답 생성
+        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication, entity, isChangePassword);
+        // 6. 로그인 성공 시 DB Token 정보 갱신
         entity.setAccessToken(tokenResponse.token());
         entity.setRefreshToken(tokenResponse.refreshToken());
-        //6. 쿠키에 Access Token 추가
+        // 7. 쿠키에 Access Token 추가
         tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
-        //7. 로그인 이력 저장
+        // 8. 로그인 이력 저장
         /*
          * 키 or 복합키에 @EnableJpaAuditing annotation 을 사용할 경우 동작하지 않음.
          * 키인 경우에는 직접 값을 입력하여 처리

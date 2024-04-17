@@ -91,19 +91,22 @@ public class TokenProvider {
     /**
      * Generate Access and refresh token
      *
-     * @param authentication Security 인증정보
-     * @param entity         member entity
+     * @param authentication   Security 인증정보
+     * @param entity           member entity
+     * @param isChangePassword 비밀번호 변경 여부
      * @return TokenResponse 토큰 응답 record
      * @author GEONLEE
      * @since 2022-11-11<br />
-     * 2024-04-15 GEONLEE - member entity parameter 추가
+     * 2024-04-15 GEONLEE - member entity parameter 추가<br />
+     * 2024-04-17 GEONLEE - isChangeParameter 추가<br />
      */
-    public TokenResponse generateTokenResponse(Authentication authentication, Member entity) {
+    public TokenResponse generateTokenResponse(Authentication authentication, Member entity, boolean isChangePassword) {
         return TokenResponse.builder()
                 .token(generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS, entity))
                 .refreshToken(generateToken(authentication, REFRESH_EXPIRATION_MILLISECONDS, entity))
                 .tokenType(this.tokenType)
                 .expirationSeconds(ACCESS_EXPIRATION_MILLISECONDS)
+                .isChangePassword(isChangePassword)
                 .build();
     }
 

@@ -39,6 +39,8 @@ security:
     key-size: 2048
     private: ${rsa-private} #config/security/rsa/RsaProvider 참고
     public: ${rsa-public}
+  password:
+    cycle: 60 #days
 logging:
   config: classpath:logback/logback-spring.xml
 
