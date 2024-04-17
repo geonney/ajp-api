@@ -5,6 +5,7 @@ import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -32,12 +34,17 @@ public class LoggingAOP {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAOP.class);
 
     /**
-     * Around logging AOP
+     * Around logging AOP<br />
+     * Except HttpServletResponseWrapper
      */
     @Before("execution(public * com.aljjabaegi.api.domain.*.*Controller.*(..))")
     public void loggingBefore(JoinPoint joinPoint) {
         loggingRequest();
-        loggingParameter(joinPoint.getArgs());
+        Object[] arguments = joinPoint.getArgs();
+        Arrays.stream(arguments)
+                .filter(Objects::nonNull)
+                .filter(arg -> !(arg instanceof HttpServletResponseWrapper))
+                .forEach(this::loggingParameter);
     }
 
     /**
