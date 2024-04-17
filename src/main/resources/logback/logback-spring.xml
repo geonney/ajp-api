@@ -2,23 +2,20 @@
 <configuration debug="true" scan="true">
     <!--
     @author GEONLEE
-    @since 2020-01-31
-
-
-
+    @since 2020-04-16
     -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-    <!-- 설정파일에서 설정값 설정시 사용     -->
+    <!-- springboot 설정파일에서 설정 속성 추가 -->
     <property resource="application.yml"/>
-    <springProperty name = "ACTIVE" source= "spring.profiles.active"/>
-    <springProperty name = "PROJECT_NAME" source= "project.name"/>
+    <springProperty name="ACTIVE" source="spring.profiles.active"/>
+    <springProperty name="PROJECT_NAME" source="spring.application.name"/>
 
-    <property name="LOG_DIR" value="/logs/${PROJECT_NAME}-${ACTIVE}" />
-    <property name="REQUEST_RESPONSE_FILE_NAME" value="${PROJECT_NAME}_request_response" />
-    <property name="INFORMATION_FILE_NAME" value="${PROJECT_NAME}_information" />
-    <property name="EXCEPTION_FILE_NAME" value="${PROJECT_NAME}_exception" />
+    <property name="LOG_DIR" value="/logs/${PROJECT_NAME}-${ACTIVE}"/>
+    <property name="REQUEST_RESPONSE_FILE_NAME" value="${PROJECT_NAME}_request_response"/>
+    <property name="INFORMATION_FILE_NAME" value="${PROJECT_NAME}_information"/>
+    <property name="EXCEPTION_FILE_NAME" value="${PROJECT_NAME}_exception"/>
 
     <appender name="INFORMATION_FILE_NAME" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${INFORMATION_FILE_NAME}.log</file>
@@ -68,20 +65,21 @@
         </encoder>
     </appender>
 
-    <appender name="NEIGHBOR" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="AJP" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%highlight([%p][N] %d{yyyy-MM-dd} %d{HH:mm:ss}) %clr(%caller{1, CALLER_DISPLAY_EVAL})\t%highlight(└───>) %clr("%m" %clr{reset}%n)</pattern>
+            <pattern>%highlight([%p][N] %d{yyyy-MM-dd} %d{HH:mm:ss}) %clr(%caller{1, CALLER_DISPLAY_EVAL})\t%highlight(└───>) %clr("%m"%clr{reset}%n)
+            </pattern>
         </layout>
     </appender>
 
-    <logger name="kr.co.neighbor21.neighborApi.common.aop.LoggingAOP" additivity="FALSE">
-        <level value="INFO" />
-        <appender-ref ref="REQUEST_RESPONSE_FILE" />
+    <logger name="com.aljjabaegi.api.config.aop.LoggingAOP" additivity="FALSE">
+        <level value="INFO"/>
+        <appender-ref ref="REQUEST_RESPONSE_FILE"/>
     </logger>
 
     <root level="INFO">
         <appender-ref ref="INFORMATION_FILE_NAME"/>
         <appender-ref ref="EXCEPTION_FILE"/>
-        <appender-ref ref="NEIGHBOR"/>
+        <appender-ref ref="AJP"/>
     </root>
 </configuration>
