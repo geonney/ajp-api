@@ -9,7 +9,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Spring error controller implements
+ * Spring error controller implementation
  *
  * @author GEONLEE
  * @since 2024-04-17
