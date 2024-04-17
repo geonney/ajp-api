@@ -1,6 +1,9 @@
-package com.aljjabaegi.api.common.util;
+package com.aljjabaegi.api.common.util.password;
 
+import com.aljjabaegi.api.common.enumeration.RegExp;
 import com.aljjabaegi.api.common.util.password.enumeration.PasswordLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -12,15 +15,7 @@ import java.util.regex.Pattern;
  * @since 2024-04-17
  */
 public class PasswordUtils {
-
-    // 8자리 이상
-    private static final String DIGITS_REGEXP = ".${8,}";
-    // 하나 이상의 대문자
-    private static final String UPPERCASE_REGEXP = ".*[A-Z].*";
-    // 하나 이상의 숫자
-    private final String NUMBER_REGEXP = ".*[0-9].*";
-    // 하나 이상의 특수문자
-    private final String SPECIAL_CHARACTER_REGEXP = ".*[^a-zA-Z0-9가-힣].*";
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtils.class);
 
     /**
      * 비밀번호 유효성 검증 (Use PasswordLevel)
@@ -34,14 +29,24 @@ public class PasswordUtils {
     }
 
     /**
-     * 비밀번호 유효성 검증
+     * 비밀번호 유효성 검증<br />
+     * 검정하고자하는 정규식을 리스트에 추가해서 사용
      *
+     * @param password plain text
+     * @return 유효 여부
      * @author GEONLEE
      * @since 2024-04-17
      */
     public static boolean validPassword(String password) {
-        List<String> validProcess = List.of(DIGITS_REGEXP, UPPERCASE_REGEXP);
-        Pattern passwordPattern = Pattern.compile();
-        return passwordPattern.matcher(password).matches();
+        boolean result = true;
+        List<RegExp> validProcess = List.of(RegExp.DIGITS, RegExp.UPPERCASE, RegExp.NUMBER);
+        for (RegExp regExp : validProcess) {
+            if (!regExp.getPatten().matcher(password).matches()) {
+                LOGGER.error(regExp.getMessage());
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 }

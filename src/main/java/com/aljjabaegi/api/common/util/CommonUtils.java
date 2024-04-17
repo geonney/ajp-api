@@ -13,9 +13,10 @@ import java.io.PrintWriter;
  * 공통 Utils
  *
  * @author GEONLEE
- * @since 2024-04-02
+ * @since 2024-04-02<br />
  */
 public class CommonUtils {
+
     /**
      * Property 값에 접근하는 @Value 는 spring bean 에서 사용하는 용도이므로, static class 나 다른 곳에서 property 값이 필요할 때 활용한다.
      *

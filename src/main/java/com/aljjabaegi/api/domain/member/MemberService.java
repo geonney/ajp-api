@@ -1,9 +1,13 @@
 package com.aljjabaegi.api.domain.member;
 
+import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
+import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.util.password.PasswordUtils;
+import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.team.TeamRepository;
 import com.aljjabaegi.api.entity.Member;
@@ -33,6 +37,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
+    private final RsaProvider rsaProvider;
     private final MemberMapper memberMapper = MemberMapper.INSTANCE;
 
     /**
@@ -106,12 +111,18 @@ public class MemberService {
      * 사용자 추가
      *
      * @author GEONLEE
-     * @since 2024-04-01
+     * @since 2024-04-01<br />
+     * 2024-04-17 GEONLEE - password 유효성 검증 추가<br />
      */
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest parameter) {
         if (memberRepository.existsById(parameter.memberId())) {
             throw new EntityExistsException("memberId already existed. memberId: " + parameter.memberId());
+        }
+        // password 유효성 검증
+        boolean isValidPassword = PasswordUtils.validPassword(rsaProvider.decrypt(parameter.password()));
+        if (!isValidPassword) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid password.");
         }
         Member createRequestEntity = memberMapper.toEntity(parameter); //비영속
         Member createdEntity = memberRepository.save(createRequestEntity); //영속

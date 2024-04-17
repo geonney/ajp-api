@@ -3,6 +3,7 @@ package com.aljjabaegi.api.domain.login;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ItemResponse;
+import com.aljjabaegi.api.common.util.CommonUtils;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
