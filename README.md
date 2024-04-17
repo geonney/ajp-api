@@ -103,6 +103,15 @@
 - Public key 전달 -> 패스워드 암호화
 - public key로 암호화된 패스워드 전달 -> private key 복호화
 
+#### Password
+- 유효성 검증 class (common/util/PasswordUtil)
+- Level enum 사용 (PasswordLevel)
+  - Level1: 8자리 이상, 하나 이상의 문자, 숫자
+  - Level2: 8자리 이상, 하나 이상의 문자, 숫자, 특수문자
+  - Level3: 8자리 이상, 하나 이상의 대문자, 소문자, 숫자, 특수문자
+- 기본 정규식 사용 (RegExp list)
+  - 자릿수, 대문자, 숫자, 특수문자 포함 여부
+  - RegExp List 로 원하는 유효성 검증 추가 방식
 
 #### Authentication logic
 ![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/d272debc-aff8-4281-961a-0da4accdbcf9)
