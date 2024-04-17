@@ -197,7 +197,6 @@ public class MemberController {
     @Operation(summary = "Member Search By ID", operationId = "API-MEMBER-03")
     public ResponseEntity<ItemResponse<MemberSearchResponse>> getMembers(@PathVariable String memberId) {
         MemberSearchResponse userSearchResponse = memberService.getMembers(memberId);
-
         return ResponseEntity.ok()
                 .body(ItemResponse.<MemberSearchResponse>builder()
                         .status("OK")
