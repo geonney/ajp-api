@@ -84,11 +84,13 @@ public interface MemberMapper {
      * @return member
      * @author GEONLEE
      * @since 2024-04-01<br />
+     * 2024-04-17 GEONLEE - passwordUpdateDate 추가<br />
      */
     @Mappings({
             @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberCreateRequest.isUse()))"),
             @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))"),
-            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST")
+            @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST"),
+            @Mapping(target = "passwordUpdateDate", expression = "java(Converter.getToday())")
     })
     Member toEntity(MemberCreateRequest memberCreateRequest);
 
