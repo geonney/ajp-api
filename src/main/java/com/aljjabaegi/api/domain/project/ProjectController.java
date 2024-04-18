@@ -1,9 +1,13 @@
 package com.aljjabaegi.api.domain.project;
 
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.project.record.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -54,8 +58,69 @@ public class ProjectController {
                 );
     }
 
+    @PostMapping(value = "/v1/projects-dynamicRepository")
+    @Operation(summary = "Search Project using dynamicRepository", operationId = "API-PROJECT-03")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"projectName",
+                                                "operator":"contains",
+                                                "value":"트1"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "filtering with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"projectEndDate",
+                                                "operator":"between",
+                                                "value":"20240401,20240430"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "Empty parameter", value = """
+                                    {
+                                        
+                                    }
+                            """),
+            }
+    ))
+    public ResponseEntity<GridItemsResponse<ProjectSearchResponse>> getProjectListUsingDynamicRepository(@RequestBody DynamicRequest dynamicRequest) {
+        GridItemsResponse<ProjectSearchResponse> gridItemsResponse = projectService.getProjectListUsingDynamicRepository(dynamicRequest);
+        return ResponseEntity.ok()
+                .body(gridItemsResponse);
+    }
+
     @PostMapping(value = "/v1/project")
-    @Operation(summary = "Create Project", operationId = "API-PROJECT-03")
+    @Operation(summary = "Create Project", operationId = "API-PROJECT-04")
     public ResponseEntity<ItemResponse<ProjectCreateResponse>> createMember(@RequestBody @Valid ProjectCreateRequest parameter) {
         ProjectCreateResponse createdProject = projectService.createProject(parameter);
         return ResponseEntity.ok()
@@ -66,7 +131,7 @@ public class ProjectController {
     }
 
     @PutMapping(value = "/v1/project")
-    @Operation(summary = "Modify Project", operationId = "API-PROJECT-04")
+    @Operation(summary = "Modify Project", operationId = "API-PROJECT-05")
     public ResponseEntity<ItemResponse<ProjectModifyResponse>> modifyUser(@RequestBody @Valid ProjectModifyRequest parameter) {
         ProjectModifyResponse modifiedProject = projectService.modifyProject(parameter);
         return ResponseEntity.ok()
@@ -77,7 +142,7 @@ public class ProjectController {
     }
 
     @DeleteMapping(value = "/v1/project/{projectId}")
-    @Operation(summary = "Delete Project", operationId = "API-PROJECT-05")
+    @Operation(summary = "Delete Project", operationId = "API-PROJECT-06")
     public ResponseEntity<ItemResponse<Long>> deleteMember(@PathVariable String projectId) {
         Long deleteCount = projectService.deleteProject(projectId);
         return ResponseEntity.ok()

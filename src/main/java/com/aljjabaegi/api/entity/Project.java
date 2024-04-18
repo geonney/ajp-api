@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
 import jakarta.persistence.*;
@@ -31,6 +32,7 @@ public class Project extends BaseEntity {
     private String projectId;
 
     @Column(name = "project_name")
+    @SearchableField
     private String projectName;
 
     @Column(name = "project_start_date")
@@ -39,5 +41,6 @@ public class Project extends BaseEntity {
 
     @Column(name = "project_end_date")
     @Temporal(TemporalType.DATE)
+    @SearchableField
     private LocalDate projectEndDate;
 }

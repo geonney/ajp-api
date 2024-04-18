@@ -1,9 +1,13 @@
 package com.aljjabaegi.api.domain.project;
 
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.domain.member.record.MemberSearchResponse;
 import com.aljjabaegi.api.domain.project.record.*;
 import com.aljjabaegi.api.entity.Project;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,12 +36,34 @@ public class ProjectService {
     }
 
     /**
+     * 전체 Project 조회 DynamicRepository 사용
+     *
+     * @author GEONLEE
+     * @since 2024-04-18
+     */
+    public GridItemsResponse<ProjectSearchResponse> getProjectListUsingDynamicRepository(DynamicRequest dynamicRequest) {
+        Page<Project> page = projectRepository.findDynamicWithPageable(dynamicRequest);
+        int totalPage = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        List<ProjectSearchResponse> projectSearchResponseList = projectMapper.toSearchResponseList(page.getContent());
+
+        return GridItemsResponse.<ProjectSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .totalSize(totalElements)
+                .totalPageSize(totalPage)
+                .size(page.getNumberOfElements())
+                .items(projectSearchResponseList)
+                .build();
+    }
+
+    /**
      * ProjectName 으로 Project 조회 (named native query)
      *
      * @author GEONLEE
      * @since 2024-04-08
      */
-    public List<ProjectSearchResponse> getProjectByName(String projectName) {;
+    public List<ProjectSearchResponse> getProjectByName(String projectName) {
         return projectRepository.findByProjectName(projectName);
     }
 
