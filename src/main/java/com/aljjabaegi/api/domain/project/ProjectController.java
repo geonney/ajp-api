@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2024-04-04
  */
 @RestController
-@Tag(name = "05. Project Management (Using DynamicRequest with DynamicRepository, NamedNativeQuery)", description = "Responsibility: GEONLEE")
+@Tag(name = "05. Project Management (Using NamedNativeQuery, DynamicRequest with DynamicRepository)", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class ProjectController {
