@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2024-04-08
  */
 @RestController
-@Tag(name = "04. Team Management (Using Specification)", description = "Responsibility: GEONLEE")
+@Tag(name = "04. Team Management [Search using Specification]", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class TeamController {
@@ -28,7 +28,7 @@ public class TeamController {
     private final TeamService teamService;
 
     @GetMapping(value = "/v1/teams")
-    @Operation(summary = "Search teams by conditions with specification", operationId = "API-TEAM-01")
+    @Operation(summary = "Search teams (Specification)", operationId = "API-TEAM-01")
     public ResponseEntity<ItemsResponse<TeamSearchResponse>> getTeamList(
             @RequestParam(value = "teamName", required = false) String teamName,
             @RequestParam(value = "startDate", defaultValue = "19000101000000") String startDate,

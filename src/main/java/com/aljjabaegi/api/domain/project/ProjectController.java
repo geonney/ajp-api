@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2024-04-04
  */
 @RestController
-@Tag(name = "05. Project Management (Using NamedNativeQuery, DynamicRequest with DynamicRepository)", description = "Responsibility: GEONLEE")
+@Tag(name = "05. Project Management [Search using DynamicRepository, Named native query]", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class ProjectController {
@@ -45,7 +45,7 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/v1/projects/{projectName}")
-    @Operation(summary = "Search Project by project name (NamedNativeQuery)", operationId = "API-PROJECT-02")
+    @Operation(summary = "Search Project (NamedNativeQuery)", operationId = "API-PROJECT-02")
     public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getProject(@PathVariable String projectName) {
         List<ProjectSearchResponse> projectSearchResponseList = projectService.getProjectByName(projectName);
         return ResponseEntity.ok()
@@ -59,7 +59,6 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/v1/projects-dynamicRepository")
-    @Operation(summary = "Search Project using dynamicRepository", operationId = "API-PROJECT-03")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "filtering and sorting with paging", value = """
@@ -113,6 +112,7 @@ public class ProjectController {
                             """),
             }
     ))
+    @Operation(summary = "Search Project (DynamicRepository)", operationId = "API-PROJECT-03")
     public ResponseEntity<GridItemsResponse<ProjectSearchResponse>> getProjectListUsingDynamicRepository(@RequestBody DynamicRequest dynamicRequest) {
         GridItemsResponse<ProjectSearchResponse> gridItemsResponse = projectService.getProjectListUsingDynamicRepository(dynamicRequest);
         return ResponseEntity.ok()

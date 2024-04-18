@@ -27,32 +27,13 @@ import java.util.List;
  * 2024-04-04 GEONLEE - Member Operation 전체 인증 적용
  */
 @RestController
-@Tag(name = "02. Member Management (Using DynamicRequest)", description = "Responsibility: GEONLEE")
+@Tag(name = "02. Member Management [Search using DynamicSpecification, Query method]", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/v1/members")
-    @Operation(summary = "Search Members with dynamic filter list", operationId = "API-MEMBER-01", description = """
-            Searchable Field
-             - memberId
-             - memberName
-             - cellphone
-             - birthDate
-             - age
-             - useYn ('Y', 'N')
-             - createDate
-             - updateDate
-             - team.teamName (Referenced entity field)
-             
-            Operators (See examples)
-             - eq (equal)
-             - neq (notEqual)
-             - contains (like)
-             - between (between)
-             - in (in)
-            """)
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """
@@ -120,15 +101,34 @@ public class MemberController {
                             """)
             }
     ))
-    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getUserList(@RequestBody List<DynamicFilter> dynamicFilters) {
-        List<MemberSearchResponse> userSearchResponseList = memberService.getMemberList(dynamicFilters);
-        long size = userSearchResponseList.size();
+    @Operation(summary = "Search members (DynamicSpecification)", operationId = "API-MEMBER-01", description = """
+            Searchable Field
+             - memberId
+             - memberName
+             - cellphone
+             - birthDate
+             - age
+             - useYn ('Y', 'N')
+             - createDate
+             - updateDate
+             - team.teamName (Referenced entity field)
+             
+            Operators (See examples)
+             - eq (equal)
+             - neq (notEqual)
+             - contains (like)
+             - between (between)
+             - in (in)
+            """)
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(@RequestBody List<DynamicFilter> dynamicFilters) {
+        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicFilters);
+        long size = memberSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<MemberSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
                         .size(size)
-                        .items(userSearchResponseList).build());
+                        .items(memberSearchResponseList).build());
     }
 
     @PostMapping(value = "/v1/members-dynamicRequest")
@@ -185,7 +185,7 @@ public class MemberController {
                             """),
             }
     ))
-    @Operation(summary = "Search Members with dynamic request", operationId = "API-MEMBER-02")
+    @Operation(summary = "Search members (DynamicSpecification + paging + sorting)", operationId = "API-MEMBER-02")
     public ResponseEntity<GridItemsResponse<MemberSearchResponse>> getUserListUsingDynamicRequest(@RequestBody DynamicRequest dynamicRequest) {
         GridItemsResponse<MemberSearchResponse> gridItemsResponse =
                 memberService.getUserListUsingDynamicRequest(dynamicRequest);
@@ -194,7 +194,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/v1/members/{memberId}")
-    @Operation(summary = "Member Search By ID", operationId = "API-MEMBER-03")
+    @Operation(summary = "Search member (Query method)", operationId = "API-MEMBER-03")
     public ResponseEntity<ItemResponse<MemberSearchResponse>> getMembers(@PathVariable String memberId) {
         MemberSearchResponse userSearchResponse = memberService.getMembers(memberId);
         return ResponseEntity.ok()
