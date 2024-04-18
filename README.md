@@ -25,8 +25,9 @@
 - @SequenceGenerator (Board Entity)
 - @GenericGenerator (Project Entity)
 - Bulk 연산 @Modifying(clearAutomatically = true)
-- 연관 관계
-  - @ManyToOne - @OneToMany 양방향
+- 연관 관계 (Sample)
+  - @ManyToOne - @OneToMany 양방향 (Member - Team)
+  - @OneToOne (Team.leader - Member)
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId
@@ -44,7 +45,7 @@
     - equal, notEqual, like, between, in
   - DynamicFilter 를 사용하여 동적으로 Specification 을 생성 (common/request)
     - Case-insensitive search
-    - Reference field search (call getPath method)
+    - Reference field search (call getPath method) -> depth 없이 조회할수 있도록 보완 (DynamicSpecification>getSearchFieldPath)
     - Null data search
     - equal, notEqual, in -> LocalDateTime type 을 제외하고 사용 가능
     - like -> String type 만 사용 가능
