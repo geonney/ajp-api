@@ -32,6 +32,7 @@ import java.util.*;
  *
  * @author GEONLEE
  * @since 2024-04-09<br />
+ * 2024-04-18 GEONLEE - checkSearchableField Deprecated, getSearchFieldPath 에서 해당 기능 포함<br />
  */
 public class DynamicSpecification {
 
@@ -74,9 +75,9 @@ public class DynamicSpecification {
                 if (dynamicFilter.operator() == null) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operators.getOperators());
                 }
-                //Possible search to Referenced entity attributes
-                Path<String> path = getPath(root, dynamicFilter.field());
-                checkSearchableField(path.getParentPath(), dynamicFilter.field().substring(dynamicFilter.field().indexOf(".") + 1));
+                String fieldPath = getSearchFieldPath(root, dynamicFilter.field());
+                Path<String> path = getPath(root, fieldPath);
+//                checkSearchableField(path.getParentPath(), dynamicFilter.field());
                 String fieldType = path.getModel().getBindableJavaType().getSimpleName();
                 //Possible search to without case sensitivity
                 String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value().toLowerCase();
@@ -169,6 +170,47 @@ public class DynamicSpecification {
     }
 
     /**
+     * 클래스에 조회 가능한 field path string 을 리턴<br />
+     * Searchable annotation 이 있는 경우에만 조회 가능<br />
+     * 참조 객체의 경우 Searchable annotation 의 column path 로 설정<br />
+     *
+     * @param path            root field path
+     * @param searchFieldName search field name
+     * @return field path string
+     */
+    private static String getSearchFieldPath(Path<?> path, String searchFieldName) {
+        String fieldPath = null;
+        Class<?> entity = path.getJavaType();
+        Field[] fields = entity.getDeclaredFields();
+        for (Field field : fields) {
+            SearchableField searchableField = field.getAnnotation(SearchableField.class);
+            // Check @SearchableField annotation
+            if (searchableField == null) continue;
+
+            // If the field names are the same, return the columnPath
+            if (field.getName().equals(searchFieldName)) {
+                fieldPath = field.getName();
+                break;
+            }
+
+            // If the field name is different, determine it as a reference object and return the columnPath
+            String[] paths = searchableField.columnPath();
+            for (String searchableFieldPath : paths) {
+                String lastFieldName = searchableFieldPath.substring(searchableFieldPath.lastIndexOf(".") + 1);
+                if (lastFieldName.equals(searchFieldName)) {
+                    fieldPath = searchableFieldPath;
+                    break;
+                }
+            }
+        }
+        // If the field path is different, throw exception
+        if (fieldPath == null) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "'" + searchFieldName + "' field that cannot be searched.");
+        }
+        return fieldPath;
+    }
+
+    /**
      * Possible search to Referenced entity attributes (recursion)
      *
      * @throws ServiceException Entity 에서 field 가 없을 경우 PathElementException 발생
@@ -193,8 +235,10 @@ public class DynamicSpecification {
      * BaseEntity field 인 경우 superclass 로 치환<br />
      *
      * @author GEONLEE
-     * @since 2024-04-11
+     * @since 2024-04-11<br />
+     * 2024-04-18 GEONLEE - Deprecated, getSearchFieldPath 에서 처리하도록 변경
      */
+    @Deprecated
     private static void checkSearchableField(Path<?> path, String fieldName) {
         Class<?> entity = path.getJavaType();
         //BaseEntity field 조회 할 경우 상속받은 BaseEntity 로 변경

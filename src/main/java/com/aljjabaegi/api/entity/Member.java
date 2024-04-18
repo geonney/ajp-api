@@ -71,6 +71,7 @@ public class Member extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @SearchableField(columnPath = "team.teamName")
     private Team team = new Team(); // team 이 필수인 경우 = new Team() 으로 초기화. 저장 시 Team 이 없으면 Exception  발생
 
     // 연관관계 편의 메서드

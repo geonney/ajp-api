@@ -36,4 +36,8 @@ public class Team extends BaseEntity {
     @Column(name = "team_name")
     @SearchableField
     private String teamName;
+
+    @OneToOne
+    @JoinColumn(name = "leader_id", referencedColumnName = "member_id")
+    private Member leader;
 }
