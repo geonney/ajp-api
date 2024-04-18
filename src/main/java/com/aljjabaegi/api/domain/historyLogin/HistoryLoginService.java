@@ -25,8 +25,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class HistoryLoginService {
     private final JPAQueryFactory query;
-
-    private final HistoryLoginRepository historyLoginRepository;
     private final HistoryLoginMapper historyLoginMapper = HistoryLoginMapper.INSTANCE;
 
     /**
