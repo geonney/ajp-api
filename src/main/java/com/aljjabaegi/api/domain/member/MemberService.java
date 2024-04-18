@@ -58,7 +58,7 @@ public class MemberService {
      * 전체 사용자 조회 (Dynamic request 활용)
      *
      * @author GEONLEE
-     * @since 2024-04-012<br />
+     * @since 2024-04-12<br />
      */
     @Transactional
     public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
