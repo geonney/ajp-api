@@ -3,6 +3,7 @@ package com.aljjabaegi.api.common.jpa.specification;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
+import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
@@ -33,8 +34,11 @@ import java.util.*;
  * @author GEONLEE
  * @since 2024-04-09<br />
  * 2024-04-18 GEONLEE - checkSearchableField Deprecated, getSearchFieldPath 에서 해당 기능 포함<br />
+ * - getSearchFieldPath, BASE_ENTITY_FIELD 추가 -> BaseEntity field 처리 방식 변경
  */
 public class DynamicSpecification {
+
+    private static final List<String> BASE_ENTITY_FIELD = Arrays.stream(BaseEntity.class.getDeclaredFields()).map(Field::getName).toList();
 
     public static Sort generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         if (dynamicSorters == null) {
@@ -181,6 +185,10 @@ public class DynamicSpecification {
     private static String getSearchFieldPath(Path<?> path, String searchFieldName) {
         String fieldPath = null;
         Class<?> entity = path.getJavaType();
+        // Check Base entity field
+        if (BASE_ENTITY_FIELD.contains(searchFieldName)) {
+            entity = path.getJavaType().getSuperclass();
+        }
         Field[] fields = entity.getDeclaredFields();
         for (Field field : fields) {
             SearchableField searchableField = field.getAnnotation(SearchableField.class);
