@@ -50,6 +50,11 @@
     - like -> String type 만 사용 가능
     - Between -> String type 을 제외하고 사용 가능
   - DynamicSoter 를 사용하여 동적으로 Sort 생성
+- DynamicRepository (Custom JpaRepository) :thumbsup:
+  - JpaRepository 의 기능을 확장하여 서비스 로직 코드를 줄이는 역할
+  - SimpleJpaRepository + DynamicRequest 를 사용한 메서드 추가 구현
+  - 기존 Repository에서 extends JpaRepository -> extends JpaDynamicRepository 로 변경 하여 확장 메서드 사용
+  - DynamicSpecfication 메서드 활용
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
