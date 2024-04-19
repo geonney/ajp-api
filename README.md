@@ -56,6 +56,7 @@
   - SimpleJpaRepository + DynamicRequest 를 사용한 메서드 추가 구현
   - 기존 Repository에서 extends JpaRepository -> extends JpaDynamicRepository 로 변경 하여 확장 메서드 사용
   - DynamicSpecfication 메서드 활용
+- Querydsl 적용 중 (Login history) :construction_worker:
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
