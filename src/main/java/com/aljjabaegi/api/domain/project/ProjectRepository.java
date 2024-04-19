@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.project;
 
-import com.aljjabaegi.api.common.jpa.repository.JpaDynamicRepository;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.domain.project.record.ProjectSearchResponse;
 import com.aljjabaegi.api.entity.Project;
 import org.springframework.data.jpa.repository.Query;

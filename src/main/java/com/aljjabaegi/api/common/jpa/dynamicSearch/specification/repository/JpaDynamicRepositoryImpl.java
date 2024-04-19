@@ -1,6 +1,7 @@
-package com.aljjabaegi.api.common.jpa.repository;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.specification.repository;
 
-import com.aljjabaegi.api.common.jpa.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import jakarta.persistence.EntityManager;

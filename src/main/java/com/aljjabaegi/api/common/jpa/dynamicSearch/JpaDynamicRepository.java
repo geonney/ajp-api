@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.jpa.repository;
+package com.aljjabaegi.api.common.jpa.dynamicSearch;
 
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;

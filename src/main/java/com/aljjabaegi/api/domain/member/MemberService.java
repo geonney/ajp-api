@@ -2,7 +2,7 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
-import com.aljjabaegi.api.common.jpa.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridItemsResponse;

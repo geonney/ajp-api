@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.jpa.querydsl;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

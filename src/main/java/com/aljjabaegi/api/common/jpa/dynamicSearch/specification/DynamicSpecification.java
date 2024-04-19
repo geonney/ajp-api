@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.jpa.specification;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.specification;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
@@ -40,6 +40,13 @@ public class DynamicSpecification {
 
     private static final List<String> BASE_ENTITY_FIELD = Arrays.stream(BaseEntity.class.getDeclaredFields()).map(Field::getName).toList();
 
+    /**
+     * 정렬 조건을 리턴
+     *
+     * @param entity         generic entity class
+     * @param dynamicSorters DynamicSorter list
+     * @return Sort 정렬조건
+     */
     public static Sort generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         if (dynamicSorters == null) {
             return Sort.unsorted();
