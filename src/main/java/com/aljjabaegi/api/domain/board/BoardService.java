@@ -1,9 +1,17 @@
 package com.aljjabaegi.api.domain.board;
 
+import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import com.aljjabaegi.api.entity.Board;
+import com.aljjabaegi.api.entity.QBoard;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +26,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final DynamicBooleanBuilder dynamicBooleanBuilder;
+    private final JPAQueryFactory query;
     private final BoardRepository boardRepository;
     private final BoardMapper boardMapper = BoardMapper.INSTANCE;
 
     /**
-     * 전체 Board 조회
+     * DynamicBooleanBuilder 를 사용한 조회
      *
+     * @param dynamicRequest paging, sorting, condition
+     * @return Board list
      * @author GEONLEE
-     * @since 2024-04-04
+     * @since 2024-04-04<br />
+     * 2024-04-19 GEONLEE - DynamicBooleanBuilder 사용 방식으로 변경
      */
-    public List<BoardSearchResponse> getBoardList() {
-        return boardMapper.toSearchResponseList(boardRepository.findAll());
+    public GridItemsResponse<BoardSearchResponse> getBoardListUsingDynamicBooleanBuilder(DynamicRequest dynamicRequest) {
+        QBoard board = QBoard.board;
+        List<OrderSpecifier<String>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Board.class, dynamicRequest.sorter());
+        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicRequest.filter());
+        Long totalSize = query.select(board.count())
+                .from(board)
+                .where(booleanBuilder)
+                .fetchOne();
+        totalSize = (totalSize == null) ? 0L : totalSize;
+        int totalPageSize = (int) Math.ceil((double) totalSize / (double) dynamicRequest.pageSize());
+        List<Board> boardList = query.selectFrom(board)
+                .where(booleanBuilder)
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
+                .fetch();
+        List<BoardSearchResponse> list = boardMapper.toSearchResponseList(boardList);
+        return GridItemsResponse.<BoardSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .totalSize(totalSize)
+                .totalPageSize(totalPageSize)
+                .size(list.size())
+                .items(list)
+                .build();
+    }
+
+    /**
+     * DynamicDslRepository 를 사용한 조회
+     *
+     * @param dynamicRequest paging, sorting, condition
+     * @return Board list
+     * @author GEONLEE
+     * @since 2024-04-19
+     */
+    public GridItemsResponse<BoardSearchResponse> getBoardListUsingDynamicDslRepository(DynamicRequest dynamicRequest) {
+        Page<Board> page = boardRepository.findDynamicWithPageable(dynamicRequest);
+        List<BoardSearchResponse> list = boardMapper.toSearchResponseList(page.getContent());
+        return GridItemsResponse.<BoardSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .totalSize(page.getTotalElements())
+                .totalPageSize(page.getTotalPages())
+                .size(page.getSize())
+                .items(list)
+                .build();
     }
 
     /**

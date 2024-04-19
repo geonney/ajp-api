@@ -4,11 +4,8 @@ import com.aljjabaegi.api.entity.key.HistoryLoginKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 /**
  * 로그인 이력 Entity

@@ -35,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final DynamicSpecification dynamicSpecification;
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
     private final RsaProvider rsaProvider;
@@ -50,7 +51,7 @@ public class MemberService {
      */
     @Transactional
     public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
-        Specification<Member> specification = DynamicSpecification.generateSpecification(dynamicFilters);
+        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
         return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
     }
 
@@ -62,9 +63,9 @@ public class MemberService {
      */
     @Transactional
     public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
-        Sort sort = DynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
+        Sort sort = dynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);
-        Specification<Member> specification = DynamicSpecification.generateSpecification(dynamicRequest.filter());
+        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicRequest.filter());
 
         Page<Member> page = memberRepository.findAll(specification, pageable);
 

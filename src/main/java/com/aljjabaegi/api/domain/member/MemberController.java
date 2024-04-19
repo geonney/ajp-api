@@ -33,7 +33,7 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping(value = "/v1/members")
+    @PostMapping(value = "/v1/members-dynamic-filter")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """
@@ -131,7 +131,7 @@ public class MemberController {
                         .items(memberSearchResponseList).build());
     }
 
-    @PostMapping(value = "/v1/members-dynamicRequest")
+    @PostMapping(value = "/v1/members-dynamic-request")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "filtering and sorting with paging", value = """

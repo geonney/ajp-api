@@ -26,7 +26,7 @@ public class HistoryLoginController {
     private final HistoryLoginService historyLoginService;
 
     @GetMapping(value = "/v1/login-history")
-    @Operation(summary = "Search members login history (Querydsl)", operationId = "API-LOGIN_HISTORY-01")
+    @Operation(summary = "Search members login history (Querydsl, paging and sorting)", operationId = "API-LOGIN_HISTORY-01")
     public ResponseEntity<GridItemsResponse<HistoryLoginSearchResponse>> getHistoryLoginList(
             @RequestParam(value = "sortDirection", defaultValue = "desc") String sortDirection,
             @RequestParam(value = "sortColumn", defaultValue = "key.createDate") String sortColumn,
@@ -41,7 +41,7 @@ public class HistoryLoginController {
     }
 
     @GetMapping(value = "/v1/login-history/{memberId}")
-    @Operation(summary = "Search members login history by memberId (Querydsl)", operationId = "API-LOGIN_HISTORY-02")
+    @Operation(summary = "Search members login history by memberId (Querydsl, paging, sorting, condition)", operationId = "API-LOGIN_HISTORY-02")
     public ResponseEntity<GridItemsResponse<HistoryLoginSearchResponse>> getHistoryLoginListByMemberId(
             @PathVariable String memberId,
             @RequestParam(value = "sortDirection", defaultValue = "desc") String sortDirection,
