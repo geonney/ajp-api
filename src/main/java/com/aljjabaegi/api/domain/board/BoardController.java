@@ -1,17 +1,18 @@
 package com.aljjabaegi.api.domain.board;
 
+import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
-import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Board Controller
@@ -20,24 +21,143 @@ import java.util.List;
  * @since 2024-04-04
  */
 @RestController
-@Tag(name = "06. Board Management", description = "Responsibility: GEONLEE")
+@Tag(name = "06. Board Management [Search using DynamicBooleanBuilder]", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping(value = "/v1/boards")
-    @Operation(summary = "Search All boards", operationId = "API-BOARD-01")
-    public ResponseEntity<ItemsResponse<BoardSearchResponse>> getBoardList() {
-        List<BoardSearchResponse> boardSearchResponseList = boardService.getBoardList();
-        long size = boardSearchResponseList.size();
+    @PostMapping(value = "/v1/boards-dynamicDslRepository")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            },
+                                            {
+                                                "field":"createDate",
+                                                "operator":"between",
+                                                "value":"20240408000000,20240408170000"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "filtering with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "Empty parameter", value = """
+                                    {
+
+                                    }
+                            """),
+            }
+    ))
+    @Operation(summary = "Search boards (DynamicDslRepository)", operationId = "API-BOARD-02")
+    public ResponseEntity<GridItemsResponse<BoardSearchResponse>> getBoardListUsingDynamicDslRepository(@RequestBody DynamicRequest dynamicRequest) {
+        GridItemsResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicDslRepository(dynamicRequest);
         return ResponseEntity.ok()
-                .body(ItemsResponse.<BoardSearchResponse>builder()
-                        .status("OK")
-                        .message("데이터를 조회하는데 성공하였습니다.")
-                        .size(size)
-                        .items(boardSearchResponseList).build());
+                .body(gridItemsResponse);
+    }
+
+    @PostMapping(value = "/v1/boards")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            },
+                                            {
+                                                "field":"createDate",
+                                                "operator":"between",
+                                                "value":"20240408000000,20240408170000"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "filtering with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "sortDirection":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """),
+                    @ExampleObject(name = "Empty parameter", value = """
+                                    {
+
+                                    }
+                            """),
+            }
+    ))
+    @Operation(summary = "Search boards (DynamicBooleanBuilder)", operationId = "API-BOARD-01")
+    public ResponseEntity<GridItemsResponse<BoardSearchResponse>> getBoardList(@RequestBody DynamicRequest dynamicRequest) {
+        GridItemsResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicBooleanBuilder(dynamicRequest);
+        return ResponseEntity.ok()
+                .body(gridItemsResponse);
     }
 
     @PostMapping(value = "/v1/board")

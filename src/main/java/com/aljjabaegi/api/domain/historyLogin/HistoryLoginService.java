@@ -48,7 +48,9 @@ public class HistoryLoginService {
                 orderSpecifier = pathBuilder.getString(sortColumn).desc().nullsLast();
             }
         }
-        Long totalSize = query.select(historyLogin.count()).from(historyLogin).fetchOne();
+        Long totalSize = query.select(historyLogin.count())
+                .from(historyLogin)
+                .fetchOne();
         totalSize = (totalSize == null) ? 0L : totalSize;
         List<HistoryLogin> list = query.selectFrom(historyLogin)
                 .offset((long) pageNo * pageSize)
@@ -74,12 +76,11 @@ public class HistoryLoginService {
      *
      * @author GEONLEE
      * @since 2024-04-09<br />
+     * 2024-04-18 GEONLEE - querydsl 로 변경<br />
      */
     public GridItemsResponse<HistoryLoginSearchResponse> getHistoryLoginListByMemberId(
             String memberId, String sortDirection, String sortColumn, int pageNo, int pageSize) {
-
         QHistoryLogin historyLogin = QHistoryLogin.historyLogin;
-
         PathBuilder<HistoryLogin> pathBuilder = new PathBuilder<>(HistoryLogin.class, "historyLogin");
         OrderSpecifier<String> orderSpecifier = null;
         switch (Objects.requireNonNull(SortDirections.fromText(sortDirection))) {
