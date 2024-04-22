@@ -50,6 +50,7 @@ public class MemberService {
      * 2024-04-11 GEONLEE - Apply DynamicSpecification<br />
      */
     @Transactional
+    @SuppressWarnings("unchecked")
     public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
         Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
         return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
@@ -62,6 +63,7 @@ public class MemberService {
      * @since 2024-04-12<br />
      */
     @Transactional
+    @SuppressWarnings("unchecked")
     public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
         Sort sort = dynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);
