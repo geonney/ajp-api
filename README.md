@@ -56,7 +56,22 @@
   - SimpleJpaRepository + DynamicRequest 를 사용한 메서드 추가 구현
   - 기존 Repository에서 extends JpaRepository -> extends JpaDynamicRepository 로 변경 하여 확장 메서드 사용
   - DynamicSpecfication 메서드 활용
-- Querydsl 적용 중 (Login history) :construction_worker:
+- Querydsl 적용 (Login history) :construction_worker:
+  - DynamicBooleanBuilder :star2:
+    - DynamicSpecification 과 같이 동적 BooleanBuilder를 생성해주는 클래스
+  - DynamicDslRepository (Custom JpaRepository) :thumbsup:
+    - DynamicRepository 와 같은 기능 (Querydsl 로 동작)
+
+## :heavy_check_mark:Dynamic 관련 클래스 (common/jpa/dynamicSearch)
+- DynamicRequest record 를 사용한 동적 조회 및 정렬 조건, 페이징 처리
+- DynamicConditions interface
+  - 동적 처리를 위한 interface
+  - 구현체 -> DynamicBooleanBuilder, DynamicSpecification
+- DynamicRepository interface
+  - JpaRepository의 기능 확장용 interface
+  - 구현체 -> JpaDynamicRepositoryImpl, JpaDynamicDslRepositoryImpl
+  - 각각 Specification 과 querydsl 방식으로 구분
+  - BaseRepository 설정으로 사용 방식 설정 가능 
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
