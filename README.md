@@ -71,7 +71,8 @@
   - JpaRepository의 기능 확장용 interface
   - 구현체 -> JpaDynamicRepositoryImpl, JpaDynamicDslRepositoryImpl
   - 각각 Specification 과 querydsl 방식으로 구분
-  - BaseRepository 설정으로 사용 방식 설정 가능 
+  - BaseRepository 설정으로 사용 방식 설정 가능
+- dsl 이 변경될 경우 DynamicConditions, DynamicRepository 를 구현하여 확장 가능
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
