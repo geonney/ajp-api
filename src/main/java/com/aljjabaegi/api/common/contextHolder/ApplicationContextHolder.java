@@ -6,8 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Spring bean 에 등록된 객체 조회 시 활용<br />
- * Spring bean 이 null 일 경우 활용<br />
+ * Spring bean 에 등록되지 않은 객체에서 Runtime 시점에 Spring bean 에 등록된 객체 조회 시 활용<br />
  * UserService userService = ApplicationContextHolder.getContext().getBean(UserService.class);<br />
  *
  * @author GEONLEE
