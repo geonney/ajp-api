@@ -39,7 +39,7 @@
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
-- Dynamic Specification (Member) :star2:
+- Dynamic Specification (Member)
   - filtering, sorting, paging 동적 처리
   - Operators enum 사용
     - equal, notEqual, like, between, in
@@ -51,18 +51,18 @@
     - like -> String type 만 사용 가능
     - Between -> String type 을 제외하고 사용 가능
   - DynamicSoter 를 사용하여 동적으로 Sort 생성
-- DynamicRepository (Custom JpaRepository) :thumbsup:
+- DynamicRepository (Custom JpaRepository)
   - JpaRepository 의 기능을 확장하여 서비스 로직 코드를 줄이는 역할
   - SimpleJpaRepository + DynamicRequest 를 사용한 메서드 추가 구현
   - 기존 Repository에서 extends JpaRepository -> extends JpaDynamicRepository 로 변경 하여 확장 메서드 사용
   - DynamicSpecfication 메서드 활용
-- Querydsl 적용 (Login history) :construction_worker:
-  - DynamicBooleanBuilder :star2:
+- Querydsl 적용 (Login history)
+  - DynamicBooleanBuilder 
     - DynamicSpecification 과 같이 동적 BooleanBuilder를 생성해주는 클래스
-  - DynamicDslRepository (Custom JpaRepository) :thumbsup:
+  - DynamicDslRepository (Custom JpaRepository)
     - DynamicRepository 와 같은 기능 (Querydsl 로 동작)
 
-## :heavy_check_mark:Dynamic 관련 클래스 (common/jpa/dynamicSearch)
+## :heavy_check_mark:Dynamic 관련 클래스 (common/jpa/dynamicSearch) :star2:
 - DynamicRequest record 를 사용한 동적 조회 및 정렬 조건, 페이징 처리
 - DynamicConditions interface
   - 동적 처리를 위한 interface
