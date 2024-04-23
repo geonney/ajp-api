@@ -27,7 +27,6 @@
 - Bulk 연산 @Modifying(clearAutomatically = true)
 - 연관 관계 (Sample)
   - @ManyToOne - @OneToMany 양방향 (Member - Team)
-  - @OneToOne (Team.leader - Member)
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId

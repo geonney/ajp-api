@@ -49,6 +49,6 @@ public class Board extends BaseEntity {
     private String memberId;
 
     @JoinColumn(name = "modify_member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //ManyToOne 단방향
     private Member member;
 }

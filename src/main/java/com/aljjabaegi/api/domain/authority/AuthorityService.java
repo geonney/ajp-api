@@ -1,15 +1,25 @@
 package com.aljjabaegi.api.domain.authority;
 
+import com.aljjabaegi.api.common.response.ItemResponse;
+import com.aljjabaegi.api.domain.authority.record.AuthorityCreateRequest;
+import com.aljjabaegi.api.domain.authority.record.AuthorityCreateResponse;
 import com.aljjabaegi.api.domain.member.MemberRepository;
+import com.aljjabaegi.api.domain.menu.MenuRepository;
+import com.aljjabaegi.api.domain.menuAuthority.MenuAuthorityMapper;
+import com.aljjabaegi.api.domain.menuAuthority.MenuAuthorityRepository;
+import com.aljjabaegi.api.domain.menuAuthority.record.MenuAuthorityCreateRequest;
 import com.aljjabaegi.api.entity.Authority;
-import com.aljjabaegi.api.entity.Member;
+import com.aljjabaegi.api.entity.MenuAuthority;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +34,48 @@ public class AuthorityService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AuthorityService.class);
     private final AuthorityRepository authorityRepository;
+    private final MenuAuthorityRepository menuAuthorityRepository;
     private final MemberRepository memberRepository;
+    private final MenuRepository menuRepository;
+    private final AuthorityMapper authorityMapper = AuthorityMapper.INSTANCE;
+    private final MenuAuthorityMapper menuAuthorityMapper = MenuAuthorityMapper.INSTANCE;
+
+    @Transactional
+    public ResponseEntity<ItemResponse<AuthorityCreateResponse>> createAuthority(AuthorityCreateRequest parameter) {
+        if (authorityRepository.existsById(parameter.authorityCode())) {
+            throw new EntityExistsException(parameter.authorityCode());
+        }
+        // 권한 추가
+        Authority createRequestEntity = authorityMapper.toEntity(parameter);
+        Authority createdEntity = authorityRepository.save(createRequestEntity);
+
+        // 메뉴 권한 추가
+        String authorityCode = createdEntity.getAuthorityCode();
+        List<String> menuIds = parameter.menuIds();
+        List<MenuAuthorityCreateRequest> menuAuthorityCreateRequests = new ArrayList<>();
+        for (String menuId : menuIds) {
+            menuAuthorityCreateRequests.add(MenuAuthorityCreateRequest.builder()
+                    .authorityCode(authorityCode)
+                    .menuId(menuId)
+                    .build());
+        }
+        List<MenuAuthority> entityList = menuAuthorityMapper.toEntityList(menuAuthorityCreateRequests); //비영속
+        List<MenuAuthority> createdEntityList = menuAuthorityRepository.saveAll(entityList); // 영속
+        // MenuAuthority 에 연결
+        for (MenuAuthority menuAuthority : createdEntityList) {
+            menuRepository.findById(menuAuthority.getKey().getMenuId()).ifPresent(menuAuthority::setMenu); // 메뉴 관계 추가
+            authorityRepository.findById(menuAuthority.getKey().getAuthorityCode()).ifPresent(menuAuthority::setAuthority); // 권한 관계 추가
+        }
+        createdEntity.setMenus(createdEntityList);
+        AuthorityCreateResponse response = authorityMapper.toCreateResponse(createdEntity);
+
+        return ResponseEntity.ok()
+                .body(ItemResponse.<AuthorityCreateResponse>builder()
+                        .status("OK")
+                        .message("데이터를 추가하는데 성공하였습니다.")
+                        .item(response)
+                        .build());
+    }
 
     /**
      * 권한 삭제

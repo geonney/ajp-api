@@ -31,6 +31,8 @@ public class QAuthority extends EntityPathBase<Authority> {
 
     public final ListPath<Member, QMember> members = this.<Member, QMember>createList("members", Member.class, QMember.class, PathInits.DIRECT2);
 
+    public final ListPath<MenuAuthority, QMenuAuthority> menus = this.<MenuAuthority, QMenuAuthority>createList("menus", MenuAuthority.class, QMenuAuthority.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
 

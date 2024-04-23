@@ -21,8 +21,13 @@ public class Authority extends BaseEntity {
     @Id
     @Column(name = "authority_cd")
     private String authorityCode;
-    @Column(name = "authority_name")
+    
+    @Column(name = "authority_nm")
     private String authorityName;
-    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY) //OneToMany, ManyToOne 양방향
     private List<Member> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE) // 권한 삭제 시 메뉴 권한 삭제
+    private List<MenuAuthority> menus;
 }

@@ -72,7 +72,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             String fieldType = getType(entity, fieldPath);
 
             //Possible search to without case sensitivity
-            String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value().toLowerCase();
+            String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value();
             // Possible search to null data
             if (value == null) {
                 booleanBuilder.and(rootPath.get(dynamicFilter.field()).isNull());

@@ -18,16 +18,12 @@ public class QTeam extends EntityPathBase<Team> {
 
     private static final long serialVersionUID = 1337225349L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QTeam team = new QTeam("team");
 
     public final com.aljjabaegi.api.common.jpa.base.QBaseEntity _super = new com.aljjabaegi.api.common.jpa.base.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
-
-    public final QMember leader;
 
     public final ListPath<Member, QMember> members = this.<Member, QMember>createList("members", Member.class, QMember.class, PathInits.DIRECT2);
 
@@ -39,24 +35,15 @@ public class QTeam extends EntityPathBase<Team> {
     public final StringPath teamName = createString("teamName");
 
     public QTeam(String variable) {
-        this(Team.class, forVariable(variable), INITS);
+        super(Team.class, forVariable(variable));
     }
 
     public QTeam(Path<? extends Team> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QTeam(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QTeam(PathMetadata metadata, PathInits inits) {
-        this(Team.class, metadata, inits);
-    }
-
-    public QTeam(Class<? extends Team> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.leader = inits.isInitialized("leader") ? new QMember(forProperty("leader"), inits.get("leader")) : null;
+        super(Team.class, metadata);
     }
 
 }

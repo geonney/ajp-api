@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * IdentifierGenerator 구현체<br />
@@ -33,7 +34,11 @@ public class IdGeneratorUtil implements IdentifierGenerator {
 
     @Override
     public Object generate(SharedSessionContractImplementor session, Object object) {
-        return generateProjectId();
+        if ("project".equals(this.parameter)) {
+            return generateProjectId();
+        } else {
+            return UUID.randomUUID().toString();
+        }
     }
 
     /**

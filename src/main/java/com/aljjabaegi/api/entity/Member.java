@@ -31,10 +31,10 @@ public class Member extends BaseEntity {
     @SearchableField
     private String memberId;
 
-    @Column(name = "member_password")
+    @Column(name = "member_pw")
     private String password;
 
-    @Column(name = "member_name")
+    @Column(name = "member_nm")
     @SearchableField
     private String memberName;
 
@@ -49,27 +49,29 @@ public class Member extends BaseEntity {
     @SearchableField
     private Integer age;
 
-    @Column(name = "latitude")
-    private Double latitude;
+    @Column(name = "height")
+    private Double height;
 
     @Column(name = "use_yn")
     @Enumerated(EnumType.STRING)
     @SearchableField
     private UseYn useYn;
 
+    @Column(name = "atk")
     private String accessToken;
 
+    @Column(name = "rtk")
     private String refreshToken;
 
-    @Column(name = "password_update_dt")
+    @Column(name = "pw_update_dt")
     private LocalDate passwordUpdateDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER) //ManyToOne - OneToMany 양방향
     @JoinColumn(name = "authority_cd")
     @NotFound(action = NotFoundAction.IGNORE)
     private Authority authority;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //ManyToOne - OneToMany 양방향
     @JoinColumn(name = "team_id")
     @SearchableField(columnPath = "team.teamName")
     private Team team = new Team(); // team 이 필수인 경우 = new Team() 으로 초기화. 저장 시 Team 이 없으면 Exception  발생

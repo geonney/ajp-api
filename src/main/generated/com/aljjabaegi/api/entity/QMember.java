@@ -37,7 +37,7 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
-    public final NumberPath<Double> latitude = createNumber("latitude", Double.class);
+    public final NumberPath<Double> height = createNumber("height", Double.class);
 
     public final StringPath memberId = createString("memberId");
 
@@ -75,7 +75,7 @@ public class QMember extends EntityPathBase<Member> {
     public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.authority = inits.isInitialized("authority") ? new QAuthority(forProperty("authority")) : null;
-        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team"), inits.get("team")) : null;
+        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
     }
 
 }

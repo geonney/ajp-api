@@ -25,7 +25,7 @@ import java.util.List;
 )
 public class Team extends BaseEntity {
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY) //OneToMany - ManyToOne 양방향
     List<Member> members = new ArrayList<>();
 
     @Id
@@ -33,11 +33,7 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TEAM_SEQ_GENERATOR")
     private Long teamId;
 
-    @Column(name = "team_name")
+    @Column(name = "team_nm")
     @SearchableField
     private String teamName;
-
-    @OneToOne
-    @JoinColumn(name = "leader_id", referencedColumnName = "member_id")
-    private Member leader;
 }
