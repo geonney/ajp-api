@@ -52,7 +52,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath refreshToken = createString("refreshToken");
 
-    public final QTeam team;
+    public final QMemberTeam team;
 
     public final EnumPath<com.aljjabaegi.api.entity.enumerated.UseYn> useYn = createEnum("useYn", com.aljjabaegi.api.entity.enumerated.UseYn.class);
 
@@ -75,7 +75,7 @@ public class QMember extends EntityPathBase<Member> {
     public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.authority = inits.isInitialized("authority") ? new QAuthority(forProperty("authority")) : null;
-        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
+        this.team = inits.isInitialized("team") ? new QMemberTeam(forProperty("team"), inits.get("team")) : null;
     }
 
 }

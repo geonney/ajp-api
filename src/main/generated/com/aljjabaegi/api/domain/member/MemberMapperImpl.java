@@ -8,6 +8,7 @@ import com.aljjabaegi.api.domain.member.record.MemberModifyResponse;
 import com.aljjabaegi.api.domain.member.record.MemberSearchResponse;
 import com.aljjabaegi.api.entity.Authority;
 import com.aljjabaegi.api.entity.Member;
+import com.aljjabaegi.api.entity.MemberTeam;
 import com.aljjabaegi.api.entity.Team;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-23T09:32:47+0900",
+    date = "2024-04-23T12:01:37+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -40,7 +41,7 @@ public class MemberMapperImpl implements MemberMapper {
         String memberName = null;
         String cellphone = null;
 
-        teamName = entityTeamTeamName( entity );
+        teamName = entityTeamTeamTeamName( entity );
         if ( entity.getBirthDate() != null ) {
             birthDate = dateTimeFormatter_yyyy_MM_dd_0159776256.format( entity.getBirthDate() );
         }
@@ -86,7 +87,7 @@ public class MemberMapperImpl implements MemberMapper {
         String memberName = null;
         String cellphone = null;
 
-        teamName = entityTeamTeamName( entity );
+        teamName = entityTeamTeamTeamName( entity );
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
@@ -117,7 +118,7 @@ public class MemberMapperImpl implements MemberMapper {
         String memberName = null;
         String cellphone = null;
 
-        teamName = entityTeamTeamName( entity );
+        teamName = entityTeamTeamTeamName( entity );
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
@@ -170,15 +171,19 @@ public class MemberMapperImpl implements MemberMapper {
         return entity;
     }
 
-    private String entityTeamTeamName(Member member) {
+    private String entityTeamTeamTeamName(Member member) {
         if ( member == null ) {
             return null;
         }
-        Team team = member.getTeam();
+        MemberTeam team = member.getTeam();
         if ( team == null ) {
             return null;
         }
-        String teamName = team.getTeamName();
+        Team team1 = team.getTeam();
+        if ( team1 == null ) {
+            return null;
+        }
+        String teamName = team1.getTeamName();
         if ( teamName == null ) {
             return null;
         }

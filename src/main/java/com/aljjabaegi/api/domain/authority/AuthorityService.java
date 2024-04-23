@@ -45,6 +45,7 @@ public class AuthorityService {
         if (authorityRepository.existsById(parameter.authorityCode())) {
             throw new EntityExistsException(parameter.authorityCode());
         }
+        //insertable, updatable false example
         // 권한 추가
         Authority createRequestEntity = authorityMapper.toEntity(parameter);
         Authority createdEntity = authorityRepository.save(createRequestEntity);

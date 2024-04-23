@@ -14,7 +14,7 @@ public record MemberCreateRequest(
         @Schema(description = "사용자 ID", example = "honggildong123")
         @NotNull
         String memberId,
-        @Schema(description = "사용자 password", example = "XO4y9+pNfqOEpaK3SYbf1n/EbsWiAVgv7arisRDKbmB0xcyx0bd+922YgEc/5B/ZnbKXD/oXkVWh3BMFAiu2Vqf97XEbOdWwpbvGNG4vrxoVD6NPDsv9PZRHHwjTIxpOIiIKGWqqAKKtMUJYcv7UUJTidHAe4IxvaqIlleWQLLVsm3xd/72XXjkdCDmFvOXpTkL01KLeeL0qzkBGys8eEuNQC/8U+qg5ocg6RRIUTCnLuyX6yO79XLlQUSuyA7L9Vz872nEVy2JJeSxqko32GKLg3sy+xDP9YUpFroaeKXXdNnsNj6hsOuXRla7HxgYSHMElOxujlN0lvBSaeBt6gg==")
+        @Schema(description = "사용자 password", example = "c44hzFsJz1TpbuNCc1ZBN5PbSWZI7/SGz1rl80l+ksmvWoQxdTdvjd8s+IP5ihfx+4FoTZLoJ7yIjIuYE8vCroS1SCyDqW7ZiZESMDo5k7VHh03kRbwss+9pdqxfA31qrP3jwmHYGkNgX1sC+/XG5O64M4Mss+Zfs79Z4f8e7ZxqVtWcbgLLGZTe3NMoVCozS3ORzU0YoInzuJujy8PtmeZynw0jWcdQf9x/c/f1N3TV73wARbnmr7ZRqlTCO67JwRlHV5H1Gpata/bGnQxiq5/pjlqxUnkdOH0UT9ZE6IQSNiLprHGYU3TBPysWjTikhpZUmb1SvF031lcFutI7uw==")
         @NotNull
         String password,
         @Schema(description = "사용자 명", example = "홍길동")

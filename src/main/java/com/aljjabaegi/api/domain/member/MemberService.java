@@ -9,8 +9,11 @@ import com.aljjabaegi.api.common.response.GridItemsResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
+import com.aljjabaegi.api.domain.memberTeam.MemberTeamRepository;
 import com.aljjabaegi.api.domain.team.TeamRepository;
 import com.aljjabaegi.api.entity.Member;
+import com.aljjabaegi.api.entity.MemberTeam;
+import com.aljjabaegi.api.entity.Team;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -37,6 +40,7 @@ public class MemberService {
 
     private final DynamicSpecification dynamicSpecification;
     private final MemberRepository memberRepository;
+    private final MemberTeamRepository memberTeamRepository;
     private final TeamRepository teamRepository;
     private final RsaProvider rsaProvider;
     private final MemberMapper memberMapper = MemberMapper.INSTANCE;
@@ -129,7 +133,15 @@ public class MemberService {
         }
         Member createRequestEntity = memberMapper.toEntity(parameter); //비영속
         Member createdEntity = memberRepository.save(createRequestEntity); //영속
-        teamRepository.findById(parameter.teamId()).ifPresentOrElse(createdEntity::setTeam, () -> {
+
+        teamRepository.findById(parameter.teamId()).ifPresentOrElse(team -> {
+            MemberTeam memberTeamEntity = new MemberTeam(); // 비영속
+            memberTeamEntity.setMemberId(createdEntity.getMemberId());
+            memberTeamEntity.setTeam(team);
+            memberTeamEntity.setResponsibilitiesCode("01");
+            MemberTeam createdMemberTeam = memberTeamRepository.saveAndFlush(memberTeamEntity); //영속
+            createdEntity.setTeam(createdMemberTeam); //영속된 팀을 연결
+        }, () -> {
             throw new EntityNotFoundException("Team does not exist. teamId: " + parameter.teamId());
         });
         return memberMapper.toCreateResponse(createdEntity);
@@ -144,11 +156,21 @@ public class MemberService {
     @Transactional
     public MemberModifyResponse modifyMember(MemberModifyRequest parameter) {
         Member entity = memberRepository.findById(parameter.memberId())
-                .orElseThrow(() -> new EntityNotFoundException(parameter.memberId()));
+                .orElseThrow(() -> new EntityNotFoundException("Member does not exist, memberId: " + parameter.memberId()));
+        Team teamEntity = teamRepository.findById(parameter.teamId())
+                .orElseThrow(() -> new EntityNotFoundException("Team does not exist. teamId: " + parameter.teamId()));
         Member modifiedEntity = memberMapper.updateFromRequest(parameter, entity);
-        teamRepository.findById(parameter.teamId()).ifPresentOrElse(modifiedEntity::setTeam, () -> {
-            throw new EntityNotFoundException("Team does not exist. teamId: " + parameter.teamId());
-        });
+        MemberTeam memberTeam = modifiedEntity.getTeam();
+        if (memberTeam == null) {
+            MemberTeam newMemberTeam = new MemberTeam();
+            newMemberTeam.setMemberId(entity.getMemberId());
+            newMemberTeam.setTeam(teamEntity);
+            newMemberTeam = memberTeamRepository.save(newMemberTeam);
+            modifiedEntity.setTeam(newMemberTeam);
+        } else {
+            modifiedEntity.getTeam().setTeam(teamEntity);
+        }
+
         modifiedEntity = memberRepository.saveAndFlush(modifiedEntity);
         return memberMapper.toModifyResponse(modifiedEntity);
     }

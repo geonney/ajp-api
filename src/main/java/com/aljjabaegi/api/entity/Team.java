@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,10 +23,6 @@ import java.util.List;
         , allocationSize = 1
 )
 public class Team extends BaseEntity {
-
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY) //OneToMany - ManyToOne 양방향
-    List<Member> members = new ArrayList<>();
-
     @Id
     @Column(name = "team_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TEAM_SEQ_GENERATOR")
@@ -36,4 +31,7 @@ public class Team extends BaseEntity {
     @Column(name = "team_nm")
     @SearchableField
     private String teamName;
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY) //OneToMany - ManyToOne 양방향
+    private List<MemberTeam> members;
 }

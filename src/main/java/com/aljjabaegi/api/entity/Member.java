@@ -71,10 +71,14 @@ public class Member extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private Authority authority;
 
-    @ManyToOne(fetch = FetchType.LAZY) //ManyToOne - OneToMany 양방향
-    @JoinColumn(name = "team_id")
-    @SearchableField(columnPath = "team.teamName")
-    private Team team = new Team(); // team 이 필수인 경우 = new Team() 으로 초기화. 저장 시 Team 이 없으면 Exception  발생
+//    @ManyToOne(fetch = FetchType.LAZY) //ManyToOne - OneToMany 양방향
+//    @JoinColumn(name = "team_id")
+//    @SearchableField(columnPath = "team.teamName")
+//    private Team team = new Team(); // team 이 필수인 경우 = new Team() 으로 초기화. 저장 시 Team 이 없으면 Exception  발생
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "member_id")
+    private MemberTeam team = new MemberTeam();
 
     // 연관관계 편의 메서드
     public void setAuthority(Authority authority) {
@@ -87,20 +91,6 @@ public class Member extends BaseEntity {
         this.authority = authority;
         if (authority != null) {
             authority.getMembers().add(this);
-        }
-    }
-
-    // 연관관계 편의 메서드
-    public void setTeam(Team team) {
-        // 기존 팀과 연관관계를 제거
-        if (this.team != null) {
-            this.team.getMembers().remove(this);
-        }
-
-        //새로운 연관관계 설정
-        this.team = team;
-        if (team != null) {
-            team.getMembers().add(this);
         }
     }
 }

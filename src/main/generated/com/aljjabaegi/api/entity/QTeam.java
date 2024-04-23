@@ -25,7 +25,7 @@ public class QTeam extends EntityPathBase<Team> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
-    public final ListPath<Member, QMember> members = this.<Member, QMember>createList("members", Member.class, QMember.class, PathInits.DIRECT2);
+    public final ListPath<MemberTeam, QMemberTeam> members = this.<MemberTeam, QMemberTeam>createList("members", MemberTeam.class, QMemberTeam.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
