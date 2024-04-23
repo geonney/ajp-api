@@ -3,6 +3,7 @@ package com.aljjabaegi.api.domain.menuAuthority;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.menu.record.MenuSearchResponse;
 import com.aljjabaegi.api.domain.menuAuthority.record.MenuAuthorityCreateRequest;
+import com.aljjabaegi.api.entity.Menu;
 import com.aljjabaegi.api.entity.MenuAuthority;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,6 +22,9 @@ import java.util.List;
 public interface MenuAuthorityMapper {
     MenuAuthorityMapper INSTANCE = Mappers.getMapper(MenuAuthorityMapper.class);
 
+
+
+    List<MenuSearchResponse> toSearchSubMenusResponse(List<Menu> menus);
     /**
      * entity to search response
      *
@@ -34,6 +38,7 @@ public interface MenuAuthorityMapper {
             @Mapping(target = "menuName", source = "menu.menuName"),
             @Mapping(target = "upperMenuId", source = "menu.upperMenuId"),
             @Mapping(target = "menuPath", source = "menu.menuPath"),
+            @Mapping(target = "subMenus", source = "menu.subMenus"),
             @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })

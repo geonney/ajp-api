@@ -2,13 +2,13 @@ package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATOR_PARAM_KEY;
 
@@ -22,6 +22,7 @@ import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATO
 @Getter
 @Setter
 public class Menu extends BaseEntity {
+
     @Id
     @Column(name = "menu_id")
     @GenericGenerator(name = "MenuIdGenerator", type = IdGeneratorUtil.class
@@ -34,4 +35,8 @@ public class Menu extends BaseEntity {
     private String upperMenuId;
     @Column(name = "menu_path")
     private String menuPath;
+
+    @OneToMany
+    @JoinColumn(name = "upper_menu_id")
+    private List<Menu> subMenus = new ArrayList<>();
 }

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -32,6 +33,8 @@ public class QMenu extends EntityPathBase<Menu> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
+
+    public final ListPath<Menu, QMenu> subMenus = this.<Menu, QMenu>createList("subMenus", Menu.class, QMenu.class, PathInits.DIRECT2);
 
     public final StringPath upperMenuId = createString("upperMenuId");
 

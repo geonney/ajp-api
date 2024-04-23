@@ -14,13 +14,27 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-23T12:01:37+0900",
+    date = "2024-04-23T13:10:14+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
 public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
 
     private final DateTimeFormatter dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168 = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" );
+
+    @Override
+    public List<MenuSearchResponse> toSearchSubMenusResponse(List<Menu> menus) {
+        if ( menus == null ) {
+            return null;
+        }
+
+        List<MenuSearchResponse> list = new ArrayList<MenuSearchResponse>( menus.size() );
+        for ( Menu menu : menus ) {
+            list.add( menuToMenuSearchResponse( menu ) );
+        }
+
+        return list;
+    }
 
     @Override
     public MenuSearchResponse toSearchResponse(MenuAuthority entity) {
@@ -32,6 +46,7 @@ public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
         String menuName = null;
         String upperMenuId = null;
         String menuPath = null;
+        List<MenuSearchResponse> subMenus = null;
         String createDate = null;
         String modifyDate = null;
 
@@ -39,6 +54,8 @@ public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
         menuName = entityMenuMenuName( entity );
         upperMenuId = entityMenuUpperMenuId( entity );
         menuPath = entityMenuMenuPath( entity );
+        List<Menu> subMenus1 = entityMenuSubMenus( entity );
+        subMenus = toSearchSubMenusResponse( subMenus1 );
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
@@ -46,7 +63,7 @@ public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
             modifyDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getModifyDate() );
         }
 
-        MenuSearchResponse menuSearchResponse = new MenuSearchResponse( menuId, menuName, upperMenuId, menuPath, createDate, modifyDate );
+        MenuSearchResponse menuSearchResponse = new MenuSearchResponse( menuId, menuName, upperMenuId, menuPath, createDate, modifyDate, subMenus );
 
         return menuSearchResponse;
     }
@@ -90,6 +107,36 @@ public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
         }
 
         return list;
+    }
+
+    protected MenuSearchResponse menuToMenuSearchResponse(Menu menu) {
+        if ( menu == null ) {
+            return null;
+        }
+
+        String menuId = null;
+        String menuName = null;
+        String upperMenuId = null;
+        String menuPath = null;
+        String createDate = null;
+        String modifyDate = null;
+        List<MenuSearchResponse> subMenus = null;
+
+        menuId = menu.getMenuId();
+        menuName = menu.getMenuName();
+        upperMenuId = menu.getUpperMenuId();
+        menuPath = menu.getMenuPath();
+        if ( menu.getCreateDate() != null ) {
+            createDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format( menu.getCreateDate() );
+        }
+        if ( menu.getModifyDate() != null ) {
+            modifyDate = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format( menu.getModifyDate() );
+        }
+        subMenus = toSearchSubMenusResponse( menu.getSubMenus() );
+
+        MenuSearchResponse menuSearchResponse = new MenuSearchResponse( menuId, menuName, upperMenuId, menuPath, createDate, modifyDate, subMenus );
+
+        return menuSearchResponse;
     }
 
     private String entityMenuMenuId(MenuAuthority menuAuthority) {
@@ -150,6 +197,21 @@ public class MenuAuthorityMapperImpl implements MenuAuthorityMapper {
             return null;
         }
         return menuPath;
+    }
+
+    private List<Menu> entityMenuSubMenus(MenuAuthority menuAuthority) {
+        if ( menuAuthority == null ) {
+            return null;
+        }
+        Menu menu = menuAuthority.getMenu();
+        if ( menu == null ) {
+            return null;
+        }
+        List<Menu> subMenus = menu.getSubMenus();
+        if ( subMenus == null ) {
+            return null;
+        }
+        return subMenus;
     }
 
     protected MenuAuthorityKey menuAuthorityCreateRequestToMenuAuthorityKey(MenuAuthorityCreateRequest menuAuthorityCreateRequest) {

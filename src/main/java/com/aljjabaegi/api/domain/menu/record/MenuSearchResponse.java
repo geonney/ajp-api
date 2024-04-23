@@ -1,7 +1,8 @@
 package com.aljjabaegi.api.domain.menu.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
+
+import java.util.List;
 
 /**
  * @author GEONLEE
@@ -20,6 +21,8 @@ public record MenuSearchResponse(
         @Schema(description = "생성 일시", example = "2024-04-08 15:15:15")
         String createDate,
         @Schema(description = "수정 일시", example = "2024-04-08 15:15:15")
-        String modifyDate
+        String modifyDate,
+        @Schema(description = "하위 메뉴")
+        List<MenuSearchResponse> subMenus
 ) {
 }

@@ -11,6 +11,7 @@ import com.aljjabaegi.api.domain.menuAuthority.MenuAuthorityMapper;
 import com.aljjabaegi.api.domain.menuAuthority.MenuAuthorityRepository;
 import com.aljjabaegi.api.entity.Menu;
 import com.aljjabaegi.api.entity.MenuAuthority;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class MenuService {
      * @since 2024-04-08<br />
      * 2024-04-09 GEONLEE - Apply Specifications<br />
      */
+    @Transactional
     public ResponseEntity<ItemsResponse<MenuSearchResponse>> getMenusByAuthority() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<MenuSearchResponse> menuSearchResponses = new ArrayList<>();
@@ -57,7 +59,6 @@ public class MenuService {
                 String authorityName = authority.getAuthority();
                 stringJoiner.add(authorityName);
             }
-            System.out.println(stringJoiner);
             List<MenuAuthority> menuAuthorities = menuAuthorityRepository.findDynamic(DynamicFilter.builder()
                     .field("authorityCode")
                     .operator(Operators.IN)

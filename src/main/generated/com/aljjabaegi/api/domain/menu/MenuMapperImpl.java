@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-23T09:32:47+0900",
+    date = "2024-04-23T13:10:14+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -33,6 +33,7 @@ public class MenuMapperImpl implements MenuMapper {
         String menuName = null;
         String upperMenuId = null;
         String menuPath = null;
+        List<MenuSearchResponse> subMenus = null;
 
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
@@ -44,8 +45,9 @@ public class MenuMapperImpl implements MenuMapper {
         menuName = entity.getMenuName();
         upperMenuId = entity.getUpperMenuId();
         menuPath = entity.getMenuPath();
+        subMenus = toSearchResponseList( entity.getSubMenus() );
 
-        MenuSearchResponse menuSearchResponse = new MenuSearchResponse( menuId, menuName, upperMenuId, menuPath, createDate, modifyDate );
+        MenuSearchResponse menuSearchResponse = new MenuSearchResponse( menuId, menuName, upperMenuId, menuPath, createDate, modifyDate, subMenus );
 
         return menuSearchResponse;
     }
