@@ -1,8 +1,10 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
+import com.aljjabaegi.api.common.request.enumeration.SortDirections;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,11 +19,13 @@ import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATO
  *
  * @author GEONLEE
  * @since 2024-04-04<br />
- * 2024-04-07 GEONLEE - @Temporal(TemporalType.DATE) 추가
+ * 2024-04-07 GEONLEE - @Temporal(TemporalType.DATE) 추가<br />
+ * 2024-04-24 GEONLEE - DefaultSort 적용
  */
 @Getter
 @Setter
 @Entity(name = "project")
+@DefaultSort(columnName = {"createDate", "projectStartDate"}, direction = {SortDirections.DESC, SortDirections.DESC})
 public class Project extends BaseEntity {
 
     @Id

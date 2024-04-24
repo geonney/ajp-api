@@ -1,7 +1,9 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
+import com.aljjabaegi.api.common.request.enumeration.SortDirections;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +25,7 @@ import org.springframework.data.annotation.LastModifiedBy;
         , initialValue = 1
         , allocationSize = 1
 )
+@DefaultSort(columnName = {"boardSequence"}, direction = SortDirections.DESC)
 public class Board extends BaseEntity {
 
     @Id

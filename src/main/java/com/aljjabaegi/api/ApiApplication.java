@@ -1,6 +1,7 @@
 package com.aljjabaegi.api;
 
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.repository.JpaDynamicDslRepositoryImpl;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.repository.JpaDynamicRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

@@ -16,7 +16,8 @@ import java.util.List;
  * Dynamic request 관련 동적 조회, 정렬 조건 생성 interface
  *
  * @author GEONLEE
- * @since 2024-04-19
+ * @since 2024-04-19<br />
+ * 2024-04-24 GEONLEE - Add generateDefaultSort method<br />
  */
 public interface DynamicConditions {
     List<String> BASE_ENTITY_FIELDS = Arrays.stream(BaseEntity.class.getDeclaredFields()).map(Field::getName).toList();
@@ -25,6 +26,11 @@ public interface DynamicConditions {
      * 정렬 조건 생성
      */
     Object generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters);
+
+    /**
+     * 키 값으로 기본 정렬 조건 생성
+     */
+    Object generateDefaultSort(Class<?> entity);
 
     /**
      * 조회 조건 생성

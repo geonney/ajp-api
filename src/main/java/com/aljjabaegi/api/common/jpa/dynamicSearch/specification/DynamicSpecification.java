@@ -2,6 +2,7 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.specification;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
@@ -37,6 +38,7 @@ import java.util.*;
  * - getSearchFieldPath, BASE_ENTITY_FIELD 추가 -> BaseEntity field 처리 방식 변경<br />
  * - implements DynamicConditions 추가<br />
  * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
+ * - 기존 generateSort 메서드에서 Sort 생성 부분을 parseSort 메서드로 분리, implements generateDefaultSort method<br />
  */
 @Component
 public class DynamicSpecification implements DynamicConditions {
@@ -85,9 +87,19 @@ public class DynamicSpecification implements DynamicConditions {
     @Override
     public Sort generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         if (dynamicSorters == null) {
-            return Sort.unsorted();
+            return generateDefaultSort(entity);
         }
         checkSortableField(entity, dynamicSorters);
+        return parseSort(dynamicSorters);
+    }
+
+    /**
+     * DynamicSort list 로 sort 를 생성하여 리턴
+     *
+     * @param dynamicSorters DynamicSorter list
+     * @return Sort 정렬 조건
+     */
+    private Sort parseSort(List<DynamicSorter> dynamicSorters) {
         List<Sort.Order> orderList = new ArrayList<>();
         for (DynamicSorter dynamicSorter : dynamicSorters) {
             if (dynamicSorter.sortDirection() == null) {
@@ -104,6 +116,27 @@ public class DynamicSpecification implements DynamicConditions {
             }
         }
         return Sort.by(orderList);
+    }
+
+    @Override
+    public Sort generateDefaultSort(Class<?> entity) {
+        DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
+        if (defaultSort == null) {
+            return Sort.unsorted();
+        }
+        String[] columnNames = defaultSort.columnName();
+        SortDirections[] sortDirections = defaultSort.direction();
+        if (columnNames.length != sortDirections.length) {
+            throw new ServiceException(CommonErrorCode.SERVICE_ERROR,
+                    "Check '" + entity.getSimpleName() + "' entity @DefaultSort settings. different lengths. (columnName-direction)");
+        }
+        List<DynamicSorter> dynamicSorters = new ArrayList<>();
+        for (int i = 0, n = columnNames.length; i < n; i++) {
+            DynamicSorter dynamicSorter = new DynamicSorter(columnNames[i], sortDirections[i]);
+            dynamicSorters.add(dynamicSorter);
+        }
+        checkSortableField(entity, dynamicSorters);
+        return parseSort(dynamicSorters);
     }
 
     @Override

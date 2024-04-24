@@ -2,6 +2,7 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
@@ -34,27 +35,54 @@ public class DynamicBooleanBuilder implements DynamicConditions {
 
     @Override
     public List<OrderSpecifier<String>> generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
+        if (dynamicSorters == null) {
+            return generateDefaultSort(entity);
+        }
+        return parseSort(entity, dynamicSorters);
+    }
+
+    private List<OrderSpecifier<String>> parseSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
-        if (dynamicSorters != null) {
-            PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
-            for (DynamicSorter dynamicSorter : dynamicSorters) {
-                String fieldPath = getSearchFieldPath(entity, dynamicSorter.field());
-                PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
-                if (dynamicSorter.sortDirection() == null) {
-                    throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
-                            , "Invalid sort direction. Possible sort directions -> " + SortDirections.getSorDirections());
+        PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
+        for (DynamicSorter dynamicSorter : dynamicSorters) {
+            String fieldPath = getSearchFieldPath(entity, dynamicSorter.field());
+            PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
+            if (dynamicSorter.sortDirection() == null) {
+                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
+                        , "Invalid sort direction. Possible sort directions -> " + SortDirections.getSorDirections());
+            }
+            switch (dynamicSorter.sortDirection()) {
+                case ASC -> {
+                    orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).asc().nullsLast());
                 }
-                switch (dynamicSorter.sortDirection()) {
-                    case ASC -> {
-                        orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).asc().nullsLast());
-                    }
-                    case DESC -> {
-                        orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).desc().nullsLast());
-                    }
+                case DESC -> {
+                    orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).desc().nullsLast());
                 }
             }
         }
         return orderSpecifierList;
+    }
+
+    @Override
+    public List<OrderSpecifier<String>> generateDefaultSort(Class<?> entity) {
+        System.out.println("default sort");
+        List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
+        DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
+        if (defaultSort == null) {
+            return orderSpecifierList;
+        }
+        String[] columnNames = defaultSort.columnName();
+        SortDirections[] sortDirections = defaultSort.direction();
+        if (columnNames.length != sortDirections.length) {
+            throw new ServiceException(CommonErrorCode.SERVICE_ERROR,
+                    "Check '" + entity.getSimpleName() + "' entity @DefaultSort settings. different lengths. (columnName-direction)");
+        }
+        List<DynamicSorter> dynamicSorters = new ArrayList<>();
+        for (int i = 0, n = columnNames.length; i < n; i++) {
+            DynamicSorter dynamicSorter = new DynamicSorter(columnNames[i], sortDirections[i]);
+            dynamicSorters.add(dynamicSorter);
+        }
+        return parseSort(entity, dynamicSorters);
     }
 
     @Override
