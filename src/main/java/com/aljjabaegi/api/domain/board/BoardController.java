@@ -50,7 +50,7 @@ public class BoardController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
@@ -75,7 +75,7 @@ public class BoardController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
@@ -116,7 +116,7 @@ public class BoardController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
@@ -141,7 +141,7 @@ public class BoardController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }

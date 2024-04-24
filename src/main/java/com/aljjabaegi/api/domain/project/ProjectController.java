@@ -75,7 +75,7 @@ public class ProjectController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
@@ -100,7 +100,7 @@ public class ProjectController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }

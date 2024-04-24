@@ -168,7 +168,7 @@ public class MemberController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
@@ -193,7 +193,7 @@ public class MemberController {
                                         "sorter": [
                                             {
                                                 "field":"createDate",
-                                                "sortDirection":"DESC"
+                                                "direction":"DESC"
                                             }
                                         ]
                                     }
