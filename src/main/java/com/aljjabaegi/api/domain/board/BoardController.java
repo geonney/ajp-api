@@ -1,7 +1,7 @@
 package com.aljjabaegi.api.domain.board;
 
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -88,8 +88,8 @@ public class BoardController {
             }
     ))
     @Operation(summary = "Search boards (DynamicDslRepository)", operationId = "API-BOARD-02")
-    public ResponseEntity<GridItemsResponse<BoardSearchResponse>> getBoardListUsingDynamicDslRepository(@RequestBody DynamicRequest dynamicRequest) {
-        GridItemsResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicDslRepository(dynamicRequest);
+    public ResponseEntity<GridResponse<BoardSearchResponse>> getBoardListUsingDynamicDslRepository(@RequestBody DynamicRequest dynamicRequest) {
+        GridResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicDslRepository(dynamicRequest);
         return ResponseEntity.ok()
                 .body(gridItemsResponse);
     }
@@ -154,8 +154,8 @@ public class BoardController {
             }
     ))
     @Operation(summary = "Search boards (DynamicBooleanBuilder)", operationId = "API-BOARD-01")
-    public ResponseEntity<GridItemsResponse<BoardSearchResponse>> getBoardList(@RequestBody DynamicRequest dynamicRequest) {
-        GridItemsResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicBooleanBuilder(dynamicRequest);
+    public ResponseEntity<GridResponse<BoardSearchResponse>> getBoardList(@RequestBody DynamicRequest dynamicRequest) {
+        GridResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicBooleanBuilder(dynamicRequest);
         return ResponseEntity.ok()
                 .body(gridItemsResponse);
     }

@@ -12,20 +12,21 @@ import java.util.stream.Stream;
  * Conditions used in DynamicSpecification
  *
  * @author GEONLEE
- * @since 2024-04-09
+ * @since 2024-04-09<br />
+ * 2024-04-24 Operator 로 명칭 변경, getOperatorString 으로 메서드 명칭 변경<br />
  */
-public enum Operators {
+public enum Operator {
     EQUAL("eq"), NOT_EQUAL("neq"), LIKE("contains"), BETWEEN("between"), IN("in"), LTE("lte"), GTE("gte");
 
-    private static final Map<String, Operators> OPERATOR_MAP = Stream.of(values())
-            .collect(Collectors.toMap(Operators::type, e -> e));
+    private static final Map<String, Operator> OPERATOR_MAP = Stream.of(values())
+            .collect(Collectors.toMap(Operator::type, e -> e));
     private final String type;
 
-    Operators(String type) {
+    Operator(String type) {
         this.type = type;
     }
 
-    public static Optional<Operators> value(String operator) {
+    public static Optional<Operator> value(String operator) {
         return Optional.ofNullable(OPERATOR_MAP.get(operator));
     }
 
@@ -33,8 +34,8 @@ public enum Operators {
      * RequestBody 에서 String to Enum 시 활용
      */
     @JsonCreator
-    public static Operators fromText(String operatorText) {
-        for (Operators operators : Operators.values()) {
+    public static Operator fromText(String operatorText) {
+        for (Operator operators : Operator.values()) {
             if (operators.type().equals(operatorText)) {
                 return operators;
             }
@@ -45,9 +46,9 @@ public enum Operators {
     /**
      * @return Operators type String
      */
-    public static String getOperators() {
+    public static String getOperatorString() {
         StringJoiner stringJoiner = new StringJoiner(",");
-        for (Operators operators : Operators.values()) {
+        for (Operator operators : Operator.values()) {
             stringJoiner.add(operators.type());
         }
         return stringJoiner.toString();

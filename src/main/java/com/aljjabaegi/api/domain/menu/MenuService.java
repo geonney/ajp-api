@@ -1,7 +1,7 @@
 package com.aljjabaegi.api.domain.menu;
 
 import com.aljjabaegi.api.common.request.DynamicFilter;
-import com.aljjabaegi.api.common.request.enumeration.Operators;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.menu.record.MenuCreateRequest;
@@ -61,7 +61,7 @@ public class MenuService {
             }
             List<MenuAuthority> menuAuthorities = menuAuthorityRepository.findDynamic(DynamicFilter.builder()
                     .field("authorityCode")
-                    .operator(Operators.IN)
+                    .operator(Operator.IN)
                     .value(stringJoiner.toString())
                     .build());
             menuSearchResponses = menuAuthorityMapper.toSearchResponseList(menuAuthorities);

@@ -8,8 +8,8 @@ import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
-import com.aljjabaegi.api.common.request.enumeration.Operators;
-import com.aljjabaegi.api.common.request.enumeration.SortDirections;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.query.sqm.PathElementException;
@@ -102,11 +102,11 @@ public class DynamicSpecification implements DynamicConditions {
     private Sort parseSort(List<DynamicSorter> dynamicSorters) {
         List<Sort.Order> orderList = new ArrayList<>();
         for (DynamicSorter dynamicSorter : dynamicSorters) {
-            if (dynamicSorter.sortDirection() == null) {
+            if (dynamicSorter.direction() == null) {
                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
-                        , "Invalid sort direction. Possible sort directions -> " + SortDirections.getSorDirections());
+                        , "Invalid sort direction. Possible sort directions -> " + SortDirection.getSorDirectionString());
             }
-            switch (dynamicSorter.sortDirection()) {
+            switch (dynamicSorter.direction()) {
                 case ASC -> {
                     orderList.add(Sort.Order.asc(dynamicSorter.field()));
                 }
@@ -125,7 +125,7 @@ public class DynamicSpecification implements DynamicConditions {
             return Sort.unsorted();
         }
         String[] columnNames = defaultSort.columnName();
-        SortDirections[] sortDirections = defaultSort.direction();
+        SortDirection[] sortDirections = defaultSort.direction();
         if (columnNames.length != sortDirections.length) {
             throw new ServiceException(CommonErrorCode.SERVICE_ERROR,
                     "Check '" + entity.getSimpleName() + "' entity @DefaultSort settings. different lengths. (columnName-direction)");
@@ -149,7 +149,7 @@ public class DynamicSpecification implements DynamicConditions {
             List<Predicate> predicates = new ArrayList<>();
             for (DynamicFilter dynamicFilter : dynamicFilters) {
                 if (dynamicFilter.operator() == null) {
-                    throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operators.getOperators());
+                    throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operator.getOperatorString());
                 }
                 String fieldPath = getSearchFieldPath(entity, dynamicFilter.field()); // root.getJavaType();
                 Path<String> path = getPath(root, fieldPath);

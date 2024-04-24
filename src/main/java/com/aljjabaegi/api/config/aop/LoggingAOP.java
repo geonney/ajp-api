@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.config.aop;
 
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.google.gson.Gson;
@@ -84,7 +84,7 @@ public class LoggingAOP {
                 LOGGER.info("[Body][ItemsResponse] size: {}\n", itemsResponse.size());
             }
             case "GridItemsResponse" -> {
-                GridItemsResponse<?> gridItemsResponse = (GridItemsResponse<?>) body;
+                GridResponse<?> gridItemsResponse = (GridResponse<?>) body;
                 Long totalSize = gridItemsResponse.totalSize();
                 int totalPageSize = gridItemsResponse.totalPageSize();
                 int size = gridItemsResponse.size();

@@ -1,8 +1,7 @@
 package com.aljjabaegi.api.domain.project;
 
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
-import com.aljjabaegi.api.domain.member.record.MemberSearchResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.domain.project.record.*;
 import com.aljjabaegi.api.entity.Project;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,13 +40,13 @@ public class ProjectService {
      * @author GEONLEE
      * @since 2024-04-18
      */
-    public GridItemsResponse<ProjectSearchResponse> getProjectListUsingDynamicRepository(DynamicRequest dynamicRequest) {
+    public GridResponse<ProjectSearchResponse> getProjectListUsingDynamicRepository(DynamicRequest dynamicRequest) {
         Page<Project> page = projectRepository.findDynamicWithPageable(dynamicRequest);
         int totalPage = page.getTotalPages();
         long totalElements = page.getTotalElements();
         List<ProjectSearchResponse> projectSearchResponseList = projectMapper.toSearchResponseList(page.getContent());
 
-        return GridItemsResponse.<ProjectSearchResponse>builder()
+        return GridResponse.<ProjectSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(totalElements)

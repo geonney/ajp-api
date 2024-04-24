@@ -8,8 +8,8 @@ import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
 import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
-import com.aljjabaegi.api.common.request.enumeration.Operators;
-import com.aljjabaegi.api.common.request.enumeration.SortDirections;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -53,11 +53,11 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         for (DynamicSorter dynamicSorter : dynamicSorters) {
             String fieldPath = getSearchFieldPath(entity, dynamicSorter.field());
             PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
-            if (dynamicSorter.sortDirection() == null) {
+            if (dynamicSorter.direction() == null) {
                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
-                        , "Invalid sort direction. Possible sort directions -> " + SortDirections.getSorDirections());
+                        , "Invalid sort direction. Possible sort directions -> " + SortDirection.getSorDirectionString());
             }
-            switch (dynamicSorter.sortDirection()) {
+            switch (dynamicSorter.direction()) {
                 case ASC -> {
                     orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).asc().nullsLast());
                 }
@@ -77,7 +77,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             return orderSpecifierList;
         }
         String[] columnNames = defaultSort.columnName();
-        SortDirections[] sortDirections = defaultSort.direction();
+        SortDirection[] sortDirections = defaultSort.direction();
         if (columnNames.length != sortDirections.length) {
             throw new ServiceException(CommonErrorCode.SERVICE_ERROR,
                     "Check '" + entity.getSimpleName() + "' entity @DefaultSort settings. different lengths. (columnName-direction)");
@@ -98,7 +98,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         }
         for (DynamicFilter dynamicFilter : dynamicFilters) {
             if (dynamicFilter.operator() == null) {
-                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operators.getOperators());
+                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operator.getOperatorString());
             }
             PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
             String fieldPath = getSearchFieldPath(entity, dynamicFilter.field());

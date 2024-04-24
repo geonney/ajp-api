@@ -4,7 +4,7 @@ import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
-import com.aljjabaegi.api.common.request.enumeration.SortDirections;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATO
 @Getter
 @Setter
 @Entity(name = "project")
-@DefaultSort(columnName = {"createDate", "projectStartDate"}, direction = {SortDirections.DESC, SortDirections.DESC})
+@DefaultSort(columnName = {"createDate", "projectStartDate"}, direction = {SortDirection.DESC, SortDirection.DESC})
 public class Project extends BaseEntity {
 
     @Id

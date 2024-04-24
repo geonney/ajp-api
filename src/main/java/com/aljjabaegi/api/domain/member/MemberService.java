@@ -5,7 +5,7 @@ import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
@@ -68,7 +68,7 @@ public class MemberService {
      */
     @Transactional
     @SuppressWarnings("unchecked")
-    public GridItemsResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
+    public GridResponse<MemberSearchResponse> getUserListUsingDynamicRequest(DynamicRequest dynamicRequest) {
         Sort sort = dynamicSpecification.generateSort(Member.class, dynamicRequest.sorter());
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);
         Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicRequest.filter());
@@ -79,7 +79,7 @@ public class MemberService {
         long totalElements = page.getTotalElements();
         List<MemberSearchResponse> memberSearchResponseList = memberMapper.toSearchResponseList(page.getContent());
 
-        return GridItemsResponse.<MemberSearchResponse>builder()
+        return GridResponse.<MemberSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(totalElements)

@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Schema(description = "공통 Grid List 응답 구조체 (Paging and sorting)")
 @Builder
-public record GridItemsResponse<T>(
+public record GridResponse<T>(
         @Schema(description = "Status code", example = "OK")
         String status,
         @Schema(description = "message", example = "데이터를 조회하는데 성공하였습니다.")

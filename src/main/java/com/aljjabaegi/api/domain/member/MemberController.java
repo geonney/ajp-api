@@ -2,7 +2,7 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.member.record.*;
@@ -206,8 +206,8 @@ public class MemberController {
             }
     ))
     @Operation(summary = "Search members (DynamicSpecification + paging + sorting)", operationId = "API-MEMBER-02")
-    public ResponseEntity<GridItemsResponse<MemberSearchResponse>> getUserListUsingDynamicRequest(@RequestBody DynamicRequest dynamicRequest) {
-        GridItemsResponse<MemberSearchResponse> gridItemsResponse =
+    public ResponseEntity<GridResponse<MemberSearchResponse>> getUserListUsingDynamicRequest(@RequestBody DynamicRequest dynamicRequest) {
+        GridResponse<MemberSearchResponse> gridItemsResponse =
                 memberService.getUserListUsingDynamicRequest(dynamicRequest);
         return ResponseEntity.ok()
                 .body(gridItemsResponse);

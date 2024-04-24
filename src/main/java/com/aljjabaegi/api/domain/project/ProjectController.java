@@ -1,7 +1,7 @@
 package com.aljjabaegi.api.domain.project;
 
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.project.record.*;
@@ -113,8 +113,8 @@ public class ProjectController {
             }
     ))
     @Operation(summary = "Search Project (DynamicRepository)", operationId = "API-PROJECT-03")
-    public ResponseEntity<GridItemsResponse<ProjectSearchResponse>> getProjectListUsingDynamicRepository(@RequestBody DynamicRequest dynamicRequest) {
-        GridItemsResponse<ProjectSearchResponse> gridItemsResponse = projectService.getProjectListUsingDynamicRepository(dynamicRequest);
+    public ResponseEntity<GridResponse<ProjectSearchResponse>> getProjectListUsingDynamicRepository(@RequestBody DynamicRequest dynamicRequest) {
+        GridResponse<ProjectSearchResponse> gridItemsResponse = projectService.getProjectListUsingDynamicRepository(dynamicRequest);
         return ResponseEntity.ok()
                 .body(gridItemsResponse);
     }

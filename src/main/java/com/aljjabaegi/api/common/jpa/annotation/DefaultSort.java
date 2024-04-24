@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.common.jpa.annotation;
 
-import com.aljjabaegi.api.common.request.enumeration.SortDirections;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,5 +19,5 @@ import java.lang.annotation.Target;
 public @interface DefaultSort {
     String[] columnName();
 
-    SortDirections[] direction();
+    SortDirection[] direction();
 }

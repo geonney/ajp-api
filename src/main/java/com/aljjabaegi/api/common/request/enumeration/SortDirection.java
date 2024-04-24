@@ -6,14 +6,15 @@ import java.util.StringJoiner;
 
 /**
  * @author GEONLEE
- * @since 2024-04-12
+ * @since 2024-04-12<br />
+ * 2024-04-24 GEONLEE - SortDirection 으로 명칭 변경, getSorDirectionString 으로 메서드 명 변경<br />
  */
-public enum SortDirections {
+public enum SortDirection {
     ASC("ASC"), DESC("DESC");
 
     private final String type;
 
-    SortDirections(String type) {
+    SortDirection(String type) {
         this.type = type;
     }
 
@@ -21,8 +22,8 @@ public enum SortDirections {
      * RequestBody 에서 String to Enum 시 활용
      */
     @JsonCreator
-    public static SortDirections fromText(String sortDirectionsText) {
-        for (SortDirections sortDirections : SortDirections.values()) {
+    public static SortDirection fromText(String sortDirectionsText) {
+        for (SortDirection sortDirections : SortDirection.values()) {
             if (sortDirections.type().equalsIgnoreCase(sortDirectionsText)) {
                 return sortDirections;
             }
@@ -33,9 +34,9 @@ public enum SortDirections {
     /**
      * @return SortDirections type String
      */
-    public static String getSorDirections() {
+    public static String getSorDirectionString() {
         StringJoiner stringJoiner = new StringJoiner(",");
-        for (SortDirections sortDirection : SortDirections.values()) {
+        for (SortDirection sortDirection : SortDirection.values()) {
             stringJoiner.add(sortDirection.type());
         }
         return stringJoiner.toString();

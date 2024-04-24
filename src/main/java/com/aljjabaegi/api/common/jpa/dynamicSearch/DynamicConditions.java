@@ -6,7 +6,7 @@ import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
-import com.aljjabaegi.api.common.request.enumeration.Operators;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -94,7 +94,7 @@ public interface DynamicConditions {
      * @author GEONLEE
      * @since 2024-04-11
      */
-    default void checkAvailableFieldTypes(Operators operators, String fieldType) {
+    default void checkAvailableFieldTypes(Operator operators, String fieldType) {
         switch (operators) {
             case EQUAL, NOT_EQUAL, IN -> {
                 //Possible field type -> String, Integer, Double, LocalDate, Enum

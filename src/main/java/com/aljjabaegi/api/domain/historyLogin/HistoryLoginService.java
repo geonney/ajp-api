@@ -1,7 +1,7 @@
 package com.aljjabaegi.api.domain.historyLogin;
 
-import com.aljjabaegi.api.common.request.enumeration.SortDirections;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginSearchResponse;
 import com.aljjabaegi.api.entity.HistoryLogin;
 import com.aljjabaegi.api.entity.QHistoryLogin;
@@ -35,12 +35,12 @@ public class HistoryLoginService {
      * 2024-04-18 GEONLEE - querydsl 로 변경<br />
      */
     @Transactional
-    public GridItemsResponse<HistoryLoginSearchResponse> getHistoryLoginList(String sortDirection, String sortColumn, int pageNo, int pageSize) {
+    public GridResponse<HistoryLoginSearchResponse> getHistoryLoginList(String sortDirection, String sortColumn, int pageNo, int pageSize) {
         QHistoryLogin historyLogin = QHistoryLogin.historyLogin;
 
         PathBuilder<HistoryLogin> pathBuilder = new PathBuilder<>(HistoryLogin.class, "historyLogin");
         OrderSpecifier<String> orderSpecifier = null;
-        switch (Objects.requireNonNull(SortDirections.fromText(sortDirection))) {
+        switch (Objects.requireNonNull(SortDirection.fromText(sortDirection))) {
             case ASC -> {
                 orderSpecifier = pathBuilder.getString(sortColumn).asc().nullsLast();
             }
@@ -61,7 +61,7 @@ public class HistoryLoginService {
 
         List<HistoryLoginSearchResponse> historyLoginSearchResponseList = historyLoginMapper.toSearchResponseList(list);
 
-        return GridItemsResponse.<HistoryLoginSearchResponse>builder()
+        return GridResponse.<HistoryLoginSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(totalSize)
@@ -78,12 +78,12 @@ public class HistoryLoginService {
      * @since 2024-04-09<br />
      * 2024-04-18 GEONLEE - querydsl 로 변경<br />
      */
-    public GridItemsResponse<HistoryLoginSearchResponse> getHistoryLoginListByMemberId(
+    public GridResponse<HistoryLoginSearchResponse> getHistoryLoginListByMemberId(
             String memberId, String sortDirection, String sortColumn, int pageNo, int pageSize) {
         QHistoryLogin historyLogin = QHistoryLogin.historyLogin;
         PathBuilder<HistoryLogin> pathBuilder = new PathBuilder<>(HistoryLogin.class, "historyLogin");
         OrderSpecifier<String> orderSpecifier = null;
-        switch (Objects.requireNonNull(SortDirections.fromText(sortDirection))) {
+        switch (Objects.requireNonNull(SortDirection.fromText(sortDirection))) {
             case ASC -> {
                 orderSpecifier = pathBuilder.getString(sortColumn).asc().nullsLast();
             }
@@ -107,7 +107,7 @@ public class HistoryLoginService {
         List<HistoryLoginSearchResponse> historyLoginSearchResponseList = historyLoginMapper.toSearchResponseList(list);
 
 
-//        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())
+//        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name())
 //                ? Sort.by(sortColumn).ascending() : Sort.by(sortColumn).descending();
 //        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 //        Page<HistoryLogin> page = historyLoginRepository.findByKeyMemberId(memberId, pageable);
@@ -115,7 +115,7 @@ public class HistoryLoginService {
 //        long totalElements = page.getTotalElements();
 //        List<HistoryLoginSearchResponse> historyLoginSearchResponseList = historyLoginMapper.toSearchResponseList(page.getContent());
 
-        return GridItemsResponse.<HistoryLoginSearchResponse>builder()
+        return GridResponse.<HistoryLoginSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(totalSize)

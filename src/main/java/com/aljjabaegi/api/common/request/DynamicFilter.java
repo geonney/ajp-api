@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.common.request;
 
-import com.aljjabaegi.api.common.request.enumeration.Operators;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -16,7 +16,7 @@ public record DynamicFilter(
         @Schema(description = "Field for Search", example = "field")
         String field,
         @Schema(description = "Search operator [eq, contains, between, in]", example = "eq")
-        Operators operator,
+        Operator operator,
         @Schema(description = "Value for search", example = "value")
         String value) {
 }

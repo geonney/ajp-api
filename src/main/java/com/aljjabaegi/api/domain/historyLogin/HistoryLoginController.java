@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.historyLogin;
 
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginSearchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,13 +27,13 @@ public class HistoryLoginController {
 
     @GetMapping(value = "/v1/login-history")
     @Operation(summary = "Search members login history (Querydsl, paging and sorting)", operationId = "API-LOGIN_HISTORY-01")
-    public ResponseEntity<GridItemsResponse<HistoryLoginSearchResponse>> getHistoryLoginList(
+    public ResponseEntity<GridResponse<HistoryLoginSearchResponse>> getHistoryLoginList(
             @RequestParam(value = "sortDirection", defaultValue = "desc") String sortDirection,
             @RequestParam(value = "sortColumn", defaultValue = "key.createDate") String sortColumn,
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-        GridItemsResponse<HistoryLoginSearchResponse> gridItemsResponse =
+        GridResponse<HistoryLoginSearchResponse> gridItemsResponse =
                 historyLoginService.getHistoryLoginList(sortDirection, sortColumn, pageNo, pageSize);
 
         return ResponseEntity.ok()
@@ -42,14 +42,14 @@ public class HistoryLoginController {
 
     @GetMapping(value = "/v1/login-history/{memberId}")
     @Operation(summary = "Search members login history by memberId (Querydsl, paging, sorting, condition)", operationId = "API-LOGIN_HISTORY-02")
-    public ResponseEntity<GridItemsResponse<HistoryLoginSearchResponse>> getHistoryLoginListByMemberId(
+    public ResponseEntity<GridResponse<HistoryLoginSearchResponse>> getHistoryLoginListByMemberId(
             @PathVariable String memberId,
             @RequestParam(value = "sortDirection", defaultValue = "desc") String sortDirection,
             @RequestParam(value = "sortColumn", defaultValue = "key.createDate") String sortColumn,
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-        GridItemsResponse<HistoryLoginSearchResponse> gridItemsResponse =
+        GridResponse<HistoryLoginSearchResponse> gridItemsResponse =
                 historyLoginService.getHistoryLoginListByMemberId(
                         memberId, sortDirection, sortColumn, pageNo, pageSize);
 

@@ -2,7 +2,7 @@ package com.aljjabaegi.api.domain.board;
 
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.response.GridItemsResponse;
+import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import com.aljjabaegi.api.entity.Board;
 import com.aljjabaegi.api.entity.QBoard;
@@ -40,7 +40,7 @@ public class BoardService {
      * @since 2024-04-04<br />
      * 2024-04-19 GEONLEE - DynamicBooleanBuilder 사용 방식으로 변경
      */
-    public GridItemsResponse<BoardSearchResponse> getBoardListUsingDynamicBooleanBuilder(DynamicRequest dynamicRequest) {
+    public GridResponse<BoardSearchResponse> getBoardListUsingDynamicBooleanBuilder(DynamicRequest dynamicRequest) {
         QBoard board = QBoard.board;
         List<OrderSpecifier<String>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Board.class, dynamicRequest.sorter());
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicRequest.filter());
@@ -55,7 +55,7 @@ public class BoardService {
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
                 .fetch();
         List<BoardSearchResponse> list = boardMapper.toSearchResponseList(boardList);
-        return GridItemsResponse.<BoardSearchResponse>builder()
+        return GridResponse.<BoardSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(totalSize)
@@ -73,10 +73,10 @@ public class BoardService {
      * @author GEONLEE
      * @since 2024-04-19
      */
-    public GridItemsResponse<BoardSearchResponse> getBoardListUsingDynamicDslRepository(DynamicRequest dynamicRequest) {
+    public GridResponse<BoardSearchResponse> getBoardListUsingDynamicDslRepository(DynamicRequest dynamicRequest) {
         Page<Board> page = boardRepository.findDynamicWithPageable(dynamicRequest);
         List<BoardSearchResponse> list = boardMapper.toSearchResponseList(page.getContent());
-        return GridItemsResponse.<BoardSearchResponse>builder()
+        return GridResponse.<BoardSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(page.getTotalElements())
