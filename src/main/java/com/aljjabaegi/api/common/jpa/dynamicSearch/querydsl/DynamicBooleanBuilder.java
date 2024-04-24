@@ -65,7 +65,6 @@ public class DynamicBooleanBuilder implements DynamicConditions {
 
     @Override
     public List<OrderSpecifier<String>> generateDefaultSort(Class<?> entity) {
-        System.out.println("default sort");
         List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
         DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
         if (defaultSort == null) {
