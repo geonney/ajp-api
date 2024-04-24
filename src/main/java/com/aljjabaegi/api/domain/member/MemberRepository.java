@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.domain.member;
 
+import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * 2024-04-09 GEONLEE - JpaSpecificationExecutor 적용<br />
  */
 @Repository
-public interface MemberRepository extends JpaRepository<Member, String>, JpaSpecificationExecutor<Member> {
+public interface MemberRepository extends JpaDynamicRepository<Member, String>, JpaSpecificationExecutor<Member> {
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)

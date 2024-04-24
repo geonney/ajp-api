@@ -81,6 +81,24 @@ public class MemberController {
                                         }
                                     ]
                             """),
+                    @ExampleObject(name = "lte (less than equal)", value = """
+                                    [
+                                        {
+                                            "field":"age",
+                                            "operator":"lte",
+                                            "value":"20"
+                                        }
+                                    ]
+                            """),
+                    @ExampleObject(name = "gte (greater than equal)", value = """
+                                    [
+                                        {
+                                            "field":"birthDate",
+                                            "operator":"gte",
+                                            "value":"19860107"
+                                        }
+                                    ]
+                            """),
                     @ExampleObject(name = "Reference entity field", value = """
                                     [
                                         {
@@ -119,6 +137,8 @@ public class MemberController {
              - contains (like)
              - between (between)
              - in (in)
+             - lte (less then equal)
+             - gte (greater than equal)
             """)
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(@RequestBody List<DynamicFilter> dynamicFilters) {
         List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicFilters);

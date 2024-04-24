@@ -25,6 +25,7 @@ import java.util.List;
  * @author GEONLEE
  * @since 2024-04-18
  */
+@SuppressWarnings("unchecked")
 public class JpaDynamicRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements JpaDynamicRepository<T, ID> {
     private final Class<T> entity;
     private final DynamicSpecification dynamicSpecification;

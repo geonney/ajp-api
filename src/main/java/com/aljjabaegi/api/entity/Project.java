@@ -37,6 +37,7 @@ public class Project extends BaseEntity {
 
     @Column(name = "project_start_date")
     @Temporal(TemporalType.DATE) // 생량 할 경우 date 와 가장 유사한 timestamp 로 정의 됨.
+    @SearchableField
     private LocalDate projectStartDate;
 
     @Column(name = "project_end_date")

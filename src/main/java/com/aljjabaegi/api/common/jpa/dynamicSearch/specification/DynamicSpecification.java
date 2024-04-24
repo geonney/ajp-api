@@ -144,8 +144,12 @@ public class DynamicSpecification implements DynamicConditions {
                     case BETWEEN -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                         if ("LocalDate".equals(fieldType)) {
-                            List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
-                            predicates.add(criteriaBuilder.between(path.as(LocalDate.class), list.get(0), list.get(1)));
+                            try {
+                                List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
+                                predicates.add(criteriaBuilder.between(path.as(LocalDate.class), list.get(0), list.get(1)));
+                            } catch (DateTimeParseException e) {
+                                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
+                            }
                         } else if ("LocalDateTime".equals(fieldType)) {
                             try {
                                 List<LocalDateTime> list = Arrays.stream(value.split(","))
@@ -170,10 +174,49 @@ public class DynamicSpecification implements DynamicConditions {
                             predicates.add(path.in(list));
                         }
                     }
+                    case LTE -> {
+                        checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
+                        if ("LocalDate".equals(fieldType)) {
+                            try {
+                                LocalDate localDate = Converter.dateStringToLocalDate(value);
+                                predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDate.class), localDate));
+                            } catch (DateTimeParseException e) {
+                                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
+                            }
+                        } else if ("LocalDateTime".equals(fieldType)) {
+                            try {
+                                LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
+                                predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));
+                            } catch (DateTimeParseException e) {
+                                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
+                            }
+                        } else {
+                            predicates.add(criteriaBuilder.lessThanOrEqualTo(path, value));
+                        }
+                    }
+                    case GTE -> {
+                        checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
+                        if ("LocalDate".equals(fieldType)) {
+                            try {
+                                LocalDate localDate = Converter.dateStringToLocalDate(value);
+                                predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDate.class), localDate));
+                            } catch (DateTimeParseException e) {
+                                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
+                            }
+                        } else if ("LocalDateTime".equals(fieldType)) {
+                            try {
+                                LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
+                                predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));
+                            } catch (DateTimeParseException e) {
+                                throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
+                            }
+                        } else {
+                            predicates.add(criteriaBuilder.greaterThanOrEqualTo(path, value));
+                        }
+                    }
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
 }

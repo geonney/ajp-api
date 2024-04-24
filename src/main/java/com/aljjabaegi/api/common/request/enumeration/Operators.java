@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @since 2024-04-09
  */
 public enum Operators {
-    EQUAL("eq"), NOT_EQUAL("neq"), LIKE("contains"), BETWEEN("between"), IN("in")/*, LE("lte"), GE("gte")*/;
+    EQUAL("eq"), NOT_EQUAL("neq"), LIKE("contains"), BETWEEN("between"), IN("in"), LTE("lte"), GTE("gte");
 
     private static final Map<String, Operators> OPERATOR_MAP = Stream.of(values())
             .collect(Collectors.toMap(Operators::type, e -> e));

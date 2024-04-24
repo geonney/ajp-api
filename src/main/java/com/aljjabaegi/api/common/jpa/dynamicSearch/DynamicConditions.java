@@ -104,7 +104,7 @@ public interface DynamicConditions {
                             , "The 'like' operator can only use 'String' types.");
                 }
             }
-            case BETWEEN -> {
+            case BETWEEN, LTE, GTE -> {
                 //Possible field type -> LocalDate, LocalDateType, Number type
                 if ("String".equals(fieldType)) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER

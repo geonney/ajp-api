@@ -81,7 +81,7 @@ public class BoardService {
                 .message("데이터를 조회하는데 성공하였습니다.")
                 .totalSize(page.getTotalElements())
                 .totalPageSize(page.getTotalPages())
-                .size(page.getSize())
+                .size(page.getNumberOfElements())
                 .items(list)
                 .build();
     }
