@@ -41,6 +41,12 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         return parseSort(entity, dynamicSorters);
     }
 
+    /**
+     * DynamicSort list 로 sort 를 생성하여 리턴
+     *
+     * @param dynamicSorters DynamicSorter list
+     * @return Sort 정렬 조건
+     */
     private List<OrderSpecifier<String>> parseSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
         PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
