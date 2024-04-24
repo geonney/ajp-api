@@ -72,6 +72,8 @@
   - 각각 Specification 과 querydsl 방식으로 구분
   - BaseRepository 설정으로 사용 방식 설정 가능
 - dsl 이 변경될 경우 DynamicConditions, DynamicRepository 를 구현하여 확장 가능
+- @DefaultSort
+  - Dynamic 을 사용할 때 sort 값이 넘어오지 않았을 경우 entity의 기본 정렬 컬럼을 설정하는 annotation (Apply Board, Project entity)
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
