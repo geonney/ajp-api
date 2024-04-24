@@ -41,7 +41,7 @@
 - Dynamic Specification (Member)
   - filtering, sorting, paging 동적 처리
   - Operators enum 사용
-    - equal, notEqual, like, between, in
+    - equal, notEqual, like, between, in, less then equal, greater than equal
   - DynamicFilter 를 사용하여 동적으로 Specification 을 생성 (common/request)
     - Case-insensitive search
     - Reference field search (call getPath method) -> depth 없이 조회할수 있도록 보완 (DynamicSpecification>getSearchFieldPath)
