@@ -36,6 +36,7 @@ import java.util.*;
  * 2024-04-18 GEONLEE - checkSearchableField Deprecated, getSearchFieldPath 에서 해당 기능 포함<br />
  * - getSearchFieldPath, BASE_ENTITY_FIELD 추가 -> BaseEntity field 처리 방식 변경<br />
  * - implements DynamicConditions 추가<br />
+ * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
  */
 @Component
 public class DynamicSpecification implements DynamicConditions {

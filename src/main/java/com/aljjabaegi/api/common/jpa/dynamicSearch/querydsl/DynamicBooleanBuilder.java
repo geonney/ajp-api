@@ -26,7 +26,8 @@ import java.util.List;
  * Querydsl 에서 조회조건에 활용하는 BooleanBuilder, OrderSpecifier 를 동적으로 생성
  *
  * @author GEONLEE
- * @since 2024-04-19
+ * @since 2024-04-19<br />
+ * 2024-04-24 GEONLEE - LTE, GTE 조건 추가
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
