@@ -25,7 +25,7 @@ import org.springframework.data.annotation.LastModifiedBy;
         , initialValue = 1
         , allocationSize = 1
 )
-@DefaultSort(columnName = {"boardSequence"}, direction = SortDirections.DESC)
+@DefaultSort(columnName = "boardSequence", direction = SortDirections.DESC)
 public class Board extends BaseEntity {
 
     @Id
