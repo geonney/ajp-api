@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/v1/members-dynamic-filter")
+    @Secured("ROLE_ADMIN")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """

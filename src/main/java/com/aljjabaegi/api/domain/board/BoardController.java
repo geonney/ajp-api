@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -184,6 +185,7 @@ public class BoardController {
 
     @DeleteMapping(value = "/v1/board/{boardSequence}")
     @Operation(summary = "Delete board", operationId = "API-board-04")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<ItemResponse<Long>> deleteBoard(@PathVariable Long boardSequence) {
         Long deleteCount = boardService.deleteBoard(boardSequence);
         return ResponseEntity.ok()
@@ -192,5 +194,4 @@ public class BoardController {
                         .message("데이터를 삭제하는데 성공하였습니다.")
                         .item(deleteCount).build());
     }
-
 }
