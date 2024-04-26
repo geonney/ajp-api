@@ -41,6 +41,7 @@ security:
     public: ${rsa-public}
   password:
     cycle: 60 #days
+    locked: 5 #횟수
 logging:
   config: classpath:logback/logback-spring.xml
 

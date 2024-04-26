@@ -55,7 +55,10 @@ public class LoginService {
     private final RsaProvider rsaProvider;
 
     @Value("${security.password.cycle}")
-    int passwordUpdateCycle;
+    private int passwordUpdateCycle;
+
+    @Value("${security.password.locked}")
+    private int locked;
 
     public ResponseEntity<ItemResponse<TokenResponse>> login(
             LoginRequest parameter, HttpServletResponse httpServletResponse) throws ServiceException {
@@ -75,7 +78,7 @@ public class LoginService {
             }
         } catch (ServiceException e) {
             entity.setLoginAttemptsCont((entity.getLoginAttemptsCont() == null) ? 1 : entity.getLoginAttemptsCont() + 1);
-            if (entity.getLoginAttemptsCont() == 5) {
+            if (entity.getLoginAttemptsCont() == this.locked) {
                 entity.setUseYn(UseYn.N);
             }
             memberRepository.save(entity);
