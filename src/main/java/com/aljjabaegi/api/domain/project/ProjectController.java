@@ -21,7 +21,8 @@ import java.util.List;
  * Project Controller
  *
  * @author GEONLEE
- * @since 2024-04-04
+ * @since 2024-04-04<br />
+ * 2024-04-26 GEONLEE - getProjectList Post 방식 DynamicRequest 받는 방식으로 변경<br />
  */
 @RestController
 @Tag(name = "05. Project Management [Search using DynamicRepository, Named native query]", description = "Responsibility: GEONLEE")
@@ -31,10 +32,33 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @GetMapping(value = "/v1/projects")
-    @Operation(summary = "Search All Projects", operationId = "API-PROJECT-01")
-    public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getProjectList() {
-        List<ProjectSearchResponse> projectSearchResponseList = projectService.getProjectList();
+    @PostMapping(value = "/v1/projects")
+    @Operation(summary = "Search Projects (filtering, sorting, no paging)", operationId = "API-PROJECT-01")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting with paging", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"projectName",
+                                                "operator":"contains",
+                                                "value":"트1"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "direction":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """)
+            }
+    ))
+    public ResponseEntity<ItemsResponse<ProjectSearchResponse>> getProjectList(@RequestBody DynamicRequest dynamicRequest) {
+        List<ProjectSearchResponse> projectSearchResponseList = projectService.getProjectList(dynamicRequest);
         long size = projectSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<ProjectSearchResponse>builder()
@@ -112,7 +136,7 @@ public class ProjectController {
                             """),
             }
     ))
-    @Operation(summary = "Search Project (DynamicRepository)", operationId = "API-PROJECT-03")
+    @Operation(summary = "Search Project (DynamicRepository, filtering, sorting, paging)", operationId = "API-PROJECT-03")
     public ResponseEntity<GridResponse<ProjectSearchResponse>> getProjectListUsingDynamicRepository(@RequestBody DynamicRequest dynamicRequest) {
         GridResponse<ProjectSearchResponse> gridItemsResponse = projectService.getProjectListUsingDynamicRepository(dynamicRequest);
         return ResponseEntity.ok()

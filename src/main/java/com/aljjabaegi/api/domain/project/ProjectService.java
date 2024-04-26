@@ -30,8 +30,8 @@ public class ProjectService {
      * @author GEONLEE
      * @since 2024-04-04
      */
-    public List<ProjectSearchResponse> getProjectList() {
-        return projectMapper.toSearchResponseList(projectRepository.findAll());
+    public List<ProjectSearchResponse> getProjectList(DynamicRequest dynamicRequest) {
+        return projectMapper.toSearchResponseList(projectRepository.findDynamic(dynamicRequest));
     }
 
     /**

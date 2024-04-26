@@ -14,7 +14,8 @@ import java.util.List;
  * 표준화 한 요청 구조체 사용 (DynamicRequest, DynamicFilter
  *
  * @author GEONLEE
- * @since 2024-04-18
+ * @since 2024-04-18<br />
+ * 2024-04-26 GEONLEE - 페이징 없이 filtering, sorting 만 가능한 findDynamic 추가<br />
  */
 @NoRepositoryBean
 public interface JpaDynamicRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
@@ -40,7 +41,12 @@ public interface JpaDynamicRepository<T, ID extends Serializable> extends JpaRep
     List<T> findDynamic(List<DynamicFilter> dynamicFilter);
 
     /**
-     * DynamicRequest 를 활용한 List 조회
+     * DynamicRequest 를 사용한 복수조건, 복수 정렬 List 조회, No paging
+     */
+    List<T> findDynamic(DynamicRequest dynamicRequest);
+
+    /**
+     * DynamicRequest 를 활용한 List 조회, with paging
      */
     Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest);
 

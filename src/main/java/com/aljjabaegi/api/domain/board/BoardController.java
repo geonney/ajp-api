@@ -3,6 +3,7 @@ package com.aljjabaegi.api.domain.board;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
+import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -88,11 +89,45 @@ public class BoardController {
                             """),
             }
     ))
-    @Operation(summary = "Search boards (DynamicDslRepository)", operationId = "API-BOARD-02")
+    @Operation(summary = "Search boards (DynamicDslRepository)", operationId = "API-BOARD-01")
     public ResponseEntity<GridResponse<BoardSearchResponse>> getBoardListUsingDynamicDslRepository(@RequestBody DynamicRequest dynamicRequest) {
         GridResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicDslRepository(dynamicRequest);
         return ResponseEntity.ok()
                 .body(gridItemsResponse);
+    }
+
+    @PostMapping(value = "/v1/boards-no-paging")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "filtering and sorting", value = """
+                                    {
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            },
+                                            {
+                                                "field":"createDate",
+                                                "operator":"between",
+                                                "value":"20240408000000,20240408170000"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "direction":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """)
+            }
+    ))
+    @Operation(summary = "Search boards (DynamicBooleanBuilder)", operationId = "API-BOARD-02")
+    public ResponseEntity<ItemsResponse<BoardSearchResponse>> getBoardListNoPaging(@RequestBody DynamicRequest dynamicRequest) {
+        ItemsResponse<BoardSearchResponse> ItemsResponse = boardService.getBoardListNoPaging(dynamicRequest);
+        return ResponseEntity.ok()
+                .body(ItemsResponse);
     }
 
     @PostMapping(value = "/v1/boards")
@@ -154,7 +189,7 @@ public class BoardController {
                             """),
             }
     ))
-    @Operation(summary = "Search boards (DynamicBooleanBuilder)", operationId = "API-BOARD-01")
+    @Operation(summary = "Search boards (DynamicDslRepository, filtering, sorting, no paiging)", operationId = "API-BOARD-03")
     public ResponseEntity<GridResponse<BoardSearchResponse>> getBoardList(@RequestBody DynamicRequest dynamicRequest) {
         GridResponse<BoardSearchResponse> gridItemsResponse = boardService.getBoardListUsingDynamicBooleanBuilder(dynamicRequest);
         return ResponseEntity.ok()
@@ -162,7 +197,7 @@ public class BoardController {
     }
 
     @PostMapping(value = "/v1/board")
-    @Operation(summary = "Create board", operationId = "API-BOARD-02")
+    @Operation(summary = "Create board", operationId = "API-BOARD-04")
     public ResponseEntity<ItemResponse<BoardCreateResponse>> createBoard(@RequestBody @Valid BoardCreateRequest parameter) {
         BoardCreateResponse createdBoard = boardService.createBoard(parameter);
         return ResponseEntity.ok()
@@ -173,7 +208,7 @@ public class BoardController {
     }
 
     @PutMapping(value = "/v1/board")
-    @Operation(summary = "Modify board", operationId = "API-board-03")
+    @Operation(summary = "Modify board", operationId = "API-board-05")
     public ResponseEntity<ItemResponse<BoardModifyResponse>> modifyBoard(@RequestBody @Valid BoardModifyRequest parameter) {
         BoardModifyResponse modifiedBoard = boardService.modifyBoard(parameter);
         return ResponseEntity.ok()
@@ -184,7 +219,7 @@ public class BoardController {
     }
 
     @DeleteMapping(value = "/v1/board/{boardSequence}")
-    @Operation(summary = "Delete board", operationId = "API-board-04")
+    @Operation(summary = "Delete board", operationId = "API-board-06")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<ItemResponse<Long>> deleteBoard(@PathVariable Long boardSequence) {
         Long deleteCount = boardService.deleteBoard(boardSequence);

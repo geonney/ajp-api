@@ -3,6 +3,7 @@ package com.aljjabaegi.api.domain.board;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
+import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.aljjabaegi.api.domain.board.record.*;
 import com.aljjabaegi.api.entity.Board;
 import com.aljjabaegi.api.entity.QBoard;
@@ -82,6 +83,25 @@ public class BoardService {
                 .totalSize(page.getTotalElements())
                 .totalPageSize(page.getTotalPages())
                 .size(page.getNumberOfElements())
+                .items(list)
+                .build();
+    }
+
+    /**
+     * Paging 없이 filtering, sorting 만 동작
+     *
+     * @param dynamicRequest sorting, condition
+     * @return Board list
+     * @author GEONLEE
+     * @since 2024-04-26
+     */
+    public ItemsResponse<BoardSearchResponse> getBoardListNoPaging(DynamicRequest dynamicRequest) {
+        List<Board> entityList = boardRepository.findDynamic(dynamicRequest);
+        List<BoardSearchResponse> list = boardMapper.toSearchResponseList(entityList);
+        return ItemsResponse.<BoardSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .size((long) list.size())
                 .items(list)
                 .build();
     }

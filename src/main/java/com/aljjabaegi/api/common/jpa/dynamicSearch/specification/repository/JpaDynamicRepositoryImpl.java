@@ -63,6 +63,13 @@ public class JpaDynamicRepositoryImpl<T, ID extends Serializable> extends Simple
     }
 
     @Override
+    public List<T> findDynamic(DynamicRequest dynamicRequest) {
+        Sort sort = dynamicSpecification.generateSort(this.entity, dynamicRequest.sorter());
+        Specification<T> specification = (Specification<T>) dynamicSpecification.generateConditions(this.entity, dynamicRequest.filter());
+        return super.findAll(specification, sort);
+    }
+
+    @Override
     public Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest) {
         Sort sort = dynamicSpecification.generateSort(this.entity, dynamicRequest.sorter());
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);

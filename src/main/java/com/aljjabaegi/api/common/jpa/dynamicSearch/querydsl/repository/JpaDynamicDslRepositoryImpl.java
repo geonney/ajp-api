@@ -98,6 +98,17 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
     }
 
     @Override
+    public List<T> findDynamic(DynamicRequest dynamicRequest) {
+        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicRequest.filter());
+        List<OrderSpecifier<String>> orderSpecifiers = dynamicBooleanBuilder.generateSort(this.entity, dynamicRequest.sorter());
+        return this.queryFactory
+                .selectFrom(this.pathBuilder)
+                .where(booleanBuilder)
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
+                .fetch();
+    }
+
+    @Override
     public Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest) {
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicRequest.filter());
         List<OrderSpecifier<String>> orderSpecifiers = dynamicBooleanBuilder.generateSort(this.entity, dynamicRequest.sorter());
