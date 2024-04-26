@@ -110,7 +110,8 @@ public class RsaProvider {
      * @param encrypted public 키로 암호화된 Base64 encoded String
      * @return 복호화된 String
      * @author GEONLEE
-     * @since 2024-04-03
+     * @since 2024-04-03<br />
+     * 2024-04-26 GEONLEE - IllegalArgumentException 추가, decoding 실패 시 INVALID_PARAMETER 로 변경<br />
      */
     public String decrypt(String encrypted) {
         PrivateKey privateKey = getPrivateKey();
@@ -120,9 +121,10 @@ public class RsaProvider {
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] bytePlain = cipher.doFinal(byteEncrypted);
             return new String(bytePlain, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException
+        } catch (IllegalArgumentException | NoSuchAlgorithmException | NoSuchPaddingException
                  | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new ServiceException(CommonErrorCode.SERVICE_ERROR, e);
+            LOGGER.error(e.getMessage());
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
         }
     }
 

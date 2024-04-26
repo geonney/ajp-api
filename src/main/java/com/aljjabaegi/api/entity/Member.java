@@ -20,6 +20,7 @@ import java.time.LocalDate;
  * 2024-04-07 GEONLEE - @Enumerated(EnumType.STRING) 테스트<br />
  * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
  * 2024-04-17 GEONLEE - passwordUpdateDate 추가<br />
+ * 2024-04-26 GEONLEE - loginAttemptsCont 로그인 시도 횟수 컬럼 추가<br />
  */
 @Getter
 @Setter
@@ -65,6 +66,9 @@ public class Member extends BaseEntity {
 
     @Column(name = "pw_update_dt")
     private LocalDate passwordUpdateDate;
+
+    @Column(name = "login_attempts")
+    private Integer loginAttemptsCont;
 
     @ManyToOne(fetch = FetchType.EAGER) //ManyToOne - OneToMany 양방향
     @JoinColumn(name = "authority_cd")
