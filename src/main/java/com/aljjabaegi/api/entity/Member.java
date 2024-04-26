@@ -68,7 +68,7 @@ public class Member extends BaseEntity {
     private LocalDate passwordUpdateDate;
 
     @Column(name = "login_attempts")
-    private Integer loginAttemptsCont;
+    private Integer loginAttemptsCount;
 
     @ManyToOne(fetch = FetchType.EAGER) //ManyToOne - OneToMany 양방향
     @JoinColumn(name = "authority_cd")

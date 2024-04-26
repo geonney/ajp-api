@@ -77,8 +77,8 @@ public class LoginService {
                 throw new ServiceException(CommonErrorCode.WRONG_PASSWORD);
             }
         } catch (ServiceException e) {
-            entity.setLoginAttemptsCont((entity.getLoginAttemptsCont() == null) ? 1 : entity.getLoginAttemptsCont() + 1);
-            if (entity.getLoginAttemptsCont() == this.locked) {
+            entity.setLoginAttemptsCount((entity.getLoginAttemptsCount() == null) ? 1 : entity.getLoginAttemptsCount() + 1);
+            if (entity.getLoginAttemptsCount() == this.locked) {
                 entity.setUseYn(UseYn.N);
             }
             memberRepository.save(entity);
@@ -97,7 +97,7 @@ public class LoginService {
         // 7. 로그인 성공 시 DB Token 정보 갱신, 로그인 시도 0으로 초기화
         entity.setAccessToken(tokenResponse.token());
         entity.setRefreshToken(tokenResponse.refreshToken());
-        entity.setLoginAttemptsCont(0);
+        entity.setLoginAttemptsCount(0);
         memberRepository.save(entity);
         // 8. 쿠키에 Access Token 추가
         tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
