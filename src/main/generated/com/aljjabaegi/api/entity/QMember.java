@@ -39,6 +39,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Double> height = createNumber("height", Double.class);
 
+    public final NumberPath<Integer> loginAttemptsCont = createNumber("loginAttemptsCont", Integer.class);
+
     public final StringPath memberId = createString("memberId");
 
     public final StringPath memberName = createString("memberName");
