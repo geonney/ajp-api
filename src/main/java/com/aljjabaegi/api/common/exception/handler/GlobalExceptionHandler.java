@@ -139,7 +139,9 @@ public class GlobalExceptionHandler {
         LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
         return ResponseEntity.ok()
                 .header("Content-type", String.valueOf(MediaType.APPLICATION_JSON))
-                .body(new ErrorResponse(errorCode.status(), errorCode.message()));
+                .body(ErrorResponse.builder()
+                        .status(errorCode.status())
+                        .message(errorCode.message()).build());
     }
 
     /**
