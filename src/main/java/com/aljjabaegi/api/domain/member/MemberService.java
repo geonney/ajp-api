@@ -2,9 +2,12 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.request.DynamicSorter;
+import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
@@ -14,6 +17,7 @@ import com.aljjabaegi.api.domain.team.TeamRepository;
 import com.aljjabaegi.api.entity.Member;
 import com.aljjabaegi.api.entity.MemberTeam;
 import com.aljjabaegi.api.entity.Team;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +43,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final DynamicBooleanBuilder dynamicBooleanBuilder;
+    private final JPAQueryFactory query;
     private final DynamicSpecification dynamicSpecification;
     private final MemberRepository memberRepository;
     private final MemberTeamRepository memberTeamRepository;
@@ -52,12 +59,31 @@ public class MemberService {
      * @since 2024-04-01<br />
      * 2024-04-04 GEONLEE - 관리자 조회 안되게 수정<br />
      * 2024-04-11 GEONLEE - Apply DynamicSpecification<br />
+     * 2024-04-29 GEONLEE - DynamicDslRepository 방식으로 변경<br />
      */
     @Transactional
     @SuppressWarnings("unchecked")
     public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
-        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
-        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
+        //specification 반식
+//        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
+//        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
+        //booleanBuilder 방식
+//        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicFilters);
+//        List<Member> memberList = query.selectFrom(QMember.member)
+//                .where(booleanBuilder)
+//                .fetch();
+        //dynamic repository 방식
+//        List<Member> memberList = memberRepository.findDynamic(dynamicFilters);
+        //dynamic repository paging
+
+        List<DynamicSorter> sorters = new ArrayList<>();
+        DynamicSorter dynamicSorter = new DynamicSorter("useYn", SortDirection.ASC);
+        sorters.add(dynamicSorter);
+
+        DynamicRequest dynamicRequest = new DynamicRequest(0, 10, dynamicFilters, sorters);
+        Page<Member> page = memberRepository.findDynamicWithPageable(dynamicRequest);
+
+        return memberMapper.toSearchResponseList(page.getContent());
     }
 
     /**

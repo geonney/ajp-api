@@ -35,7 +35,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/v1/members-dynamic-filter")
-    @Secured("ROLE_ADMIN")
+//    @Secured("ROLE_ADMIN")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """
@@ -149,7 +149,7 @@ public class MemberController {
                 .body(ItemsResponse.<MemberSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
-                        .size(size)
+                        .totalSize(size)
                         .items(memberSearchResponseList).build());
     }
 

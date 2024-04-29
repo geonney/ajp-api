@@ -13,6 +13,7 @@ import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
+import jakarta.persistence.Enumerated;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,8 @@ import java.util.List;
  *
  * @author GEONLEE
  * @since 2024-04-19<br />
- * 2024-04-24 GEONLEE - LTE, GTE 조건 추가
+ * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
+ * 2024-04-29 GEONLEE - Enum type 조회 가능 옵션 추가<br />
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
@@ -103,10 +105,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
             String fieldPath = getSearchFieldPath(entity, dynamicFilter.field());
             PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
-            String fieldType = getType(entity, fieldPath);
-
-            //Possible search to without case sensitivity
-            String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value();
+            Class<?> fieldType = getType(entity, fieldPath);
+            String value = dynamicFilter.value();
             // Possible search to null data
             if (value == null) {
                 booleanBuilder.and(rootPath.get(dynamicFilter.field()).isNull());
@@ -115,7 +115,11 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             switch (dynamicFilter.operator()) {
                 case EQUAL -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(value));
+                    if (fieldType.isEnum()) {
+                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(Converter.stringToEnum(fieldType, value)));
+                    } else {
+                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(value));
+                    }
                 }
                 case NOT_EQUAL -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
@@ -127,10 +131,10 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 }
                 case BETWEEN -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    if ("LocalDate".equals(fieldType)) {
+                    if (fieldType == LocalDate.class) {
                         List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
                         booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).between(list.get(0), list.get(1)));
-                    } else if ("LocalDateTime".equals(fieldType)) {
+                    } else if (fieldType == LocalDateTime.class) {
                         try {
                             List<LocalDateTime> list = Arrays.stream(value.split(","))
                                     .map(Converter::dateTimeStringToLocalDateTime).toList();
@@ -146,9 +150,12 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 }
                 case IN -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    if ("LocalDate".equals(fieldType)) {
+                    if (fieldType == LocalDate.class) {
                         List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
                         booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDate.class).in(list));
+                    } else if (fieldType.isEnum()) {
+                        List<? extends Enum<?>> list = Arrays.stream(value.split(",")).map(s -> Converter.stringToEnum(fieldType, s)).toList();
+                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).in(list));
                     } else {
                         List<String> list = Arrays.asList(value.split(","));
                         booleanBuilder.and(rootPath.get(dynamicFilter.field()).in(list));
@@ -156,14 +163,14 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 }
                 case LTE -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    if ("LocalDate".equals(fieldType)) {
+                    if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = Converter.dateStringToLocalDate(value);
                             booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).loe(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
-                    } else if ("LocalDateTime".equals(fieldType)) {
+                    } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
                             booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).loe(localDateTime));
@@ -176,14 +183,14 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 }
                 case GTE -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    if ("LocalDate".equals(fieldType)) {
+                    if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = Converter.dateStringToLocalDate(value);
                             booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).goe(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
-                    } else if ("LocalDateTime".equals(fieldType)) {
+                    } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
                             booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).goe(localDateTime));
@@ -208,7 +215,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
      * @author GEONLEE
      * @since 2024-04-19
      */
-    private String getType(Class<?> entity, String fieldName) {
+    private Class<?> getType(Class<?> entity, String fieldName) {
         try {
             if (entity.getSuperclass() == BaseEntity.class && BASE_ENTITY_FIELDS.contains(fieldName)) {
                 entity = entity.getSuperclass();
@@ -217,7 +224,10 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 String[] entityField = fieldName.split("\\.");
                 return getType(entity.getDeclaredField(entityField[0]).getType(), fieldName.substring(fieldName.indexOf(".") + 1));
             }
-            return entity.getDeclaredField(fieldName).getType().getSimpleName();
+            if (entity.getDeclaredField(fieldName).getDeclaredAnnotation(Enumerated.class) != null) {
+                return entity.getDeclaredField(fieldName).getType();
+            }
+            return entity.getDeclaredField(fieldName).getType();
         } catch (PathElementException e) {
             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
         } catch (NoSuchFieldException e) {

@@ -39,6 +39,7 @@ import java.util.*;
  * - implements DynamicConditions 추가<br />
  * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
  * - 기존 generateSort 메서드에서 Sort 생성 부분을 parseSort 메서드로 분리, implements generateDefaultSort method<br />
+ * 2024-04-29 GEONLEE - LIKE 검색의 경우에만 대소문자 구분 안되도록 수정, checkAvailableFieldTypes parameter 변경에 따른 수정<br />
  */
 @Component
 public class DynamicSpecification implements DynamicConditions {
@@ -153,10 +154,8 @@ public class DynamicSpecification implements DynamicConditions {
                 }
                 String fieldPath = getSearchFieldPath(entity, dynamicFilter.field()); // root.getJavaType();
                 Path<String> path = getPath(root, fieldPath);
-//                checkSearchableField(path.getParentPath(), dynamicFilter.field());
-                String fieldType = path.getModel().getBindableJavaType().getSimpleName();
-                //Possible search to without case sensitivity
-                String value = (dynamicFilter.value() == null) ? null : dynamicFilter.value().toLowerCase();
+                Class<?> fieldType = path.getModel().getBindableJavaType();
+                String value = dynamicFilter.value();
                 // Possible search to null data
                 if (value == null) {
                     predicates.add(criteriaBuilder.isNull(path));
@@ -165,26 +164,26 @@ public class DynamicSpecification implements DynamicConditions {
                 switch (dynamicFilter.operator()) {
                     case EQUAL -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(path), value));
+                        predicates.add(criteriaBuilder.equal(path, value));
                     }
                     case NOT_EQUAL -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        predicates.add(criteriaBuilder.notEqual(criteriaBuilder.lower(path), value));
+                        predicates.add(criteriaBuilder.notEqual(path, value));
                     }
                     case LIKE -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(path), "%" + value + "%"));
+                        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(path), "%" + value.toLowerCase() + "%"));
                     }
                     case BETWEEN -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        if ("LocalDate".equals(fieldType)) {
+                        if (fieldType == LocalDate.class) {
                             try {
                                 List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
                                 predicates.add(criteriaBuilder.between(path.as(LocalDate.class), list.get(0), list.get(1)));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                             }
-                        } else if ("LocalDateTime".equals(fieldType)) {
+                        } else if (fieldType == LocalDateTime.class) {
                             try {
                                 List<LocalDateTime> list = Arrays.stream(value.split(","))
                                         .map(Converter::dateTimeStringToLocalDateTime).toList();
@@ -199,7 +198,7 @@ public class DynamicSpecification implements DynamicConditions {
                     }
                     case IN -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        if ("LocalDate".equals(fieldType)) {
+                        if (fieldType == LocalDate.class) {
                             Path<LocalDate> localDatePath = root.get(dynamicFilter.field());
                             List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
                             predicates.add(localDatePath.in(list));
@@ -210,14 +209,14 @@ public class DynamicSpecification implements DynamicConditions {
                     }
                     case LTE -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        if ("LocalDate".equals(fieldType)) {
+                        if (fieldType == LocalDate.class) {
                             try {
                                 LocalDate localDate = Converter.dateStringToLocalDate(value);
                                 predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDate.class), localDate));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                             }
-                        } else if ("LocalDateTime".equals(fieldType)) {
+                        } else if (fieldType == LocalDateTime.class) {
                             try {
                                 LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
                                 predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));
@@ -230,14 +229,14 @@ public class DynamicSpecification implements DynamicConditions {
                     }
                     case GTE -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                        if ("LocalDate".equals(fieldType)) {
+                        if (fieldType == LocalDate.class) {
                             try {
                                 LocalDate localDate = Converter.dateStringToLocalDate(value);
                                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDate.class), localDate));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                             }
-                        } else if ("LocalDateTime".equals(fieldType)) {
+                        } else if (fieldType == LocalDateTime.class) {
                             try {
                                 LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
                                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));

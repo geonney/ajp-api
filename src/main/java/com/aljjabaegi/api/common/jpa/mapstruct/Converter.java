@@ -6,6 +6,8 @@ import com.aljjabaegi.api.entity.enumerated.UseYn;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +19,8 @@ import java.util.Locale;
  *
  * @author GEONLEE
  * @since 2024-04-01<br />
- * 20240-04-17 GEONLEE - Add getToday method<br />
+ * 2024-04-17 GEONLEE - Add getToday method<br />
+ * 2024-04-29 GEONLEE - Add stringToEnum<br />
  */
 public class Converter {
     /**
@@ -113,6 +116,7 @@ public class Converter {
             return null;
         }
     }
+
     /**
      * Date string(yyyyMMdd) to LocalDate
      *
@@ -127,6 +131,12 @@ public class Converter {
         }
     }
 
+    /**
+     * LocalDate to formatted String
+     *
+     * @param localDate LocalDate
+     * @return String formatted date
+     */
     public static String localDateToString(LocalDateTime localDate) throws DateTimeParseException {
         if (localDate != null) {
             return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA));
@@ -153,8 +163,32 @@ public class Converter {
         return LocalDate.now();
     }
 
+    /**
+     * String 중에 숫자만 리턴
+     *
+     * @param str text
+     * @return numeric string
+     */
     public static String getStringToNumbers(String str) {
         return str.replaceAll("[^0-9]+", "");
     }
 
+    /**
+     * String value to enum value
+     *
+     * @param fieldType enum class
+     * @param value     enum String value
+     * @return Enum
+     * @author GEONLEE
+     * @since 2024-04-29
+     */
+    public static Enum<?> stringToEnum(Class<?> fieldType, String value) {
+        Method method;
+        try {
+            method = fieldType.getDeclaredMethod("valueOf", String.class);
+            return (Enum<?>) method.invoke(null, value);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            return null;
+        }
+    }
 }

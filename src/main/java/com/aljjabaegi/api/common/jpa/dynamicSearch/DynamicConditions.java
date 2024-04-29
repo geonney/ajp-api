@@ -9,6 +9,7 @@ import com.aljjabaegi.api.common.request.DynamicSorter;
 import com.aljjabaegi.api.common.request.enumeration.Operator;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,27 +93,28 @@ public interface DynamicConditions {
      * @param operators Operators enum class
      * @throws ServiceException 조회 할 수 있는 type 이 아니면 throw ServiceException(CommonErrorCode.INVALID_PARAMETER
      * @author GEONLEE
-     * @since 2024-04-11
+     * @since 2024-04-11<br />
+     * 2024-04-29 GEONLEE - fieldType String -> Class 로 변경, BETWEEN, LTE, GTE 조건에 enum 추가<br />
      */
-    default void checkAvailableFieldTypes(Operator operators, String fieldType) {
+    default void checkAvailableFieldTypes(Operator operators, Class<?> fieldType) {
         switch (operators) {
             case EQUAL, NOT_EQUAL, IN -> {
                 //Possible field type -> String, Integer, Double, LocalDate, Enum
-                if ("LocalDateTime".equals(fieldType)) {
+                if (fieldType == LocalDateTime.class) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
                             , "For LocalDateTime type, use 'between' operator.");
                 }
             }
             case LIKE -> {
                 //Possible field type -> String
-                if (!"String".equals(fieldType)) {
+                if (fieldType != String.class) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
                             , "The 'like' operator can only use 'String' types.");
                 }
             }
             case BETWEEN, LTE, GTE -> {
                 //Possible field type -> LocalDate, LocalDateType, Number type
-                if ("String".equals(fieldType)) {
+                if (fieldType == String.class || fieldType.isEnum()) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
                             , "The 'between' operator can only use 'LocalDate','LocalDateTime' or 'Number' types.");
                 }
