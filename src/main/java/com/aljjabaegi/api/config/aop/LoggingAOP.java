@@ -81,7 +81,7 @@ public class LoggingAOP {
             }
             case "ItemsResponse" -> {
                 ItemsResponse<?> itemsResponse = (ItemsResponse<?>) body;
-                LOGGER.info("[Body][ItemsResponse] size: {}\n", itemsResponse.size());
+                LOGGER.info("[Body][ItemsResponse] size: {}\n", itemsResponse.totalSize());
             }
             case "GridItemsResponse" -> {
                 GridResponse<?> gridItemsResponse = (GridResponse<?>) body;

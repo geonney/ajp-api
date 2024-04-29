@@ -101,7 +101,7 @@ public class BoardService {
         return ItemsResponse.<BoardSearchResponse>builder()
                 .status("OK")
                 .message("데이터를 조회하는데 성공하였습니다.")
-                .size((long) list.size())
+                .totalSize((long) list.size())
                 .items(list)
                 .build();
     }

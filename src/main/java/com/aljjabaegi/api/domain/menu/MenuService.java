@@ -70,7 +70,7 @@ public class MenuService {
                 .body(ItemsResponse.<MenuSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
-                        .size((long) menuSearchResponses.size())
+                        .totalSize((long) menuSearchResponses.size())
                         .items(menuSearchResponses)
                         .build());
     }

@@ -64,7 +64,7 @@ public class ProjectController {
                 .body(ItemsResponse.<ProjectSearchResponse>builder()
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
-                        .size(size)
+                        .totalSize(size)
                         .items(projectSearchResponseList).build());
     }
 
@@ -77,7 +77,7 @@ public class ProjectController {
                         .status("OK")
                         .message("데이터를 조회하는데 성공하였습니다.")
                         .items(projectSearchResponseList)
-                        .size((long) projectSearchResponseList.size())
+                        .totalSize((long) projectSearchResponseList.size())
                         .build()
                 );
     }

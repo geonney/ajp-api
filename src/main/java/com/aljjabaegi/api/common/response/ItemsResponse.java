@@ -19,7 +19,7 @@ public record ItemsResponse<T>(
         @Schema(description = "메시지")
         String message,
         @Schema(description = "List 응답 객체 size")
-        Long size,
+        Long totalSize,
         @Schema(description = "List 응답 객체")
         List<T> items
 ) {
