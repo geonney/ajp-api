@@ -39,6 +39,7 @@ dependencies {
 //    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     // Postgresql client
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
+    testImplementation 'junit:junit:4.13.1'
     runtimeOnly 'org.postgresql:postgresql'
     // lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
