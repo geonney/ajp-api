@@ -213,7 +213,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
      * @param fieldName field name
      * @return class attribute simple type name
      * @author GEONLEE
-     * @since 2024-04-19
+     * @since 2024-04-19<br />
+     * 2024-04-29 GEONLEE - Enum class 타입 전달하도록 수정<br />
      */
     private Class<?> getType(Class<?> entity, String fieldName) {
         try {
