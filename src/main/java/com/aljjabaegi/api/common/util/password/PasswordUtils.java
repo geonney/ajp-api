@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.common.util.password;
 
-import com.aljjabaegi.api.common.enumeration.RegExp;
+import com.aljjabaegi.api.common.util.password.enumeration.RegExp;
 import com.aljjabaegi.api.common.util.password.enumeration.PasswordLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.enumeration;
+package com.aljjabaegi.api.common.util.password.enumeration;
 
 import java.util.regex.Pattern;
 
