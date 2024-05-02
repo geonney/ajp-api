@@ -1,6 +1,7 @@
 package com.aljjabaegi.api.common.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
 import java.util.List;
 
@@ -8,9 +9,11 @@ import java.util.List;
  * Dynamic Request with filtering, sorting
  *
  * @author GEONLEE
- * @since 2024-04-12
+ * @since 2024-04-12<br />
+ * 2024-05-02 GEONLEE - @Builder 추가<br />
  */
 @Schema(description = "Dynamic Request with filtering, sorting")
+@Builder
 public record DynamicRequest(
         @Schema(description = "Current page number", example = "0", defaultValue = "0")
         int pageNo,
@@ -20,7 +23,7 @@ public record DynamicRequest(
         List<DynamicFilter> filter,
         @Schema(description = "Sort array")
         List<DynamicSorter> sorter) {
-        public DynamicRequest {
-                pageSize = (pageSize == 0) ? 10 : pageSize;
-        }
+    public DynamicRequest {
+        pageSize = (pageSize == 0) ? 10 : pageSize;
+    }
 }
