@@ -35,6 +35,9 @@ public class Member extends BaseEntity {
     @Column(name = "member_pw")
     private String password;
 
+    @Transient // 영속성 관리 대상에서 제외하는 속성, 내부 로직에 관리가 필요한 경우 추가해서 사용한다.
+    private String confirmPassword;
+
     @Column(name = "member_nm")
     @SearchableField
     private String memberName;
