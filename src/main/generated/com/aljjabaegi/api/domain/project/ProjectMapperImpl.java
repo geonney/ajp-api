@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-29T16:56:02+0900",
+    date = "2024-05-07T19:02:36+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -36,6 +36,7 @@ public class ProjectMapperImpl implements ProjectMapper {
         String modifyDate = null;
         String projectId = null;
         String projectName = null;
+        String isProceeding = null;
 
         if ( entity.getProjectStartDate() != null ) {
             projectStartDate = dateTimeFormatter_yyyy_MM_dd_0159776256.format( entity.getProjectStartDate() );
@@ -51,8 +52,11 @@ public class ProjectMapperImpl implements ProjectMapper {
         }
         projectId = entity.getProjectId();
         projectName = entity.getProjectName();
+        if ( entity.getIsProceeding() != null ) {
+            isProceeding = entity.getIsProceeding().name();
+        }
 
-        ProjectSearchResponse projectSearchResponse = new ProjectSearchResponse( projectId, projectName, projectStartDate, projectEndDate, createDate, modifyDate );
+        ProjectSearchResponse projectSearchResponse = new ProjectSearchResponse( projectId, projectName, projectStartDate, projectEndDate, createDate, modifyDate, isProceeding );
 
         return projectSearchResponse;
     }

@@ -24,6 +24,8 @@ public class QProject extends EntityPathBase<Project> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
+    public final EnumPath<com.aljjabaegi.api.entity.enumerated.UseYn> isProceeding = createEnum("isProceeding", com.aljjabaegi.api.entity.enumerated.UseYn.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
 

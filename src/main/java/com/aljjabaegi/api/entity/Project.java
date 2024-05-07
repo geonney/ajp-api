@@ -5,9 +5,11 @@ import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil;
 import com.aljjabaegi.api.common.request.enumeration.SortDirection;
+import com.aljjabaegi.api.entity.enumerated.UseYn;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
@@ -48,4 +50,9 @@ public class Project extends BaseEntity {
     @Temporal(TemporalType.DATE)
     @SearchableField
     private LocalDate projectEndDate;
+
+    @Formula("(select case when project_start_date >= now() or project_end_date  <= now() then 'Y' else 'N' end from project t1 where t1.project_id = project_id)")
+    @Enumerated(EnumType.STRING)
+    @SearchableField
+    private UseYn isProceeding;
 }

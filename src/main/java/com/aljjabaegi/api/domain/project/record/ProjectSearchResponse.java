@@ -21,6 +21,8 @@ public record ProjectSearchResponse(
         @Schema(description = "생성 일시", example = "2024-04-01 00:00:00")
         String createDate,
         @Schema(description = "수정 일시", example = "2024-04-01 00:00:00")
-        String modifyDate
+        String modifyDate,
+        @Schema(description = "프로젝트 진행여부", example = "Y")
+        String isProceeding
 ) {
 }
