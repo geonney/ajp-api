@@ -35,6 +35,7 @@
   - @Temporal
   - @Id
   - @EmbeddedId, @Embeddable
+  - @Formula (Operates as a subquery)
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
