@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -11,10 +12,13 @@ import lombok.Builder;
  */
 @Schema(description = "공통 오류 응답 구조체")
 @Builder
-public record ErrorResponse (
+public record ErrorResponse(
         @Schema(description = "상태 코드", example = "ER_SV_01")
         String status,
         @Schema(description = "메시지", example = "요청한 서비스에 문제가 발생했습니다. 잠시 후에 다시 시도해 주세요.")
-        String message
+        String message,
+        @Schema(description = "상세 메시지", example = "관리자에게 문의하세요!")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        String detailMessage
 ) {
 }

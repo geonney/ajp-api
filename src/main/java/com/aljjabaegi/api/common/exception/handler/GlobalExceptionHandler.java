@@ -132,16 +132,20 @@ public class GlobalExceptionHandler {
      * ErrorResponse return method
      *
      * @author GEONLEE
-     * @since 2024-04-11
+     * @since 2024-04-11<br />
+     * 2024-05-21 GEONLEE ErrorResponse detailMessage 추가<br />
      */
     private ResponseEntity<ErrorResponse> handleExceptionInternal(ErrorCode errorCode, Exception e) {
         /* 모든 HTTP Status 코드는 200으로 전달하고 내부 코드를 상세히 전달 */
         LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
+        String detailMessage = (errorCode.message().equals(e.getMessage())) ? null : e.getMessage();
         return ResponseEntity.ok()
                 .header("Content-type", String.valueOf(MediaType.APPLICATION_JSON))
                 .body(ErrorResponse.builder()
                         .status(errorCode.status())
-                        .message(errorCode.message()).build());
+                        .message(errorCode.message())
+                        .detailMessage(detailMessage)
+                        .build());
     }
 
     /**
