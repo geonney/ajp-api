@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -114,18 +115,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder stringBuilder = new StringBuilder();
-        StringJoiner stringJoiner = new StringJoiner(",");
+        StringJoiner stringJoiner = new StringJoiner(", ");
         LOGGER.error("======================@Valid Exception START======================");
         LOGGER.error("object : {}", e.getBindingResult().getObjectName());
         List<FieldError> fieldList = e.getFieldErrors();
         for (FieldError field : fieldList) {
-            stringJoiner.add("{field: " + field.getField() + ", message: " + field.getDefaultMessage() + "}");
+            stringJoiner.add(field.getField() + ": " + field.getDefaultMessage());
         }
         stringBuilder.append(stringJoiner);
         LOGGER.error(stringBuilder.toString());
         LOGGER.error("======================@Valid Exception End========================");
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(errorCode, e);
+        return handleExceptionInternal(errorCode, new InvalidParameterException(stringJoiner.toString()));
     }
 
     /**
