@@ -10,6 +10,8 @@ import com.aljjabaegi.api.common.request.DynamicSorter;
 import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
+import com.aljjabaegi.api.config.security.jwt.TokenProvider;
+import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.memberTeam.MemberTeamRepository;
@@ -20,6 +22,7 @@ import com.aljjabaegi.api.entity.Team;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,6 +55,7 @@ public class MemberService {
     private final MemberTeamRepository memberTeamRepository;
     private final TeamRepository teamRepository;
     private final RsaProvider rsaProvider;
+    private final TokenProvider tokenProvider;
     private final MemberMapper memberMapper = MemberMapper.INSTANCE;
 
     /**
@@ -177,14 +183,22 @@ public class MemberService {
      * 사용자 수정
      *
      * @author GEONLEE
-     * @since 2024-04-01
+     * @since 2024-04-01<br />
+     * 2024-05-24 GEONLEE - Token 내 포함된 정보 변경 시 Token 갱신 처리 추가<br />
      */
     @Transactional
-    public MemberModifyResponse modifyMember(MemberModifyRequest parameter) {
+    public MemberModifyResponse modifyMember(MemberModifyRequest parameter, HttpServletResponse httpServletResponse) {
         Member entity = memberRepository.findById(parameter.memberId())
                 .orElseThrow(() -> new EntityNotFoundException("Member does not exist, memberId: " + parameter.memberId()));
         Team teamEntity = teamRepository.findById(parameter.teamId())
                 .orElseThrow(() -> new EntityNotFoundException("Team does not exist. teamId: " + parameter.teamId()));
+        if (!parameter.memberName().equals(entity.getMemberName())) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication, entity, false);
+            entity.setAccessToken(tokenResponse.token());
+            entity.setRefreshToken(tokenResponse.refreshToken());
+            tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
+        }
         Member modifiedEntity = memberMapper.updateFromRequest(parameter, entity);
         MemberTeam memberTeam = modifiedEntity.getTeam();
         if (memberTeam == null) {

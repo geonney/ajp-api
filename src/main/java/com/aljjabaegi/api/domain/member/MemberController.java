@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -251,8 +252,9 @@ public class MemberController {
 
     @PutMapping(value = "/v1/member")
     @Operation(summary = "Modify Member", operationId = "API-MEMBER-06")
-    public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(@RequestBody @Valid MemberModifyRequest parameter) {
-        MemberModifyResponse modifiedMember = memberService.modifyMember(parameter);
+    public ResponseEntity<ItemResponse<MemberModifyResponse>> modifyUser(
+            @RequestBody @Valid MemberModifyRequest parameter, HttpServletResponse httpServletResponse) {
+        MemberModifyResponse modifiedMember = memberService.modifyMember(parameter, httpServletResponse);
         return ResponseEntity.ok()
                 .body(ItemResponse.<MemberModifyResponse>builder()
                         .status("OK")
