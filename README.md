@@ -37,6 +37,7 @@
   - @Id
   - @EmbeddedId, @Embeddable
   - @Formula (Operates as a subquery)
+  - @Transient (영속성 대상에서 제외 필드 사용 시)
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
