@@ -33,7 +33,7 @@
   - @MapsId (복합 키에 FK가 있을 경우 PK 로 설정)
 - Entity
   - @Enumerated(EnumType.STRING)
-  - @Temporal
+  - @Temporal (날짜 타입 매핑 시)
   - @Id
   - @EmbeddedId, @Embeddable
   - @Formula (Operates as a subquery)
