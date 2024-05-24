@@ -11,7 +11,9 @@
                      , to_char(project_start_date, 'YYYY-MM-DD') as projectStartDate
                      , to_char(project_end_date, 'YYYY-MM-DD') as projectEndDate
                      , to_char(create_dt, 'YYYY-MM-DD HH24:MI:SS') as createDate
-                     , to_char(update_dt, 'YYYY-MM-DD HH24:MI:SS') as updateDate
+                     , to_char(update_dt, 'YYYY-MM-DD HH24:MI:SS') as modifyDate
+                     , case when project_start_date <= now() and project_end_date > now() then 'Y'
+                            else 'N' end as isProceeding
                   from project
                  where project_name like concat('%', :projectName, '%')
             ]]>
@@ -25,7 +27,8 @@
             <column name="projectStartDate"/>
             <column name="projectEndDate"/>
             <column name="createDate"/>
-            <column name="updateDate"/>
+            <column name="modifyDate"/>
+            <column name="isProceeding"/>
         </constructor-result>
     </sql-result-set-mapping>
 </entity-mappings>
