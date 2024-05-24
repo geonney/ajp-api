@@ -22,7 +22,8 @@ import static com.aljjabaegi.api.common.jpa.idGenerator.IdGeneratorUtil.GENERATO
  * @author GEONLEE
  * @since 2024-04-04<br />
  * 2024-04-07 GEONLEE - @Temporal(TemporalType.DATE) 추가<br />
- * 2024-04-24 GEONLEE - DefaultSort 적용
+ * 2024-04-24 GEONLEE - DefaultSort 적용<br />
+ * 2024-05-24 GEONLEE - isProceeding sub query to case 변경<br />
  */
 @Getter
 @Setter
@@ -51,7 +52,7 @@ public class Project extends BaseEntity {
     @SearchableField
     private LocalDate projectEndDate;
 
-    @Formula("(select case when project_start_date >= now() or project_end_date  <= now() then 'Y' else 'N' end from project t1 where t1.project_id = project_id)")
+    @Formula("case when project_start_date >= now() or project_end_date  <= now() then 'Y' else 'N' end")
     @Enumerated(EnumType.STRING)
     @SearchableField
     private UseYn isProceeding;
