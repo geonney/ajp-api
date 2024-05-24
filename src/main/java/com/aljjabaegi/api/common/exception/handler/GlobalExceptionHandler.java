@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,9 @@ import java.util.StringJoiner;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @Value("${spring.profiles.active}")
+    private String active;
 
     /**
      * Checked Exception 관련 처리
@@ -135,11 +139,15 @@ public class GlobalExceptionHandler {
      * @author GEONLEE
      * @since 2024-04-11<br />
      * 2024-05-21 GEONLEE ErrorResponse detailMessage 추가<br />
+     * 2024-05-24 GEONLEE - 개발 환경에서만 detailMessage 전송되도록 수정<br />
      */
     private ResponseEntity<ErrorResponse> handleExceptionInternal(ErrorCode errorCode, Exception e) {
         /* 모든 HTTP Status 코드는 200으로 전달하고 내부 코드를 상세히 전달 */
+        String detailMessage = null;
         LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
-        String detailMessage = (errorCode.message().equals(e.getMessage())) ? null : e.getMessage();
+        if ("develop".equals(this.active)) {
+            detailMessage = (errorCode.message().equals(e.getMessage())) ? null : e.getMessage();
+        }
         return ResponseEntity.ok()
                 .header("Content-type", String.valueOf(MediaType.APPLICATION_JSON))
                 .body(ErrorResponse.builder()
