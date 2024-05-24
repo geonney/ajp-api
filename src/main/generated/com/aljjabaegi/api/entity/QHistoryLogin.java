@@ -26,6 +26,8 @@ public class QHistoryLogin extends EntityPathBase<HistoryLogin> {
 
     public final StringPath loginIp = createString("loginIp");
 
+    public final QMember member;
+
     public QHistoryLogin(String variable) {
         this(HistoryLogin.class, forVariable(variable), INITS);
     }
@@ -45,6 +47,7 @@ public class QHistoryLogin extends EntityPathBase<HistoryLogin> {
     public QHistoryLogin(Class<? extends HistoryLogin> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.key = inits.isInitialized("key") ? new com.aljjabaegi.api.entity.key.QHistoryLoginKey(forProperty("key")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }

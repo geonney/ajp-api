@@ -1,9 +1,7 @@
 package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.entity.key.HistoryLoginKey;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +21,11 @@ public class HistoryLogin {
 
     @Column(name = "login_ip")
     private String loginIp;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @MapsId("memberId")
+    private Member member;
 
 //    @PrePersist
 //    public void prePersist() {
