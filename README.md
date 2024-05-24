@@ -30,6 +30,7 @@
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId
+  - @MapsId (복합 키에 FK가 있을 경우 PK 로 설정)
 - Entity
   - @Enumerated(EnumType.STRING)
   - @Temporal
