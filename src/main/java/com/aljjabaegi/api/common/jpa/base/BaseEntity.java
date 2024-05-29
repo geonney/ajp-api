@@ -1,9 +1,7 @@
 package com.aljjabaegi.api.common.jpa.base;
 
 import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -26,11 +24,13 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "create_dt", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @SearchableField
     private LocalDateTime createDate;
 
     @LastModifiedDate
     @Column(name = "update_dt")
+    @Temporal(TemporalType.TIMESTAMP)
     @SearchableField
     private LocalDateTime modifyDate;
 }
