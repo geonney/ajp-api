@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.sql.SQLDataException;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -94,6 +95,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleJsonParseException(JsonParseException e, HttpServletRequest httpServletRequest) {
         CommonErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         printRequestPayload(httpServletRequest);
+        return handleExceptionInternal(errorCode, e);
+    }
+
+    /**
+     * 데이터 포멧과 맞지 않거나 범위를 벗어난 값 전달 시 처리
+     *
+     * @author GEONLEE
+     * @since 2024-05-29
+     */
+    @ExceptionHandler(value = SQLDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleSQLDataException(SQLDataException e) {
+        CommonErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e);
     }
 
