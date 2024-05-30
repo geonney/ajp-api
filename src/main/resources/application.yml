@@ -2,7 +2,7 @@ spring:
   application:
     name: AJP
   profiles:
-    active: develop
+    active: dev
   jpa:
     open-in-view: false
     mapping-resources:
@@ -50,7 +50,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: develop
+      on-profile: dev
   datasource:
     #    url: "jdbc:mariadb://{ip}:{port}/{schema}" #mariadb
     #    driver-class-name: "org.mariadb.jdbc.Driver" #mariadb
@@ -65,3 +65,10 @@ spring:
         format_sql: true
 #    hibernate:
 #      ddl-auto: create
+
+--- #production
+
+spring:
+  config:
+    activate:
+      on-profile: prod
