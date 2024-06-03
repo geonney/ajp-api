@@ -10,6 +10,7 @@ import com.aljjabaegi.api.entity.Authority;
 import com.aljjabaegi.api.entity.Member;
 import com.aljjabaegi.api.entity.MemberTeam;
 import com.aljjabaegi.api.entity.Team;
+import com.aljjabaegi.api.entity.code.ResponsibilityCode;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-05-29T18:28:00+0900",
+    date = "2024-06-04T08:25:38+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -34,6 +35,7 @@ public class MemberMapperImpl implements MemberMapper {
         }
 
         String teamName = null;
+        String responsibilityCodeName = null;
         String birthDate = null;
         String createDate = null;
         String modifyDate = null;
@@ -42,6 +44,7 @@ public class MemberMapperImpl implements MemberMapper {
         String cellphone = null;
 
         teamName = entityTeamTeamTeamName( entity );
+        responsibilityCodeName = entityTeamResponsibilityCodeCodeName( entity );
         if ( entity.getBirthDate() != null ) {
             birthDate = dateTimeFormatter_yyyy_MM_dd_0159776256.format( entity.getBirthDate() );
         }
@@ -55,7 +58,7 @@ public class MemberMapperImpl implements MemberMapper {
         memberName = entity.getMemberName();
         cellphone = entity.getCellphone();
 
-        MemberSearchResponse memberSearchResponse = new MemberSearchResponse( memberId, memberName, birthDate, cellphone, teamName, createDate, modifyDate );
+        MemberSearchResponse memberSearchResponse = new MemberSearchResponse( memberId, memberName, birthDate, cellphone, teamName, responsibilityCodeName, createDate, modifyDate );
 
         return memberSearchResponse;
     }
@@ -188,6 +191,25 @@ public class MemberMapperImpl implements MemberMapper {
             return null;
         }
         return teamName;
+    }
+
+    private String entityTeamResponsibilityCodeCodeName(Member member) {
+        if ( member == null ) {
+            return null;
+        }
+        MemberTeam team = member.getTeam();
+        if ( team == null ) {
+            return null;
+        }
+        ResponsibilityCode responsibilityCode = team.getResponsibilityCode();
+        if ( responsibilityCode == null ) {
+            return null;
+        }
+        String codeName = responsibilityCode.getCodeName();
+        if ( codeName == null ) {
+            return null;
+        }
+        return codeName;
     }
 
     protected Authority memberCreateRequestToAuthority(MemberCreateRequest memberCreateRequest) {

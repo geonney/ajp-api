@@ -170,7 +170,7 @@ public class MemberService {
             MemberTeam memberTeamEntity = new MemberTeam(); // 비영속
             memberTeamEntity.setMemberId(createdEntity.getMemberId());
             memberTeamEntity.setTeam(team);
-            memberTeamEntity.setResponsibilitiesCode("01");
+            memberTeamEntity.setResponsibilityCodeId("cd00");
             MemberTeam createdMemberTeam = memberTeamRepository.saveAndFlush(memberTeamEntity); //영속
             createdEntity.setTeam(createdMemberTeam); //영속된 팀을 연결
         }, () -> {

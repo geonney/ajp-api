@@ -1,10 +1,13 @@
 package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
+import com.aljjabaegi.api.entity.code.ResponsibilityCode;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.JoinColumnOrFormula;
+import org.hibernate.annotations.JoinColumnsOrFormulas;
+import org.hibernate.annotations.JoinFormula;
 
 /**
  * @author GEONLEE
@@ -12,7 +15,6 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString
 @Entity(name = "member_team")
 public class MemberTeam extends BaseEntity {
 
@@ -21,7 +23,14 @@ public class MemberTeam extends BaseEntity {
     private String memberId;
 
     @Column(name = "rpbt_cd")
-    private String responsibilitiesCode;
+    private String responsibilityCodeId;
+
+    @ManyToOne
+    @JoinColumnsOrFormulas(value = {
+            @JoinColumnOrFormula(column = @JoinColumn(name = "rpbt_cd", referencedColumnName = "code_id", insertable = false, updatable = false)),
+            @JoinColumnOrFormula(formula = @JoinFormula(value = "'rpbt_cd'", referencedColumnName = "code_group_id"))
+    })
+    private ResponsibilityCode responsibilityCode;
 
     @OneToOne
     @JoinColumn(name = "member_id")

@@ -34,7 +34,9 @@ public class QMemberTeam extends EntityPathBase<MemberTeam> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
 
-    public final StringPath responsibilitiesCode = createString("responsibilitiesCode");
+    public final com.aljjabaegi.api.entity.code.QResponsibilityCode responsibilityCode;
+
+    public final StringPath responsibilityCodeId = createString("responsibilityCodeId");
 
     public final QTeam team;
 
@@ -57,6 +59,7 @@ public class QMemberTeam extends EntityPathBase<MemberTeam> {
     public QMemberTeam(Class<? extends MemberTeam> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
+        this.responsibilityCode = inits.isInitialized("responsibilityCode") ? new com.aljjabaegi.api.entity.code.QResponsibilityCode(forProperty("responsibilityCode"), inits.get("responsibilityCode")) : null;
         this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
     }
 
