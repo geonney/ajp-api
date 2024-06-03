@@ -37,6 +37,7 @@
   - @Id
   - @EmbeddedId, @Embeddable
   - @Formula (Operates as a subquery)
+  - @JoinColumnOrFormula (MemberTeam - Code) - 코드 테이블의 값과 조인하여 사용
   - @Transient (영속성 대상에서 제외 필드 사용 시)
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
