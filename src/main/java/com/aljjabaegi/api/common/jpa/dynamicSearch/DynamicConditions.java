@@ -81,7 +81,8 @@ public interface DynamicConditions {
         }
         // If the field path is different, throw exception
         if (fieldPath == null) {
-            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "'" + searchFieldName + "' field that cannot be searched.");
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "'" + searchFieldName +
+                    "' field that cannot be searched in '" + entity.getSimpleName() + "' entity.");
         }
         return fieldPath;
     }
