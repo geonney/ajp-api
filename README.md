@@ -39,6 +39,7 @@
   - @Formula (Operates as a subquery)
   - @JoinColumnOrFormula (MemberTeam - Code) - 코드 테이블의 값과 조인하여 사용
   - @Transient (영속성 대상에서 제외 필드 사용 시)
+  - @SQLRestriction (Entity 조회 시 항상 추가되어야 하는 Where 조건 처리 시 사용)
 - namedNativeQuery (Project)
 - paging and sorting and condition (Login history)
 - CriteriaBuilder Specification (Team)
