@@ -37,6 +37,7 @@
   - @Id
   - @EmbeddedId, @Embeddable
   - @Formula (Operates as a subquery)
+  - @JoinColumn - ★자식-부모간 키가 다르면 referencedColumnName을 명시해 줘야 함!
   - @JoinColumnOrFormula (MemberTeam - Code) - 코드 테이블의 값과 조인하여 사용
   - @Transient (영속성 대상에서 제외 필드 사용 시)
   - @SQLRestriction (Entity 조회 시 항상 추가되어야 하는 Where 조건 처리 시 사용)
