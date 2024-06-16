@@ -22,23 +22,29 @@
   - AuditorAware 구현체 (SpringSecurityAuditorAware.class) - @LastModifiedBy 시 Spring Security 에서 UserId 바인딩
   - @CreatedDate, @LastModifiedDate, @LastModifiedBy
 - Mapstruct 적용
-- @SequenceGenerator (Board Entity)
-- @GenericGenerator (Project Entity)
+  - Entity to record
+  - record to Entity
+- Key generator
+  - @SequenceGenerator (Board Entity)
+  - @GenericGenerator (Project Entity)
 - Bulk 연산 @Modifying(clearAutomatically = true)
 - 연관 관계 (Sample)
+  - @JoinColumn (자식-부모 간의 키가 다르거나 명칭이 다를 경우 꼭 referenceColumnName을 명시해야 함)
   - @ManyToOne - @OneToMany 양방향 (Member - Team)
+  - @JoincolumnOrFormula (특정 값을 참조 컬럼의 값으로 조인 시 사용, MemberTeam - Code)
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId
   - @MapsId (복합 키에 FK가 있을 경우 PK 로 설정)
+  - @IdClass, @Id 보다 @EmbeddedId 가 보다 객체지향적인 방법
 - Entity
   - @Enumerated(EnumType.STRING)
-  - @Temporal (날짜 타입 매핑 시)
-  - @Id
-  - @EmbeddedId, @Embeddable
-  - @Formula (Operates as a subquery)
-  - @JoinColumn - ★자식-부모간 키가 다르면 referencedColumnName을 명시해 줘야 함!
-  - @JoinColumnOrFormula (MemberTeam - Code) - 코드 테이블의 값과 조인하여 사용
+    - Enum 속성 사용 시 필수 추가 (타입 변환 관련 에러 발생)
+  - @Temporal
+    - 날짜 타입 매핑 시 필수 추가 (명시적)
+    - 기본 타입은 Timestamp
+  - @Formula
+    - Entity 조회 시 value 값이 쿼리로 치환 됨
   - @Transient (영속성 대상에서 제외 필드 사용 시)
   - @SQLRestriction (Entity 조회 시 항상 추가되어야 하는 Where 조건 처리 시 사용)
 - namedNativeQuery (Project)
@@ -64,6 +70,7 @@
 - Querydsl 적용 (Login history)
   - DynamicBooleanBuilder 
     - DynamicSpecification 과 같이 동적 BooleanBuilder를 생성해주는 클래스
+    - BooleanBuilder 사용 시 조회할 값을 객체를 부모부터 참조해 가지 않으면 right join 으로 hibernate 에서 쿼리를 생성하니 주의!
   - DynamicDslRepository (Custom JpaRepository)
     - DynamicRepository 와 같은 기능 (Querydsl 로 동작)
 
