@@ -152,3 +152,10 @@
 
 #### Authentication logic
 ![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/d272debc-aff8-4281-961a-0da4accdbcf9)
+
+
+#### ETC
+- @JsonFormat
+  - 객체가 ResponseBody 로 직렬화 될 때 Json 포멧을 설정
+  - Mapper 에서 형변환을 해주는 것과 결과는 같음
+  - namedNativeQuery 를 사용하여 sql-result-set-mapping 으로 객체에 매핑할 경우에는 오류 발생 (InstantiationException)
