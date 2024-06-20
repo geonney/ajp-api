@@ -11,6 +11,7 @@ import com.aljjabaegi.api.entity.Member;
 import com.aljjabaegi.api.entity.MemberTeam;
 import com.aljjabaegi.api.entity.Team;
 import com.aljjabaegi.api.entity.code.ResponsibilityCode;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-06-04T08:25:38+0900",
+    date = "2024-06-20T09:38:53+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -37,19 +38,16 @@ public class MemberMapperImpl implements MemberMapper {
         String teamName = null;
         String responsibilityCodeName = null;
         String birthDate = null;
-        String createDate = null;
         String modifyDate = null;
         String memberId = null;
         String memberName = null;
         String cellphone = null;
+        LocalDateTime createDate = null;
 
         teamName = entityTeamTeamTeamName( entity );
         responsibilityCodeName = entityTeamResponsibilityCodeCodeName( entity );
         if ( entity.getBirthDate() != null ) {
             birthDate = dateTimeFormatter_yyyy_MM_dd_0159776256.format( entity.getBirthDate() );
-        }
-        if ( entity.getCreateDate() != null ) {
-            createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
         if ( entity.getModifyDate() != null ) {
             modifyDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getModifyDate() );
@@ -57,6 +55,7 @@ public class MemberMapperImpl implements MemberMapper {
         memberId = entity.getMemberId();
         memberName = entity.getMemberName();
         cellphone = entity.getCellphone();
+        createDate = entity.getCreateDate();
 
         MemberSearchResponse memberSearchResponse = new MemberSearchResponse( memberId, memberName, birthDate, cellphone, teamName, responsibilityCodeName, createDate, modifyDate );
 
