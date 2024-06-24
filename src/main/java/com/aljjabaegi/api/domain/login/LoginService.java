@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * login, logout service
@@ -43,6 +44,7 @@ import java.time.LocalDateTime;
  * 2024-04-15 GEONLEE - generateTokenResponse 응답 생성 시 member entity parameter 추가<br />
  * 2024-04-17 GEONLEE - 비밀번호 변경 주기 로직 추가<br />
  * 2024-04-26 GEONLEE - 로그인 시도 횟수 처리 추가에 따른 login method 에 @Transactional 제거<br />
+ * 2024-06-24 GEONLEE - Null 체크 로직 추가<br />
  */
 @Service
 @RequiredArgsConstructor
@@ -67,7 +69,7 @@ public class LoginService {
         Member entity = memberRepository.findById(parameter.id())
                 .orElseThrow(() -> new ServiceException(CommonErrorCode.ID_NOT_FOUND));
         // 2. 잠긴 회원 체크
-        if (UseYn.N == entity.getUseYn()) {
+        if (Objects.isNull(entity.getUseYn()) || UseYn.N == entity.getUseYn()) {
             throw new ServiceException(CommonErrorCode.LOCKED_MEMBER, "'" + entity.getMemberId() + "' is a locked member.");
         }
         // 3. Password 가 일치하는지 체크
@@ -92,7 +94,10 @@ public class LoginService {
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 5. 패스워드 변경 주기 체크
-        boolean isChangePassword = LocalDate.now().isAfter(entity.getPasswordUpdateDate().plusDays(passwordUpdateCycle));
+        boolean isChangePassword = true;
+        if (!Objects.isNull(entity.getPasswordUpdateDate())) {
+            isChangePassword = LocalDate.now().isAfter(entity.getPasswordUpdateDate().plusDays(passwordUpdateCycle));
+        }
         // 6. JWT 토큰 응답 생성
         TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication, entity, isChangePassword);
         // 7. 로그인 성공 시 DB Token 정보 갱신, 로그인 시도 0으로 초기화
