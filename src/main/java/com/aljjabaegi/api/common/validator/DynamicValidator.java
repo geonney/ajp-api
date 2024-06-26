@@ -5,6 +5,7 @@ import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -27,8 +28,13 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
 
     @Override
     public boolean isValid(DynamicRequest dynamicRequest, ConstraintValidatorContext context) {
-        List<String> filterFields = dynamicRequest.filter().stream().map(DynamicFilter::field).toList();
-        List<String> invalidFields = essentialFields.stream().filter(essentialField -> !filterFields.contains(essentialField)).toList();
+        //Filter only non-null values
+        List<String> filterFields = dynamicRequest.filter().stream()
+                .filter(dynamicFilter -> !ObjectUtils.isEmpty(dynamicFilter.value()))
+                .map(DynamicFilter::field).toList();
+        //EssentialField check
+        List<String> invalidFields = essentialFields.stream()
+                .filter(essentialField -> !filterFields.contains(essentialField)).toList();
         if (invalidFields.size() > 0) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(CommonErrorCode.REQUIRED_PARAMETER.message())
