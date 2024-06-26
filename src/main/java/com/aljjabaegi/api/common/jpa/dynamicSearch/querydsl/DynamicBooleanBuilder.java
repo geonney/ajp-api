@@ -14,6 +14,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
 import jakarta.persistence.Enumerated;
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Querydsl 에서 조회조건에 활용하는 BooleanBuilder, OrderSpecifier 를 동적으로 생성
@@ -31,13 +33,14 @@ import java.util.List;
  * @since 2024-04-19<br />
  * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
  * 2024-04-29 GEONLEE - Enum type 조회 가능 옵션 추가<br />
+ * 2024-06-26 GEONLEE - null 체크 ObjectUtils.isEmpty()로 변경<br />
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
 
     @Override
     public List<OrderSpecifier<String>> generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
-        if (dynamicSorters == null) {
+        if (ObjectUtils.isEmpty(dynamicSorters)) {
             return generateDefaultSort(entity);
         }
         return parseSort(entity, dynamicSorters);
@@ -75,7 +78,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     public List<OrderSpecifier<String>> generateDefaultSort(Class<?> entity) {
         List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
         DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
-        if (defaultSort == null) {
+        if (Objects.isNull(defaultSort) || ObjectUtils.isEmpty(defaultSort.columnName())) {
             return orderSpecifierList;
         }
         String[] columnNames = defaultSort.columnName();
