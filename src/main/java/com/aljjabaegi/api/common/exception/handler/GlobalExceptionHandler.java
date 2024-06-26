@@ -161,6 +161,7 @@ public class GlobalExceptionHandler {
             constraintViolation.getPropertyPath().forEach(node -> {
                 if (node.getKind().name().equals("PROPERTY")) {
                     stringJoiner.add(node.getName());
+                    return;
                 }
             });
         });

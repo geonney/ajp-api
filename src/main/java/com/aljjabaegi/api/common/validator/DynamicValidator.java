@@ -34,7 +34,9 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
                 .map(DynamicFilter::field).toList();
         //EssentialField check
         List<String> invalidFields = essentialFields.stream()
-                .filter(essentialField -> !filterFields.contains(essentialField)).toList();
+                .filter(essentialField -> !filterFields.contains(
+                        (essentialField.contains(":") ? essentialField.split(":")[0].trim() : essentialField.trim())))
+                .toList();
         if (invalidFields.size() > 0) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(CommonErrorCode.REQUIRED_PARAMETER.message())

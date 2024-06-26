@@ -144,7 +144,8 @@ public class MemberController {
              - lte (less then equal)
              - gte (greater than equal)
             """)
-    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(@RequestBody @DynamicValid(essentialFields = {"memberId"}) DynamicRequest dynamicRequest) {
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(
+            @RequestBody @DynamicValid(essentialFields = {"memberId : 사용자명", "memberName:사용자명 "}) DynamicRequest dynamicRequest) {
         List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest.filter());
         long size = memberSearchResponseList.size();
         return ResponseEntity.ok()
