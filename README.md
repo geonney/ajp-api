@@ -87,6 +87,8 @@
 - dsl 이 변경될 경우 DynamicConditions, DynamicRepository 를 구현하여 확장 가능
 - @DefaultSort
   - Dynamic 을 사용할 때 sort 값이 넘어오지 않았을 경우 entity의 기본 정렬 컬럼을 설정하는 annotation (Apply Board, Project entity)
+- @DynamicValid
+  - DynamicRequest 를 사용할 경우 필수 값 유효성 체크 (@DynamicValid(essentialFields = "memberId:멤버 ID", "memberName:멤버 명"))
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
