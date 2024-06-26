@@ -76,8 +76,8 @@ public class SpringSecurityConfig {
                 .exceptionHandling(c ->
                         c.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
 //                .apply(new JwtSecurityConfig(tokenProvider, messageConfig)); /*spring 6.2 deprecated*/
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new RequestFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterAfter(new RequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

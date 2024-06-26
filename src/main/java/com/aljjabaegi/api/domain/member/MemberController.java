@@ -1,10 +1,10 @@
 package com.aljjabaegi.api.domain.member;
 
-import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
+import com.aljjabaegi.api.common.validator.DynamicValid;
 import com.aljjabaegi.api.domain.member.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
 @Tag(name = "02. Member Management [Search using DynamicSpecification, Query method]", description = "Responsibility: GEONLEE")
 @SecurityRequirement(name = "JWT")
 @RequiredArgsConstructor
+@Validated
 public class MemberController {
     private final MemberService memberService;
 
@@ -142,8 +144,8 @@ public class MemberController {
              - lte (less then equal)
              - gte (greater than equal)
             """)
-    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(@RequestBody List<DynamicFilter> dynamicFilters) {
-        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicFilters);
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(@RequestBody @DynamicValid(essentialFields = {"memberId"}) DynamicRequest dynamicRequest) {
+        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest.filter());
         long size = memberSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<MemberSearchResponse>builder()

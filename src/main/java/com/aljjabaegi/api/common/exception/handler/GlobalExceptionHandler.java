@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
@@ -130,7 +131,7 @@ public class GlobalExceptionHandler {
      * @author GEONLEE
      * @since 2024-04-02
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder stringBuilder = new StringBuilder();
         StringJoiner stringJoiner = new StringJoiner(", ");
@@ -148,6 +149,26 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Custom Validation 관련 Exception 처리 (필수 파라미터))
+     *
+     * @author GEONLEE
+     * @since 2024-06-26
+     */
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        e.getConstraintViolations().forEach(constraintViolation -> {
+            constraintViolation.getPropertyPath().forEach(node -> {
+                if (node.getKind().name().equals("PROPERTY")) {
+                    stringJoiner.add(node.getName());
+                }
+            });
+        });
+        ErrorCode errorCode = CommonErrorCode.REQUIRED_PARAMETER;
+        return handleExceptionInternal(errorCode, new ServiceException(CommonErrorCode.REQUIRED_PARAMETER, stringJoiner.toString()));
+    }
+
+    /**
      * ErrorResponse return method
      *
      * @author GEONLEE
@@ -159,7 +180,7 @@ public class GlobalExceptionHandler {
         /* 모든 HTTP Status 코드는 200으로 전달하고 내부 코드를 상세히 전달 */
         String detailMessage = null;
         LOGGER.error("[" + errorCode.status() + "] {}", errorCode, e);
-        if ("develop".equals(this.active)) {
+        if ("dev".equals(this.active)) {
             detailMessage = (errorCode.message().equals(e.getMessage())) ? null : e.getMessage();
         }
         return ResponseEntity.ok()
