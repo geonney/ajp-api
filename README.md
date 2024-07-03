@@ -32,6 +32,7 @@
   - @JoinColumn (자식-부모 간의 키가 다르거나 명칭이 다를 경우 꼭 referenceColumnName을 명시해야 함)
   - @ManyToOne - @OneToMany 양방향 (Member - Team)
   - @JoincolumnOrFormula (특정 값을 참조 컬럼의 값으로 조인 시 사용, MemberTeam - Code)
+  - @OrderBy - 연관관계 설정 시 기본 정렬 조건 추가
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId
