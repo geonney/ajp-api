@@ -1,10 +1,7 @@
 package com.aljjabaegi.api.entity;
 
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +10,8 @@ import java.util.List;
 
 /**
  * @author GEONLEE
- * @since 2024-05-29
+ * @since 2024-05-29<br />
+ * 2024-07-03 GEONLEE - OrderBy annotation 추가<br />
  */
 @Getter
 @Setter
@@ -30,5 +28,6 @@ public class CodeGroup extends BaseEntity {
     String codeGroupDescription;
 
     @OneToMany(mappedBy = "codeGroup")
+    @OrderBy("key.codeId ASC")
     List<Code> codes = new ArrayList<>();
 }
