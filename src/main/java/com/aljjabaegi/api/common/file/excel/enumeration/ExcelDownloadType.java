@@ -1,4 +1,4 @@
-package kr.co.neighbor21.neighborApi.common.util.file.excel.enumeration;
+package com.aljjabaegi.api.common.file.excel.enumeration;
 
 /**
  * @author GEONLEE

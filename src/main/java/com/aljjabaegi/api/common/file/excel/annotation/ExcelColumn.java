@@ -1,4 +1,4 @@
-package kr.co.neighbor21.neighborApi.common.excel.annotation;
+package com.aljjabaegi.api.common.file.excel.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -8,37 +8,18 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 
 /**
- * @description 커스텀 어노테이션으로 적용
- * @autor yh.kim
- * @see java.lang.annotation.Annotation
- * 2024-07-08 GEONLEE - cellWidth 추가<br /
+ * Excel download 시 record 속성 위에 추가되는 컬럼 설정 어노테이션
+ *
+ * @author GEONLEE
+ * @since 2024-07-09
  */
 @Documented
 @Target(FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NsColumn {
+public @interface ExcelColumn {
+    int index(); // 열 인덱스
 
-    int index();
+    String name(); // 열 헤더 명
 
-    // 엑셀에 표출된 이름
-    String name();
-
-    int cellWidth() default 200;
-
-    @Deprecated
-    String example() default "";
-
-    String description() default "";
-
-    String defaultValue() default "";
-
-    //    String displayName() default "";
-    boolean trim() default false;
-
-    boolean emptyValueIsNull() default false;
-
-    @Deprecated
-    boolean primary() default false;
-
-    boolean hide() default false;
+    int cellWidth() default 200; // 열 넓이
 }

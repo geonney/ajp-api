@@ -1,13 +1,13 @@
-package kr.co.neighbor21.neighborApi.common.util.file.excel;
+package com.aljjabaegi.api.common.file.excel;
 
+import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
+import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.file.excel.annotation.ExcelColumn;
+import com.aljjabaegi.api.common.file.excel.annotation.ExcelDownload;
+import com.aljjabaegi.api.common.file.excel.enumeration.ExcelDownloadType;
+import com.aljjabaegi.api.common.file.excel.record.DynamicHeaderRequest;
+import com.aljjabaegi.api.common.file.excel.record.ExcelDownloadRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.neighbor21.neighborApi.common.excel.annotation.NsColumn;
-import kr.co.neighbor21.neighborApi.common.excel.annotation.NsExcel;
-import kr.co.neighbor21.neighborApi.common.exception.code.CommonErrorCode;
-import kr.co.neighbor21.neighborApi.common.exception.custom.ServiceException;
-import kr.co.neighbor21.neighborApi.common.util.file.excel.enumeration.ExcelDownloadType;
-import kr.co.neighbor21.neighborApi.common.util.file.excel.record.DynamicHeaderRequest;
-import kr.co.neighbor21.neighborApi.common.util.file.excel.record.ExcelDownloadRequest;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -24,6 +24,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.*;
 
 /**
@@ -78,7 +79,7 @@ public class ExcelFileDownloader implements FileDownloader {
     private Sheet sheet;
     // default header style
     private CellStyle headerStyle = getHeaderStyle();
-    // excel download type -> NORMAL(@NsExcel, @NsColumn 을 사용한 다운로드), TEMPLATE(템플릿 파일 사용), DYNAMIC_HEADER(동적 헤더)
+    // excel download type -> NORMAL(@ExcelDownload, @ExcelColumn 을 사용한 다운로드), TEMPLATE(템플릿 파일 사용), DYNAMIC_HEADER(동적 헤더)
     private ExcelDownloadType excelDownloadType = ExcelDownloadType.NORMAL;
 
     public ExcelFileDownloader(HttpServletResponse httpServletResponse, ExcelDownloadRequest excelDownloadRequest) {
@@ -144,18 +145,18 @@ public class ExcelFileDownloader implements FileDownloader {
     private void appendHeader() {
         Row headerRow = this.sheet.createRow(0);
         Class<?> record = this.excelDownloadRequest.recordType();
-        List<NsColumn> columnList = Arrays.stream(record.getDeclaredFields())
-                .filter(field -> field.getAnnotation(NsColumn.class) != null)
-                .sorted(Comparator.comparingInt(x -> x.getAnnotation(NsColumn.class).index()))
-                .map(field -> field.getAnnotation(NsColumn.class))
+        List<ExcelColumn> columnList = Arrays.stream(record.getDeclaredFields())
+                .filter(field -> field.getAnnotation(ExcelColumn.class) != null)
+                .sorted(Comparator.comparingInt(x -> x.getAnnotation(ExcelColumn.class).index()))
+                .map(field -> field.getAnnotation(ExcelColumn.class))
                 .toList();
         if (ObjectUtils.isEmpty(columnList)) {
-            throw new ServiceException(CommonErrorCode.LOGIC_ERROR, "No @NsColumn for excel export. -> " + record.getSimpleName());
+            throw new ServiceException(CommonErrorCode.LOGIC_ERROR, "No @ExcelColumn for excel export. -> " + record.getSimpleName());
         }
         Cell rowNumberCell = headerRow.createCell(0);
         rowNumberCell.setCellValue("No");
         rowNumberCell.setCellStyle(this.headerStyle);
-        for (NsColumn column : columnList) {
+        for (ExcelColumn column : columnList) {
             Cell headerCell = headerRow.createCell(column.index());
             headerCell.setCellValue(column.name());
             headerCell.setCellStyle(this.headerStyle);
@@ -253,7 +254,7 @@ public class ExcelFileDownloader implements FileDownloader {
     }
 
     /**
-     * record type 에서 NsColumn 을 추출 해 index 로 정렬 후 name list 를 리턴한다.
+     * record type 에서 ExcelColumn 을 추출 해 index 로 정렬 후 name list 를 리턴한다.
      *
      * @return ordered column name list
      * @author GEONLEE
@@ -262,14 +263,14 @@ public class ExcelFileDownloader implements FileDownloader {
     private List<String> getOrderedColumnList() {
         Class<?> record = this.excelDownloadRequest.recordType();
         return Arrays.stream(record.getDeclaredFields())
-                .filter(field -> field.getAnnotation(NsColumn.class) != null)
-                .sorted(Comparator.comparingInt(x -> x.getAnnotation(NsColumn.class).index()))
+                .filter(field -> field.getAnnotation(ExcelColumn.class) != null)
+                .sorted(Comparator.comparingInt(x -> x.getAnnotation(ExcelColumn.class).index()))
                 .map(Field::getName)
                 .toList();
     }
 
     /**
-     * record @NsExcel 로 부터 sheet name 을 추출한다.<br />
+     * record @ExcelDownload 로 부터 sheet name 을 추출한다.<br />
      * 설정이 안되어 있을 경우 Sheet + (시트 수 +1) 로 초기화 한다.
      *
      * @author GEONLEE
@@ -277,13 +278,13 @@ public class ExcelFileDownloader implements FileDownloader {
      */
     private String getSheetNameFromRecord() {
         Class<?> record = this.excelDownloadRequest.recordType();
-        if (ObjectUtils.isEmpty(record.getAnnotation(NsExcel.class))) {
-            throw new ServiceException(CommonErrorCode.LOGIC_ERROR, "No @NsExcel for excel export at record. -> " + record.getSimpleName());
+        if (ObjectUtils.isEmpty(record.getAnnotation(ExcelDownload.class))) {
+            throw new ServiceException(CommonErrorCode.LOGIC_ERROR, "No @ExcelDownload for excel export at record. -> " + record.getSimpleName());
         }
-        String sheetName = record.getAnnotation(NsExcel.class).sheetName();
+        String sheetName = record.getAnnotation(ExcelDownload.class).sheetName();
         if (sheetName.isEmpty()) {
             sheetName = "Sheet" + (this.workbook.getNumberOfSheets() + 1);
-            LOGGER.info("No sheetName at @NsExcel. Initialized sheet name to 'Sheet1'. -> " + record.getSimpleName());
+            LOGGER.info("No sheetName at @ExcelDownload. Initialized sheet name to 'Sheet1'. -> " + record.getSimpleName());
         }
         return sheetName;
     }

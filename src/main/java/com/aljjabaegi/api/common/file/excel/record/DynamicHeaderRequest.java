@@ -1,4 +1,4 @@
-package kr.co.neighbor21.neighborApi.common.util.file.excel.record;
+package com.aljjabaegi.api.common.file.excel.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
