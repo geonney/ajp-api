@@ -14,7 +14,7 @@ import static java.lang.annotation.ElementType.TYPE;
 @Documented
 @Target({TYPE, CONSTRUCTOR})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ExcelDownload {
+public @interface ExcelFile {
 
     String sheetName() default "";
 

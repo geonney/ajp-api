@@ -3,7 +3,7 @@ package com.aljjabaegi.api.common.file.excel;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.file.excel.annotation.ExcelColumn;
-import com.aljjabaegi.api.common.file.excel.annotation.ExcelDownload;
+import com.aljjabaegi.api.common.file.excel.annotation.ExcelFile;
 import com.aljjabaegi.api.common.file.excel.enumeration.ExcelDownloadType;
 import com.aljjabaegi.api.common.file.excel.record.DynamicHeaderRequest;
 import com.aljjabaegi.api.common.file.excel.record.ExcelDownloadRequest;
@@ -278,10 +278,10 @@ public class ExcelFileDownloader implements FileDownloader {
      */
     private String getSheetNameFromRecord() {
         Class<?> record = this.excelDownloadRequest.recordType();
-        if (ObjectUtils.isEmpty(record.getAnnotation(ExcelDownload.class))) {
+        if (ObjectUtils.isEmpty(record.getAnnotation(ExcelFile.class))) {
             throw new ServiceException(CommonErrorCode.LOGIC_ERROR, "No @ExcelDownload for excel export at record. -> " + record.getSimpleName());
         }
-        String sheetName = record.getAnnotation(ExcelDownload.class).sheetName();
+        String sheetName = record.getAnnotation(ExcelFile.class).sheetName();
         if (sheetName.isEmpty()) {
             sheetName = "Sheet" + (this.workbook.getNumberOfSheets() + 1);
             LOGGER.info("No sheetName at @ExcelDownload. Initialized sheet name to 'Sheet1'. -> " + record.getSimpleName());
