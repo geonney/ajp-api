@@ -13,10 +13,12 @@ import java.util.stream.Stream;
  *
  * @author GEONLEE
  * @since 2024-04-09<br />
- * 2024-04-24 Operator 로 명칭 변경, getOperatorString 으로 메서드 명칭 변경<br />
+ * 2024-04-24 GEONLEE - Operator 로 명칭 변경, getOperatorString 으로 메서드 명칭 변경<br />
+ * 2024-07-10 GEONLEE - LT, GT 추가<br />
  */
 public enum Operator {
-    EQUAL("eq"), NOT_EQUAL("neq"), LIKE("contains"), BETWEEN("between"), IN("in"), LTE("lte"), GTE("gte");
+    EQUAL("eq"), NOT_EQUAL("neq"), LIKE("contains"), BETWEEN("between"), IN("in"), LTE("lte"), GTE("gte"),
+    LT("lt"), GT("gt");
 
     private static final Map<String, Operator> OPERATOR_MAP = Stream.of(values())
             .collect(Collectors.toMap(Operator::type, e -> e));
