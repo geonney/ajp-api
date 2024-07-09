@@ -156,6 +156,13 @@
 #### Authentication logic
 ![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/d272debc-aff8-4281-961a-0da4accdbcf9)
 
+#### Excel
+- POI 사용
+- Excel download
+  - record 에 annotation (@ExcelFile, @ExcelColumn)을 추가하는 사용 방식
+  - tmeplate file 을 가지고 처리하는 방식
+  - 동적 헤더와 동적 데이터로 처리하는 방식
+
 
 #### ETC
 - @JsonFormat
