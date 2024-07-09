@@ -113,7 +113,7 @@ public interface DynamicConditions {
                             , "The 'like' operator can only use 'String' types.");
                 }
             }
-            case BETWEEN, LTE, GTE -> {
+            case BETWEEN, LTE, GTE, LT, GT -> {
                 //Possible field type -> LocalDate, LocalDateType, Number type
                 if (fieldType == String.class || fieldType.isEnum()) {
                     throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
