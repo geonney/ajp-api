@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.member;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.entity.Member;
 import org.mapstruct.*;

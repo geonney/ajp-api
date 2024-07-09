@@ -1,6 +1,5 @@
 package com.aljjabaegi.api.domain.authority;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.authority.record.AuthorityCreateRequest;
 import com.aljjabaegi.api.domain.authority.record.AuthorityCreateResponse;
 import com.aljjabaegi.api.domain.menu.record.MenuSimpleResponse;

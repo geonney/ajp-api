@@ -5,7 +5,7 @@ import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
 import com.aljjabaegi.api.common.request.enumeration.Operator;

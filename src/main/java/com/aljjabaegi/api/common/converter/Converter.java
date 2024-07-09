@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.jpa.mapstruct;
+package com.aljjabaegi.api.common.converter;
 
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import com.aljjabaegi.api.config.security.rsa.RsaProvider;

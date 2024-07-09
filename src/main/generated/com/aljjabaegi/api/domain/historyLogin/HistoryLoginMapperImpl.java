@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.historyLogin;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginCreateRequest;
 import com.aljjabaegi.api.domain.historyLogin.record.HistoryLoginSearchResponse;
 import com.aljjabaegi.api.entity.HistoryLogin;

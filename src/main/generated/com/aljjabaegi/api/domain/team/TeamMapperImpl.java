@@ -1,6 +1,5 @@
 package com.aljjabaegi.api.domain.team;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.team.record.TeamCreateRequest;
 import com.aljjabaegi.api.domain.team.record.TeamCreateResponse;
 import com.aljjabaegi.api.domain.team.record.TeamModifyRequest;

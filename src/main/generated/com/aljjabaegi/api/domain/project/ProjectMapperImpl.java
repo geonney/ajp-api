@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.project;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.domain.project.record.ProjectCreateRequest;
 import com.aljjabaegi.api.domain.project.record.ProjectCreateResponse;
 import com.aljjabaegi.api.domain.project.record.ProjectModifyRequest;

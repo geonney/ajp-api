@@ -1,6 +1,5 @@
 package com.aljjabaegi.api.domain.code;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.code.record.CodeSearchResponse;
 import com.aljjabaegi.api.entity.Code;
 import com.aljjabaegi.api.entity.enumerated.UseYn;

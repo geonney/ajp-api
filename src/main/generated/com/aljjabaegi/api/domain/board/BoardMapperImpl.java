@@ -1,6 +1,5 @@
 package com.aljjabaegi.api.domain.board;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.board.record.BoardCreateRequest;
 import com.aljjabaegi.api.domain.board.record.BoardCreateResponse;
 import com.aljjabaegi.api.domain.board.record.BoardModifyRequest;

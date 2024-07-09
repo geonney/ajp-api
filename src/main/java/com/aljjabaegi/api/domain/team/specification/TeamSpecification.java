@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.team.specification;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.entity.Team;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;

@@ -1,6 +1,5 @@
 package com.aljjabaegi.api.domain.menu;
 
-import com.aljjabaegi.api.common.jpa.mapstruct.Converter;
 import com.aljjabaegi.api.domain.menu.record.MenuCreateRequest;
 import com.aljjabaegi.api.domain.menu.record.MenuCreateResponse;
 import com.aljjabaegi.api.domain.menu.record.MenuSearchResponse;
