@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.common.util.password;
 
-import com.aljjabaegi.api.common.util.password.enumeration.RegExp;
+import com.aljjabaegi.api.common.util.password.enumeration.PasswordRegExp;
 import com.aljjabaegi.api.common.util.password.enumeration.PasswordLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +39,8 @@ public class PasswordUtils {
      */
     public static boolean validPassword(String password) {
         boolean result = true;
-        List<RegExp> validProcess = List.of(RegExp.DIGITS, RegExp.UPPERCASE, RegExp.NUMBER);
-        for (RegExp regExp : validProcess) {
+        List<PasswordRegExp> validProcess = List.of(PasswordRegExp.DIGITS, PasswordRegExp.UPPERCASE, PasswordRegExp.NUMBER);
+        for (PasswordRegExp regExp : validProcess) {
             if (!regExp.getPatten().matcher(password).matches()) {
                 LOGGER.error(regExp.getMessage());
                 result = false;

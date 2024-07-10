@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
  * @author GEONLEE
  * @since 2024-04-17
  */
-public enum RegExp {
+public enum PasswordRegExp {
     // 8자리 이상
     DIGITS(".{8,}$", "Not more than 8 digits"),
     // 하나 이상의 대문자
@@ -19,7 +19,7 @@ public enum RegExp {
     private final String value;
     private final String message;
 
-    RegExp(String value, String message) {
+    PasswordRegExp(String value, String message) {
         this.value = value;
         this.message = message;
     }
