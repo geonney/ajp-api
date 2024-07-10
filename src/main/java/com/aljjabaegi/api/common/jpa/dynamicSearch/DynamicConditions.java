@@ -96,6 +96,7 @@ public interface DynamicConditions {
      * @author GEONLEE
      * @since 2024-04-11<br />
      * 2024-04-29 GEONLEE - fieldType String -> Class 로 변경, BETWEEN, LTE, GTE 조건에 enum 추가<br />
+     * 2024-07-10 GEONLEE - LT, GT 조건 추가<br />
      */
     default void checkAvailableFieldTypes(Operator operators, Class<?> fieldType) {
         switch (operators) {

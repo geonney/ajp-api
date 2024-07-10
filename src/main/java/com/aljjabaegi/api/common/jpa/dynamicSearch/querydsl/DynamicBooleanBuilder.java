@@ -3,6 +3,7 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
+import com.aljjabaegi.api.common.jpa.annotation.NumericOrder;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
 import com.aljjabaegi.api.common.request.DynamicFilter;
@@ -11,7 +12,9 @@ import com.aljjabaegi.api.common.request.enumeration.Operator;
 import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.StringPath;
 import jakarta.persistence.Enumerated;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,13 +37,13 @@ import java.util.*;
  * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
  * 2024-04-29 GEONLEE - Enum type 조회 가능 옵션 추가<br />
  * 2024-06-26 GEONLEE - null 체크 ObjectUtils.isEmpty()로 변경<br />
- * 2024-07-10 GEONLEE - Converter 의존성 제거, Operator type 추가 (LT, GT)<br />
+ * 2024-07-10 GEONLEE - Converter 의존성 제거, Operator type 추가 (LT, GT), parseSort, NumericOrder 체크 로직 추가, OrderSpecifier type 제네릭으로 변경<br />
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
 
     @Override
-    public List<OrderSpecifier<String>> generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
+    public List<OrderSpecifier<?>> generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         if (ObjectUtils.isEmpty(dynamicSorters)) {
             return generateDefaultSort(entity);
         }
@@ -53,8 +56,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
      * @param dynamicSorters DynamicSorter list
      * @return Sort 정렬 조건
      */
-    private List<OrderSpecifier<String>> parseSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
-        List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
+    private List<OrderSpecifier<?>> parseSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
+        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
         PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
         for (DynamicSorter dynamicSorter : dynamicSorters) {
             String fieldPath = getSearchFieldPath(entity, dynamicSorter.field());
@@ -63,12 +66,25 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
                         , "Invalid sort direction. Possible sort directions -> " + SortDirection.getSorDirectionString());
             }
+            StringPath stringPath = rootPath.getString(dynamicSorter.field());
             switch (dynamicSorter.direction()) {
                 case ASC -> {
-                    orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).asc().nullsLast());
+                    if (checkNumericOrder(entity, dynamicSorter.field())) {
+                        orderSpecifierList.add(
+                                Expressions.numberTemplate(Integer.class, "CAST({0} AS INTEGER)", stringPath)
+                                        .asc().nullsLast());
+                    } else {
+                        orderSpecifierList.add(stringPath.asc().nullsLast());
+                    }
                 }
                 case DESC -> {
-                    orderSpecifierList.add(rootPath.getString(dynamicSorter.field()).desc().nullsLast());
+                    if (checkNumericOrder(entity, dynamicSorter.field())) {
+                        orderSpecifierList.add(
+                                Expressions.numberTemplate(Integer.class, "CAST({0} AS INTEGER)", stringPath)
+                                        .desc().nullsLast());
+                    } else {
+                        orderSpecifierList.add(stringPath.desc().nullsLast());
+                    }
                 }
             }
         }
@@ -76,8 +92,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     }
 
     @Override
-    public List<OrderSpecifier<String>> generateDefaultSort(Class<?> entity) {
-        List<OrderSpecifier<String>> orderSpecifierList = new ArrayList<>();
+    public List<OrderSpecifier<?>> generateDefaultSort(Class<?> entity) {
+        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
         DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
         if (Objects.isNull(defaultSort) || ObjectUtils.isEmpty(defaultSort.columnName())) {
             return orderSpecifierList;
@@ -332,6 +348,16 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     }
 
     /**
+     * String 중에 숫자만 리턴
+     *
+     * @param str text
+     * @return numeric string
+     */
+    private String getStringToNumbers(String str) {
+        return str.replaceAll("[^0-9]+", "");
+    }
+
+    /**
      * Date string(yyyyMMdd) to LocalDate
      *
      * @param dateString date string
@@ -363,12 +389,20 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     }
 
     /**
-     * String 중에 숫자만 리턴
+     * NumericOrder Annotation check. 추후 type 에 따른 cast 처리 방식으로 개선이 필요할지도..?
      *
-     * @param str text
-     * @return numeric string
+     * @param entity    entity class
+     * @param fieldName field name
+     * @return Numeric annotation 이 있냐 없냐
+     * @author GEONLEE
+     * @since 2204-07-10
      */
-    private String getStringToNumbers(String str) {
-        return str.replaceAll("[^0-9]+", "");
+    private boolean checkNumericOrder(Class<?> entity, String fieldName) {
+        try {
+            return ObjectUtils.isNotEmpty(entity.getDeclaredField(fieldName).getAnnotation(NumericOrder.class));
+        } catch (NoSuchFieldException e) {
+            // getSearchFieldPath 에서 이미 체크하기 때문에 false return
+            return false;
+        }
     }
 }
