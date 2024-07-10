@@ -43,7 +43,7 @@ public class BoardService {
      */
     public GridResponse<BoardSearchResponse> getBoardListUsingDynamicBooleanBuilder(DynamicRequest dynamicRequest) {
         QBoard board = QBoard.board;
-        List<OrderSpecifier<String>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Board.class, dynamicRequest.sorter());
+        List<OrderSpecifier<?>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Board.class, dynamicRequest.sorter());
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicRequest.filter());
         Long totalSize = query.select(board.count())
                 .from(board)
