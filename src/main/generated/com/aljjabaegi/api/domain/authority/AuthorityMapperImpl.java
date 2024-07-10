@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.domain.authority;
 
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.domain.authority.record.AuthorityCreateRequest;
 import com.aljjabaegi.api.domain.authority.record.AuthorityCreateResponse;
 import com.aljjabaegi.api.domain.menu.record.MenuSimpleResponse;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-10T07:49:19+0900",
+    date = "2024-07-10T07:58:01+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component

@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.domain.code;
 
+import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.domain.code.record.CodeSearchResponse;
 import com.aljjabaegi.api.entity.Code;
 import com.aljjabaegi.api.entity.enumerated.UseYn;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-10T07:49:19+0900",
+    date = "2024-07-10T07:58:03+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
