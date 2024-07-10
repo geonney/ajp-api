@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-10T07:58:02+0900",
+    date = "2024-07-10T14:57:46+0900",
     comments = "version: 1.5.5.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-8.7.jar, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -44,8 +44,8 @@ public class MemberMapperImpl implements MemberMapper {
         String cellphone = null;
         LocalDateTime createDate = null;
 
-        teamName = entityTeamTeamTeamName( entity );
-        responsibilityCodeName = entityTeamResponsibilityCodeCodeName( entity );
+        teamName = entityMemberTeamTeamTeamName( entity );
+        responsibilityCodeName = entityMemberTeamResponsibilityCodeCodeName( entity );
         if ( entity.getBirthDate() != null ) {
             birthDate = dateTimeFormatter_yyyy_MM_dd_0159776256.format( entity.getBirthDate() );
         }
@@ -89,7 +89,7 @@ public class MemberMapperImpl implements MemberMapper {
         String memberName = null;
         String cellphone = null;
 
-        teamName = entityTeamTeamTeamName( entity );
+        teamName = entityMemberTeamTeamTeamName( entity );
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
@@ -120,7 +120,7 @@ public class MemberMapperImpl implements MemberMapper {
         String memberName = null;
         String cellphone = null;
 
-        teamName = entityTeamTeamTeamName( entity );
+        teamName = entityMemberTeamTeamTeamName( entity );
         if ( entity.getCreateDate() != null ) {
             createDate = dateTimeFormatter_yyyy_MM_dd_HH_mm_ss_11333195168.format( entity.getCreateDate() );
         }
@@ -173,34 +173,34 @@ public class MemberMapperImpl implements MemberMapper {
         return entity;
     }
 
-    private String entityTeamTeamTeamName(Member member) {
+    private String entityMemberTeamTeamTeamName(Member member) {
         if ( member == null ) {
             return null;
         }
-        MemberTeam team = member.getTeam();
+        MemberTeam memberTeam = member.getMemberTeam();
+        if ( memberTeam == null ) {
+            return null;
+        }
+        Team team = memberTeam.getTeam();
         if ( team == null ) {
             return null;
         }
-        Team team1 = team.getTeam();
-        if ( team1 == null ) {
-            return null;
-        }
-        String teamName = team1.getTeamName();
+        String teamName = team.getTeamName();
         if ( teamName == null ) {
             return null;
         }
         return teamName;
     }
 
-    private String entityTeamResponsibilityCodeCodeName(Member member) {
+    private String entityMemberTeamResponsibilityCodeCodeName(Member member) {
         if ( member == null ) {
             return null;
         }
-        MemberTeam team = member.getTeam();
-        if ( team == null ) {
+        MemberTeam memberTeam = member.getMemberTeam();
+        if ( memberTeam == null ) {
             return null;
         }
-        ResponsibilityCode responsibilityCode = team.getResponsibilityCode();
+        ResponsibilityCode responsibilityCode = memberTeam.getResponsibilityCode();
         if ( responsibilityCode == null ) {
             return null;
         }
