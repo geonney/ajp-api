@@ -1,5 +1,6 @@
 package com.aljjabaegi.api.entity;
 
+import com.aljjabaegi.api.common.jpa.annotation.SearchableField;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.entity.code.ResponsibilityCode;
 import jakarta.persistence.*;

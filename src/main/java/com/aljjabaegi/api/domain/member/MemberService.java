@@ -6,8 +6,6 @@ import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilde
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
-import com.aljjabaegi.api.common.request.DynamicSorter;
-import com.aljjabaegi.api.common.request.enumeration.SortDirection;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
@@ -34,7 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,7 +66,7 @@ public class MemberService {
      */
     @Transactional
     @SuppressWarnings("unchecked")
-    public List<MemberSearchResponse> getMemberList(List<DynamicFilter> dynamicFilters) {
+    public List<MemberSearchResponse> getMemberList(DynamicRequest dynamicRequest) {
         //specification 반식
 //        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
 //        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
@@ -79,17 +76,17 @@ public class MemberService {
 //                .where(booleanBuilder)
 //                .fetch();
         //dynamic repository 방식
-//        List<Member> memberList = memberRepository.findDynamic(dynamicFilters);
+        List<Member> memberList = memberRepository.findDynamic(dynamicRequest);
+        return memberMapper.toSearchResponseList(memberList);
         //dynamic repository paging
+//        List<DynamicSorter> sorters = new ArrayList<>();
+//        DynamicSorter dynamicSorter = new DynamicSorter("useYn", SortDirection.ASC);
+//        sorters.add(dynamicSorter);
+//
+//        DynamicRequest dynamicRequest = new DynamicRequest(0, 10, dynamicFilters, sorters);
+//        Page<Member> page = memberRepository.findDynamicWithPageable(dynamicRequest);
 
-        List<DynamicSorter> sorters = new ArrayList<>();
-        DynamicSorter dynamicSorter = new DynamicSorter("useYn", SortDirection.ASC);
-        sorters.add(dynamicSorter);
-
-        DynamicRequest dynamicRequest = new DynamicRequest(0, 10, dynamicFilters, sorters);
-        Page<Member> page = memberRepository.findDynamicWithPageable(dynamicRequest);
-
-        return memberMapper.toSearchResponseList(page.getContent());
+//        return memberMapper.toSearchResponseList(page.getContent());
     }
 
     /**
@@ -172,7 +169,7 @@ public class MemberService {
             memberTeamEntity.setTeam(team);
             memberTeamEntity.setResponsibilityCodeId("cd00");
             MemberTeam createdMemberTeam = memberTeamRepository.saveAndFlush(memberTeamEntity); //영속
-            createdEntity.setTeam(createdMemberTeam); //영속된 팀을 연결
+            createdEntity.setMemberTeam(createdMemberTeam); //영속된 팀을 연결
         }, () -> {
             throw new EntityNotFoundException("Team does not exist. teamId: " + parameter.teamId());
         });
@@ -200,15 +197,15 @@ public class MemberService {
             tokenProvider.renewalAccessTokenInCookie(httpServletResponse, tokenResponse.token());
         }
         Member modifiedEntity = memberMapper.updateFromRequest(parameter, entity);
-        MemberTeam memberTeam = modifiedEntity.getTeam();
+        MemberTeam memberTeam = modifiedEntity.getMemberTeam();
         if (memberTeam == null) {
             MemberTeam newMemberTeam = new MemberTeam();
             newMemberTeam.setMemberId(entity.getMemberId());
             newMemberTeam.setTeam(teamEntity);
             newMemberTeam = memberTeamRepository.save(newMemberTeam);
-            modifiedEntity.setTeam(newMemberTeam);
+            modifiedEntity.setMemberTeam(newMemberTeam);
         } else {
-            modifiedEntity.getTeam().setTeam(teamEntity);
+            modifiedEntity.getMemberTeam().setTeam(teamEntity);
         }
 
         modifiedEntity = memberRepository.saveAndFlush(modifiedEntity);

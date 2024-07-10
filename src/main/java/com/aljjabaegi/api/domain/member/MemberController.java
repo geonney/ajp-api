@@ -41,85 +41,109 @@ public class MemberController {
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """
-                                    [
-                                        {
-                                            "field":"memberId",
-                                            "operator":"eq",
-                                            "value":"honggildong123"
-                                        }
-                                    ]
+                                    {
+                                        "filter": [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            },
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"길동"
+                                            }
+                                        ]
+                                    }
+                                    
                             """),
                     @ExampleObject(name = "neq (notEqual)", value = """
-                                    [
-                                        {
-                                            "field":"memberId",
-                                            "operator":"neq",
-                                            "value":"honggildong123"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"memberId",
+                                                "operator":"neq",
+                                                "value":"honggildong123"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "contains (like)", value = """
-                                    [
-                                        {
-                                            "field":"memberName",
-                                            "operator":"contains",
-                                            "value":"길동"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"길동"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "between (between)", value = """
-                                    [
-                                        {
-                                            "field":"createDate",
-                                            "operator":"between",
-                                            "value":"20240408182256,20240408235959"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"createDate",
+                                                "operator":"between",
+                                                "value":"20240408182256,20240408235959"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "in (in)", value = """
-                                    [
-                                        {
-                                            "field":"birthDate",
-                                            "operator":"in",
-                                            "value":"19900305,19860107"
-                                        }
-                                    ]
+                                    {
+                                        "filter": [
+                                            {
+                                                "field":"birthDate",
+                                                "operator":"in",
+                                                "value":"19900305,19860107"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "lte (less than equal)", value = """
-                                    [
-                                        {
-                                            "field":"age",
-                                            "operator":"lte",
-                                            "value":"20"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"age",
+                                                "operator":"lte",
+                                                "value":"20"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "gte (greater than equal)", value = """
-                                    [
-                                        {
-                                            "field":"birthDate",
-                                            "operator":"gte",
-                                            "value":"19860107"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"birthDate",
+                                                "operator":"gte",
+                                                "value":"19860107"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "Reference entity field", value = """
-                                    [
-                                        {
-                                            "field":"team.teamName",
-                                            "operator":"contains",
-                                            "value":"명1"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"team.teamName",
+                                                "operator":"contains",
+                                                "value":"명1"
+                                            }
+                                        ]
+                                    }
                             """),
                     @ExampleObject(name = "Not searchable field", value = """
-                                    [
-                                        {
-                                            "field":"password",
-                                            "operator":"contains",
-                                            "value":"pass"
-                                        }
-                                    ]
+                                    {
+                                        "filter":[
+                                            {
+                                                "field":"password",
+                                                "operator":"contains",
+                                                "value":"pass"
+                                            }
+                                        ]
+                                    }
                             """)
             }
     ))
@@ -145,8 +169,8 @@ public class MemberController {
              - gte (greater than equal)
             """)
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(
-            @RequestBody @DynamicValid(essentialFields = {"memberId : 사용자명", "memberName:사용자명 "}) DynamicRequest dynamicRequest) {
-        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest.filter());
+            @RequestBody @DynamicValid(essentialFields = {"memberName:사용자명 "}) DynamicRequest dynamicRequest) {
+        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest);
         long size = memberSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<MemberSearchResponse>builder()

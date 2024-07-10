@@ -85,7 +85,8 @@ public class Member extends BaseEntity {
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id")
-    private MemberTeam team = new MemberTeam();
+    @SearchableField(columnPath = "memberTeam.team.teamName")
+    private MemberTeam memberTeam = new MemberTeam();
 
     @Transient /* 컬럼으로 관리할 필요가 없는 필드인 경우 사용 (영속성 대상에서 제외, querydsl Qentity 대성에서도 제외)*/
     private UseYn lockYn;
