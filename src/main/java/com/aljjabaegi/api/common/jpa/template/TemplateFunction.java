@@ -1,6 +1,8 @@
-package com.aljjabaegi.api.common.jpa.querydsl;
+package com.aljjabaegi.api.common.jpa.template;
 
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.core.types.dsl.StringTemplate;
 
 /**
@@ -31,5 +33,17 @@ public class TemplateFunction {
      */
     public static StringTemplate TO_CHAR(Object column, String format) {
         return Expressions.stringTemplate("TO_CHAR({0}, '{1s}')", column, format);
+    }
+
+    /**
+     * Integer type 변환 메서드
+     *
+     * @param stringPath path
+     * @return NumberTemplate
+     * @author GEONLEE
+     * @since 2024-07-10
+     */
+    public static NumberTemplate<Integer> TO_NUMBER(StringPath stringPath) {
+        return Expressions.numberTemplate(Integer.class, "CAST({0} AS INTEGER)", stringPath);
     }
 }
