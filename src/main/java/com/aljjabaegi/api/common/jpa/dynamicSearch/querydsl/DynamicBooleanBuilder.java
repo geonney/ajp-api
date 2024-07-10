@@ -62,7 +62,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         for (DynamicSorter dynamicSorter : dynamicSorters) {
             String fieldPath = getSearchFieldPath(entity, dynamicSorter.field());
             PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
-            if (dynamicSorter.direction() == null) {
+            if (ObjectUtils.isEmpty(dynamicSorter.direction())) {
                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER
                         , "Invalid sort direction. Possible sort directions -> " + SortDirection.getSorDirectionString());
             }
@@ -115,11 +115,11 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     @Override
     public BooleanBuilder generateConditions(Class<?> entity, List<DynamicFilter> dynamicFilters) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if (dynamicFilters == null || dynamicFilters.size() == 0) {
+        if (ObjectUtils.isEmpty(dynamicFilters)) {
             return booleanBuilder;
         }
         for (DynamicFilter dynamicFilter : dynamicFilters) {
-            if (dynamicFilter.operator() == null) {
+            if (ObjectUtils.isEmpty(dynamicFilter.operator())) {
                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Invalid operator. Possible Operators -> " + Operator.getOperatorString());
             }
             PathBuilder<Object> root = new PathBuilder<>(entity, lowerCaseFirst(entity.getSimpleName()));
@@ -128,7 +128,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             Class<?> fieldType = getType(entity, fieldPath);
             String value = dynamicFilter.value();
             // Possible search to null data
-            if (value == null) {
+            if (StringUtils.isEmpty(value)) {
                 booleanBuilder.and(rootPath.get(dynamicFilter.field()).isNull());
                 continue;
             }
@@ -285,7 +285,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 String[] entityField = fieldName.split("\\.");
                 return getType(entity.getDeclaredField(entityField[0]).getType(), fieldName.substring(fieldName.indexOf(".") + 1));
             }
-            if (entity.getDeclaredField(fieldName).getDeclaredAnnotation(Enumerated.class) != null) {
+            if (ObjectUtils.isNotEmpty(entity.getDeclaredField(fieldName).getDeclaredAnnotation(Enumerated.class))) {
                 return entity.getDeclaredField(fieldName).getType();
             }
             return entity.getDeclaredField(fieldName).getType();
