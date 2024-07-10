@@ -304,11 +304,19 @@ public class DynamicBooleanBuilder implements DynamicConditions {
      * @param fieldPath field path
      * @return 조회하고자 하는 속성의 상위 path
      * @author GEONLEE
-     * @since 2024-04-19
+     * @since 2024-04-19<br />
+     * 2024-07-10 GEONLEE - 기존에 fieldPath 의 자신을 제외하고 '.' 을 사용한 방식에서 타고 들어가는 방식으로 수정<br />
+     * return root.get(fieldPath.substring(0, fieldPath.lastIndexOf("."))); 이렇게 할 경우 alias 에 '.' 이 추가되는 문제 발생<br />
+     * 속성이 아니라 연관관계 일 경우 path 가 명확하게 처리되지 않는 문제<br />
      */
     private PathBuilder<Object> getParentPath(PathBuilder<Object> root, String fieldPath) {
         if (fieldPath.contains(".")) {
-            return root.get(fieldPath.substring(0, fieldPath.lastIndexOf(".")));
+            String[] paths = fieldPath.substring(0, fieldPath.lastIndexOf(".")).split("\\.");
+            PathBuilder<Object> pathBuilder = root;
+            for (String path : paths) {
+                pathBuilder = pathBuilder.get(path);
+            }
+            return pathBuilder;
         } else {
             return root;
         }
