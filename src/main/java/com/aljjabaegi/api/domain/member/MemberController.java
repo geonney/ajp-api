@@ -4,7 +4,9 @@ import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
+import com.aljjabaegi.api.common.util.RegularExpression;
 import com.aljjabaegi.api.common.validator.DynamicValid;
+import com.aljjabaegi.api.common.validator.FieldValid;
 import com.aljjabaegi.api.domain.member.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -169,7 +171,9 @@ public class MemberController {
              - gte (greater than equal)
             """)
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(
-            @RequestBody @DynamicValid(essentialFields = {"memberName:사용자명 "}) DynamicRequest dynamicRequest) {
+            @RequestBody @DynamicValid(essentialFields = {"memberName:사용자명 "}, fieldValidations = {
+                    @FieldValid(fieldName = "memberName", pattern = RegularExpression.ONLY_NUMBER)
+            }) DynamicRequest dynamicRequest) {
         List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest);
         long size = memberSearchResponseList.size();
         return ResponseEntity.ok()

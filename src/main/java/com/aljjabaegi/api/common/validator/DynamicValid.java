@@ -21,6 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DynamicValid {
     String[] essentialFields() default "";
+    FieldValid[] fieldValidations() default {};
 
     String message() default "";
 
