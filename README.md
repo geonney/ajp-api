@@ -90,6 +90,8 @@
   - Dynamic 을 사용할 때 sort 값이 넘어오지 않았을 경우 entity의 기본 정렬 컬럼을 설정하는 annotation (Apply Board, Project entity)
 - @DynamicValid
   - DynamicRequest 를 사용할 경우 필수 값 유효성 체크 (@DynamicValid(essentialFields = "memberId:멤버 ID", "memberName:멤버 명"))
+- @NumericSort
+  - DB column type 은 varchar 이지만 데이터가 숫자만 있는 경우, 1, 11, 12, 2, 3.. 과 같이 유니코드 정렬을 1, 2, 3, 11, 12 (으)로 정렬해야 할 때 사용
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
