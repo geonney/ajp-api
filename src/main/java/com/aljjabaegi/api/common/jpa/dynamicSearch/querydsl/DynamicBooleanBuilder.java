@@ -38,6 +38,7 @@ import java.util.*;
  * 2024-04-29 GEONLEE - Enum type 조회 가능 옵션 추가<br />
  * 2024-06-26 GEONLEE - null 체크 ObjectUtils.isEmpty()로 변경<br />
  * 2024-07-10 GEONLEE - Converter 의존성 제거, Operator type 추가 (LT, GT), parseSort, NumericOrder 체크 로직 추가, OrderSpecifier type 제네릭으로 변경<br />
+ * null 처리 방식 개선<br />
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
