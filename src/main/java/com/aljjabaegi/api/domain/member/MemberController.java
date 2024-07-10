@@ -172,7 +172,8 @@ public class MemberController {
             """)
     public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(
             @RequestBody @DynamicValid(essentialFields = {"memberName:사용자명 "}, fieldValidations = {
-                    @FieldValid(fieldName = "memberName", pattern = RegularExpression.ONLY_NUMBER)
+                    @FieldValid(fieldName = "memberName:사용자명", pattern = RegularExpression.ONLY_KOREAN),
+                    @FieldValid(fieldName = "age:나이", pattern = RegularExpression.ONLY_NUMBER, message = "나이는 숫자여야 합니다.")
             }) DynamicRequest dynamicRequest) {
         List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest);
         long size = memberSearchResponseList.size();
