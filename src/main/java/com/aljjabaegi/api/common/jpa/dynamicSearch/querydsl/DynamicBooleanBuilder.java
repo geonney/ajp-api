@@ -138,6 +138,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                     if (fieldType.isEnum()) {
                         booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(stringToEnum(fieldType, value)));
+                    } else if (fieldType == LocalDate.class) {
+                        booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).eq(dateStringToLocalDate(value)));
                     } else {
                         booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(value));
                     }
