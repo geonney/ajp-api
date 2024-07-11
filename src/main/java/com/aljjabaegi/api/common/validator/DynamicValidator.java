@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -43,15 +44,21 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
         //EssentialField check
         List<String> notPresentList = this.essentialFields.stream()
                 .filter(essentialField -> !filterFields.containsKey(getFieldName(essentialField, 0)))
-                .map(essentialField -> (essentialField.contains(":")) ? essentialField.split(":")[1].trim() + " 은(는) 필수 입니다." : essentialField)
+                .map(essentialField -> (essentialField.contains(":"))
+                        ? essentialField.split(":")[1].trim() + " value is required value."
+                        : essentialField)
                 .toList();
         //Validation check
         List<String> inValidFieldList = this.fieldValidations.stream()
                 .filter(fieldValid -> filterFields.containsKey(getFieldName(fieldValid.fieldName(), 0)))
                 .filter(fieldValid -> !Pattern.compile(fieldValid.pattern().format())
                         .matcher(filterFields.get(getFieldName(fieldValid.fieldName(), 0))).matches())
+                .filter(fieldValid -> {
+                    int byteSize = filterFields.get(getFieldName(fieldValid.fieldName(), 0)).getBytes(StandardCharsets.UTF_8).length;
+                    return byteSize >= fieldValid.length();
+                })
                 .map(fieldValid -> (StringUtils.isEmpty(fieldValid.message()))
-                        ? getFieldName(fieldValid.fieldName(), 1) + " (이)가 유효하지 않습니다."
+                        ? getFieldName(fieldValid.fieldName(), 1) + " value is invalid."
                         : fieldValid.message())
                 .toList();
         List<String> invalidList = Stream.concat(notPresentList.stream(), inValidFieldList.stream()).toList();
