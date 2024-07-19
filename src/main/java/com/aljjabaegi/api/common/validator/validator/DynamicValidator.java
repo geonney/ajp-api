@@ -1,8 +1,11 @@
-package com.aljjabaegi.api.common.validator;
+package com.aljjabaegi.api.common.validator.validator;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
+import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.validator.annotation.DynamicValid;
+import com.aljjabaegi.api.common.validator.annotation.FieldValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.ObjectUtils;
@@ -22,6 +25,7 @@ import java.util.stream.Stream;
  * @author GEONLEE
  * @since 2024-06-26<br />
  * 2024-07-10 GEONLEE - @FieldValid 를 사용한 유효성 체크 로직 추가<br />
+ * 2024-07-19 GEONLEE - filter null 처리 추가<br />
  */
 public class DynamicValidator implements ConstraintValidator<DynamicValid, DynamicRequest> {
 
@@ -37,6 +41,9 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
 
     @Override
     public boolean isValid(DynamicRequest dynamicRequest, ConstraintValidatorContext context) {
+        if (ObjectUtils.isEmpty(dynamicRequest.filter())) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Filter cannot be null.");
+        }
         //Filter only non-null values
         Map<String, String> filterFields = dynamicRequest.filter().stream()
                 .filter(dynamicFilter -> ObjectUtils.isNotEmpty(dynamicFilter.value()))

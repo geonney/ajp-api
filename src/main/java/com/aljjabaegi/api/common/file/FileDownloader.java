@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.file.excel;
+package com.aljjabaegi.api.common.file;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -25,8 +25,8 @@ public interface FileDownloader {
     default void setResponseHeader(HttpServletResponse httpServletResponse, String fileName, String extension) {
         StringBuilder encodedFileName = new StringBuilder();
         if (StringUtils.isEmpty(fileName)) {
-            LOGGER.info("There is no file name, so it is initialized to 'Excel'.");
-            fileName = "Excel";
+            LOGGER.info("There is no file name, so it is initialized to 'Download_file'.");
+            fileName = "Download_file";
         }
         encodedFileName.append(UriUtils.encode(fileName, "UTF-8").replaceAll("\\+", "%20"));
         encodedFileName.append("_").append(getNowString());

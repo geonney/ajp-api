@@ -1,5 +1,6 @@
-package com.aljjabaegi.api.common.validator;
+package com.aljjabaegi.api.common.validator.annotation;
 
+import com.aljjabaegi.api.common.validator.validator.DynamicValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

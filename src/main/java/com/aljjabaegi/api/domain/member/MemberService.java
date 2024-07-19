@@ -4,10 +4,8 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
-import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
-import com.aljjabaegi.api.common.util.RegularExpression;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
@@ -15,9 +13,8 @@ import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.memberTeam.MemberTeamRepository;
 import com.aljjabaegi.api.domain.team.TeamRepository;
-import com.aljjabaegi.api.entity.Member;
-import com.aljjabaegi.api.entity.MemberTeam;
-import com.aljjabaegi.api.entity.Team;
+import com.aljjabaegi.api.entity.*;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -72,10 +69,10 @@ public class MemberService {
 //        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
 //        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
         //booleanBuilder 방식
-//        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicFilters);
-//        List<Member> memberList = query.selectFrom(QMember.member)
-//                .where(booleanBuilder)
-//                .fetch();
+        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicRequest.filter());
+        List<Member> memberListQEntity = query.selectFrom(QMember.member)
+                .where(booleanBuilder)
+                .fetch();
         //dynamic repository 방식
         List<Member> memberList = memberRepository.findDynamic(dynamicRequest);
         return memberMapper.toSearchResponseList(memberList);

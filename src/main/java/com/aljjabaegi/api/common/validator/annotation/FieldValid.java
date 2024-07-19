@@ -1,6 +1,6 @@
-package com.aljjabaegi.api.common.validator;
+package com.aljjabaegi.api.common.validator.annotation;
 
-import com.aljjabaegi.api.common.util.RegularExpression;
+import com.aljjabaegi.api.common.validator.enumeration.RegularExpression;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

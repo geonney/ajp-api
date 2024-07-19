@@ -37,12 +37,22 @@ import java.util.*;
  * 2024-04-24 GEONLEE - LTE, GTE 조건 추가<br />
  * 2024-04-29 GEONLEE - Enum type 조회 가능 옵션 추가<br />
  * 2024-06-26 GEONLEE - null 체크 ObjectUtils.isEmpty()로 변경<br />
- * 2024-07-10 GEONLEE - Converter 의존성 제거, Operator type 추가 (LT, GT), parseSort, NumericOrder 체크 로직 추가, OrderSpecifier type 제네릭으로 변경<br />
- * null 처리 방식 개선<br />
+ * 2024-07-10 GEONLEE - Converter 의존성 제거, Operator type 추가 (LT, GT), parseSort<br />
+ * , NumericOrder 체크 로직 추가, OrderSpecifier type 제네릭으로 변경, null 처리 방식 개선<br />
+ * 2024-07-12 GEONLEE - 주석 추가<br />
  */
 @Component
 public class DynamicBooleanBuilder implements DynamicConditions {
 
+    /**
+     * 정렬 조건 리스트를 생성하여 리턴한다.<br />
+     * dynamicSorters 가 empty 일 경우 entity @defaultSort 로 조회조건을 생성하고, 그것도 없을 경우 빈 List 를 리턴한다.
+     *
+     * @param entity         entity class
+     * @param dynamicSorters 정렬조건 parameter
+     * @author GEONLEE
+     * @since 2024-04-19
+     */
     @Override
     public List<OrderSpecifier<?>> generateSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         if (ObjectUtils.isEmpty(dynamicSorters)) {
@@ -52,10 +62,13 @@ public class DynamicBooleanBuilder implements DynamicConditions {
     }
 
     /**
-     * DynamicSort list 로 sort 를 생성하여 리턴
+     * DynamicSort list 로 sort 를 생성하여 리턴한다.<br />
+     * Entity field 에 @NumericOrder 가 있을 경우 Number type 으로 casting 하여 조건을 추가한다.
      *
      * @param dynamicSorters DynamicSorter list
      * @return Sort 정렬 조건
+     * @author GEONLEE
+     * @since 2024-04-19
      */
     private List<OrderSpecifier<?>> parseSort(Class<?> entity, List<DynamicSorter> dynamicSorters) {
         List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
@@ -92,12 +105,20 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         return orderSpecifierList;
     }
 
+    /**
+     * Default 정렬 조건을 생성한다.<br />
+     * 정렬조건 parameter 가 empty 일 경우 entity 의 @DefaultSort 를 참조하고, 그것도 없을 경우 빈 List 를 리턴한다.
+     *
+     * @param entity entity class
+     * @return OrderSpecifier list 정렬조건 리스트
+     * @author GEONLEE
+     * @since 2024-04-19
+     */
     @Override
     public List<OrderSpecifier<?>> generateDefaultSort(Class<?> entity) {
-        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
         DefaultSort defaultSort = entity.getAnnotation(DefaultSort.class);
         if (Objects.isNull(defaultSort) || ObjectUtils.isEmpty(defaultSort.columnName())) {
-            return orderSpecifierList;
+            return new ArrayList<>();
         }
         String[] columnNames = defaultSort.columnName();
         SortDirection[] sortDirections = defaultSort.direction();
@@ -113,6 +134,15 @@ public class DynamicBooleanBuilder implements DynamicConditions {
         return parseSort(entity, dynamicSorters);
     }
 
+    /**
+     * 동적 조회조건 parameter 로 BooleanBuilder 를 생성하여 리턴한다.
+     *
+     * @param entity         entity class
+     * @param dynamicFilters 동적 정렬 필터 list
+     * @return BooleanBuilder 정렬 조건
+     * @author GEONLEE
+     * @since 2024-04-19
+     */
     @Override
     public BooleanBuilder generateConditions(Class<?> entity, List<DynamicFilter> dynamicFilters) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -278,6 +308,7 @@ public class DynamicBooleanBuilder implements DynamicConditions {
      * @author GEONLEE
      * @since 2024-04-19<br />
      * 2024-04-29 GEONLEE - Enum class 타입 전달하도록 수정<br />
+     * 2024-07-12 GEONLEE - Exception merge<br />
      */
     private Class<?> getType(Class<?> entity, String fieldName) {
         try {
@@ -292,10 +323,8 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 return entity.getDeclaredField(fieldName).getType();
             }
             return entity.getDeclaredField(fieldName).getType();
-        } catch (PathElementException e) {
+        } catch (PathElementException | NoSuchFieldException e) {
             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
         }
     }
 

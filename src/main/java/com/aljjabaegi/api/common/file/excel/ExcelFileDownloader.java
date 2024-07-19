@@ -2,6 +2,7 @@ package com.aljjabaegi.api.common.file.excel;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.file.FileDownloader;
 import com.aljjabaegi.api.common.file.excel.annotation.ExcelColumn;
 import com.aljjabaegi.api.common.file.excel.annotation.ExcelFile;
 import com.aljjabaegi.api.common.file.excel.enumeration.ExcelDownloadType;

@@ -46,4 +46,18 @@ public class TemplateFunction {
     public static NumberTemplate<Integer> TO_NUMBER(StringPath stringPath) {
         return Expressions.numberTemplate(Integer.class, "CAST({0} AS INTEGER)", stringPath);
     }
+
+    /**
+     * 문자열 자르는 SUBSTRING 메서드
+     * TemplateFunction.SUBSTRING(ql_op_stlbus_calctn.key.paymentDate, 1, 6)
+     *
+     * @param column     QEntity field
+     * @param startIndex 문자열을 자를 시작 인덱스
+     * @param endIndex   문자열을 자를 종료 인덱스
+     * @author GEONLEE
+     * @since 2024-07-19
+     */
+    public static StringTemplate SUBSTRING(Object column, Integer startIndex, Integer endIndex) {
+        return Expressions.stringTemplate("SUBSTRING({0}, {1s}, {2s})", column, startIndex, endIndex);
+    }
 }

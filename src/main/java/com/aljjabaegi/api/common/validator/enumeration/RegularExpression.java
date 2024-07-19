@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.util;
+package com.aljjabaegi.api.common.validator.enumeration;
 
 /**
  * @author GEONLEE
