@@ -117,14 +117,12 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         Long totalSize = countDynamic(dynamicRequest.filter());
         totalSize = (totalSize == null) ? 0L : totalSize;
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize());
-        System.out.println(this.entity.getName()+"_graph");
         List<T> list = this.queryFactory
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder)
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .setHint("javax.persistence.loadgraph", this.entityManager.getEntityGraph(this.entity.getSimpleName()+"_graph"))
                 .fetch();
         return new PageImpl<>(list, pageable, totalSize);
     }
