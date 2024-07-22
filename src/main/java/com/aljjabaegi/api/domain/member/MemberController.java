@@ -1,12 +1,10 @@
 package com.aljjabaegi.api.domain.member;
 
+import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.response.ItemResponse;
 import com.aljjabaegi.api.common.response.ItemsResponse;
-import com.aljjabaegi.api.common.validator.enumeration.RegularExpression;
-import com.aljjabaegi.api.common.validator.annotation.DynamicValid;
-import com.aljjabaegi.api.common.validator.annotation.FieldValid;
 import com.aljjabaegi.api.domain.member.record.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,13 +36,11 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping(value = "/v1/members-dynamic-filter")
-//    @Secured("ROLE_ADMIN")
+    @PostMapping(value = "/v1/members/dynamic/specification")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             examples = {
                     @ExampleObject(name = "eq (equal)", value = """
-                                    {
-                                        "filter": [
+                                    [
                                             {
                                                 "field":"memberId",
                                                 "operator":"eq",
@@ -55,101 +51,84 @@ public class MemberController {
                                                 "operator":"contains",
                                                 "value":"길동"
                                             }
-                                        ]
-                                    }
+                                    ]
                                     
                             """),
                     @ExampleObject(name = "neq (notEqual)", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"memberId",
                                                 "operator":"neq",
                                                 "value":"honggildong123"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "contains (like)", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"memberName",
                                                 "operator":"contains",
                                                 "value":"길동"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "between (between)", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"createDate",
                                                 "operator":"between",
                                                 "value":"20240408182256,20240408235959"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "in (in)", value = """
-                                    {
-                                        "filter": [
+                                    [
                                             {
                                                 "field":"birthDate",
                                                 "operator":"in",
                                                 "value":"19900305,19860107"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "lte (less than equal)", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"age",
                                                 "operator":"lte",
                                                 "value":"20"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "gte (greater than equal)", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"birthDate",
                                                 "operator":"gte",
                                                 "value":"19860107"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "Reference entity field", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"team.teamName",
                                                 "operator":"contains",
                                                 "value":"명1"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """),
                     @ExampleObject(name = "Not searchable field", value = """
-                                    {
-                                        "filter":[
+                                    [
                                             {
                                                 "field":"password",
                                                 "operator":"contains",
                                                 "value":"pass"
                                             }
-                                        ]
-                                    }
+                                    ]
                             """)
             }
     ))
-    @Operation(summary = "Search members (DynamicSpecification)", operationId = "API-MEMBER-01", description = """
+    @Operation(summary = "Search members using DynamicSpecification", operationId = "API-MEMBER-01", description = """
             Searchable Field
              - memberId
              - memberName
@@ -170,14 +149,8 @@ public class MemberController {
              - lte (less then equal)
              - gte (greater than equal)
             """)
-    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberList(
-            @RequestBody @DynamicValid(essentialFields = {"memberName:사용자명 "}, fieldValidations = {
-                    @FieldValid(fieldName = "memberName:사용자명", pattern = RegularExpression.ONLY_KOREAN, length = 3),
-                    @FieldValid(fieldName = "age:나이", pattern = RegularExpression.ONLY_NUMBER, message = "나이는 숫자여야 합니다."),
-                    @FieldValid(fieldName = "birthDate:생일", pattern = RegularExpression.DATE_RANGE),
-                    @FieldValid(fieldName = "createDate:생성일시", pattern = RegularExpression.DATETIME_RANGE, message = "날짜 범위 형식이 올바르지 않습니다."),
-            }) DynamicRequest dynamicRequest) {
-        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberList(dynamicRequest);
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberListBySpecification(@RequestBody List<DynamicFilter> parameter) {
+        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberListBySpecification(parameter);
         long size = memberSearchResponseList.size();
         return ResponseEntity.ok()
                 .body(ItemsResponse.<MemberSearchResponse>builder()
@@ -185,6 +158,164 @@ public class MemberController {
                         .message("데이터를 조회하는데 성공하였습니다.")
                         .totalSize(size)
                         .items(memberSearchResponseList).build());
+    }
+
+    @PostMapping(value = "/v1/members/dynamic/findDynamic")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "eq (equal)", value = """
+                                    [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"eq",
+                                                "value":"honggildong123"
+                                            },
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"길동"
+                                            }
+                                    ]
+                                    
+                            """),
+                    @ExampleObject(name = "neq (notEqual)", value = """
+                                    [
+                                            {
+                                                "field":"memberId",
+                                                "operator":"neq",
+                                                "value":"honggildong123"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "contains (like)", value = """
+                                    [
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"길동"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "between (between)", value = """
+                                    [
+                                            {
+                                                "field":"createDate",
+                                                "operator":"between",
+                                                "value":"20240408182256,20240408235959"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "in (in)", value = """
+                                    [
+                                            {
+                                                "field":"birthDate",
+                                                "operator":"in",
+                                                "value":"19900305,19860107"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "lte (less than equal)", value = """
+                                    [
+                                            {
+                                                "field":"age",
+                                                "operator":"lte",
+                                                "value":"20"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "gte (greater than equal)", value = """
+                                    [
+                                            {
+                                                "field":"birthDate",
+                                                "operator":"gte",
+                                                "value":"19860107"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "Reference entity field", value = """
+                                    [
+                                            {
+                                                "field":"team.teamName",
+                                                "operator":"contains",
+                                                "value":"명1"
+                                            }
+                                    ]
+                            """),
+                    @ExampleObject(name = "Not searchable field", value = """
+                                    [
+                                            {
+                                                "field":"password",
+                                                "operator":"contains",
+                                                "value":"pass"
+                                            }
+                                    ]
+                            """)
+            }
+    ))
+    @Operation(summary = "Search members using findDynamic", operationId = "API-MEMBER-02", description = """
+            Searchable Field
+             - memberId
+             - memberName
+             - cellphone
+             - birthDate
+             - age
+             - useYn ('Y', 'N')
+             - createDate
+             - updateDate
+             - team.teamName (Referenced entity field)
+             
+            Operators (See examples)
+             - eq (equal)
+             - neq (notEqual)
+             - contains (like)
+             - between (between)
+             - in (in)
+             - lte (less then equal)
+             - gte (greater than equal)
+            """)
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMemberListByFindDynamic(@RequestBody List<DynamicFilter> parameter) {
+        List<MemberSearchResponse> memberSearchResponseList = memberService.getMemberListByFindDynamic(parameter);
+        long size = memberSearchResponseList.size();
+        return ResponseEntity.ok()
+                .body(ItemsResponse.<MemberSearchResponse>builder()
+                        .status("OK")
+                        .message("데이터를 조회하는데 성공하였습니다.")
+                        .totalSize(size)
+                        .items(memberSearchResponseList).build());
+    }
+
+    @PostMapping(value = "/v1/members/dynamic/findDynamic-paging")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "paging", value = """
+                                    {
+                                             "take": 10,
+                                             "skip": 0,
+                                             "sort": [
+                                                   {
+                                                           "field": "createDate",
+                                                           "dir": "desc"
+                                                    }
+                                             ],
+                                             "filter": [
+                                                   {
+                                                           "field": "memberName",
+                                                           "operator": "contains",
+                                                           "value": "길동"
+                                                    }
+                                             ]
+                                     }
+                            """),
+
+            }
+    ))
+    @Operation(summary = "Search members with paging using findDynamic", operationId = "API-MEMBER-03", description = """
+                        
+            """)
+    public ResponseEntity<GridResponse<MemberSearchResponse>> getMemberListWithPagingByFindDynamic(@RequestBody DynamicRequest parameter) {
+        GridResponse<MemberSearchResponse> response = memberService.getMemberListWithPagingByFindDynamic(parameter);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
     @PostMapping(value = "/v1/members-dynamic-request")

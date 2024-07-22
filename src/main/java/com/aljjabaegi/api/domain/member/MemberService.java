@@ -4,6 +4,7 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
@@ -13,7 +14,10 @@ import com.aljjabaegi.api.config.security.rsa.RsaProvider;
 import com.aljjabaegi.api.domain.member.record.*;
 import com.aljjabaegi.api.domain.memberTeam.MemberTeamRepository;
 import com.aljjabaegi.api.domain.team.TeamRepository;
-import com.aljjabaegi.api.entity.*;
+import com.aljjabaegi.api.entity.Member;
+import com.aljjabaegi.api.entity.MemberTeam;
+import com.aljjabaegi.api.entity.QMember;
+import com.aljjabaegi.api.entity.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityExistsException;
@@ -53,6 +57,58 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     private final MemberMapper memberMapper = MemberMapper.INSTANCE;
 
+
+    /**
+     * dynamicSpecification 을 이용한 동적 Filtering
+     *
+     * @param parameter dynamicFilter list
+     * @return Member list
+     * @author GEONLEE
+     * @since 2024-07-22
+     */
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<MemberSearchResponse> getMemberListBySpecification(List<DynamicFilter> parameter) {
+        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, parameter);
+        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
+    }
+
+    /**
+     * findDynamic 을 이용한 동적 Filtering
+     *
+     * @param parameter dynamicFilter list
+     * @return Member list
+     * @author GEONLEE
+     * @since 2024-07-22
+     */
+    @Transactional
+    public List<MemberSearchResponse> getMemberListByFindDynamic(List<DynamicFilter> parameter) {
+        List<Member> memberList = memberRepository.findDynamic(parameter);
+        return memberMapper.toSearchResponseList(memberList);
+    }
+
+    /**
+     * findDynamic 을 이용한 동적 Filtering 및 paging
+     *
+     * @param parameter dynamicRequest
+     * @return Member list
+     * @author GEONLEE
+     * @since 2024-07-22
+     */
+    @Transactional
+    public GridResponse<MemberSearchResponse> getMemberListWithPagingByFindDynamic(DynamicRequest parameter) {
+        Page<Member> page = memberRepository.findDynamicWithPageable(parameter);
+        if (page.getContent().size() == 0) throw new ServiceException(CommonErrorCode.NO_DATA);
+        return GridResponse.<MemberSearchResponse>builder()
+                .status("OK")
+                .message("데이터를 조회하는데 성공하였습니다.")
+                .totalSize(page.getTotalElements())
+                .totalPageSize(page.getTotalPages())
+                .size(page.getNumberOfElements())
+                .items(memberMapper.toSearchResponseList(page.getContent()))
+                .build();
+    }
+
     /**
      * 전체 사용자 조회 (Dynamic Filter list 활용)
      *
@@ -69,7 +125,7 @@ public class MemberService {
 //        Specification<Member> specification = (Specification<Member>) dynamicSpecification.generateConditions(Member.class, dynamicFilters);
 //        return memberMapper.toSearchResponseList(memberRepository.findAll(specification));
         //booleanBuilder 방식
-        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Board.class, dynamicRequest.filter());
+        BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class, dynamicRequest.filter());
         List<Member> memberListQEntity = query.selectFrom(QMember.member)
                 .where(booleanBuilder)
                 .fetch();

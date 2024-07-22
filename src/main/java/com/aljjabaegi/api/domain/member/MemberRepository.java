@@ -26,11 +26,6 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaDynamicRepository<Member, String>, JpaSpecificationExecutor<Member> {
 
-    @Override
-    @EntityGraph(value = "memberGraph")
-    @Nonnull
-    Page<Member> findAll(@Nonnull Specification<Member> spec, @Nonnull Pageable pageable);
-
     @Modifying(clearAutomatically = true)
     @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)
     int updateAuthority(@Param("authorityCode") String authorityCode);
