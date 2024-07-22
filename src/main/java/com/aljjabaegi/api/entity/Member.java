@@ -25,6 +25,22 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity(name = "member")
+@NamedEntityGraph(
+        name = "memberGraph",
+        attributeNodes = {
+                @NamedAttributeNode(value = "memberTeam", subgraph = "memberTeam"),
+                @NamedAttributeNode(value = "authority"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "memberTeam",
+                        attributeNodes = {
+                                @NamedAttributeNode("responsibilityCode"),
+                                @NamedAttributeNode("team")
+                        }
+                )
+        }
+)
 public class Member extends BaseEntity {
 
     @Id

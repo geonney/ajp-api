@@ -2,7 +2,11 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.entity.Member;
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.annotation.Nonnull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +25,11 @@ import java.util.Optional;
  */
 @Repository
 public interface MemberRepository extends JpaDynamicRepository<Member, String>, JpaSpecificationExecutor<Member> {
+
+    @Override
+    @EntityGraph(value = "memberGraph")
+    @Nonnull
+    Page<Member> findAll(@Nonnull Specification<Member> spec, @Nonnull Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)

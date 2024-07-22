@@ -32,6 +32,6 @@ public class Team extends BaseEntity {
     @SearchableField
     private String teamName;
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY) //OneToMany - ManyToOne 양방향
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<MemberTeam> members;
 }

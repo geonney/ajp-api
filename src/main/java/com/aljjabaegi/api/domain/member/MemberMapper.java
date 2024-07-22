@@ -30,7 +30,7 @@ public interface MemberMapper {
     @Mappings({
             @Mapping(target = "teamName", source = "memberTeam.team.teamName"),
             @Mapping(target = "responsibilityCodeName", source = "memberTeam.responsibilityCode.codeName"),
-            @Mapping(target = "birthDate", dateFormat = "yyyy-MM-dd"),
+//            @Mapping(target = "birthDate", dateFormat = "yyyy-MM-dd"),
 //            @Mapping(target = "createDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
             @Mapping(target = "modifyDate", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
@@ -88,10 +88,10 @@ public interface MemberMapper {
      * 2024-04-17 GEONLEE - passwordUpdateDate 추가<br />
      */
     @Mappings({
-            @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberCreateRequest.isUse()))"),
+//            @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberCreateRequest.isUse()))"),
             @Mapping(target = "password", expression = "java(Converter.encodePassword(memberCreateRequest.password()))"),
             @Mapping(target = "authority.authorityCode", source = "authorityCode", defaultValue = "ROLE_TEST"),
-            @Mapping(target = "passwordUpdateDate", expression = "java(Converter.getToday())")
+//            @Mapping(target = "passwordUpdateDate", expression = "java(Converter.getToday())")
     })
     Member toEntity(MemberCreateRequest memberCreateRequest);
 
@@ -104,7 +104,7 @@ public interface MemberMapper {
      * @author GEONLEE
      * @since 2024-04-01<br />
      */
-    @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberModifyRequest.isUse()))")
+//    @Mapping(target = "useYn", expression = "java(Converter.booleanToUseYn(memberModifyRequest.isUse()))")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     Member updateFromRequest(MemberModifyRequest memberModifyRequest, @MappingTarget Member entity);
 
