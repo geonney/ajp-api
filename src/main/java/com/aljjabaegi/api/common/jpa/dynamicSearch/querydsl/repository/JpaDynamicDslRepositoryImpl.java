@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NamedEntityGraph;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -91,10 +92,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder);
-        String namedEntityGraphName = getNamedEntityGraph();
-        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
-        }
+        checkNamedEntityGraph(query);
         return query.fetch();
     }
 
@@ -104,10 +102,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder);
-        String namedEntityGraphName = getNamedEntityGraph();
-        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
-        }
+        checkNamedEntityGraph(query);
         return query.fetch();
     }
 
@@ -119,10 +114,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder)
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new));
-        String namedEntityGraphName = getNamedEntityGraph();
-        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
-        }
+        checkNamedEntityGraph(query);
         return query.fetch();
     }
 
@@ -139,10 +131,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
-        String namedEntityGraphName = getNamedEntityGraph();
-        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
-        }
+        checkNamedEntityGraph(query);
         List<T> list = query.fetch();
         return new PageImpl<>(list, pageable, totalSize);
     }
@@ -160,5 +149,18 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
             return null;
         }
         return namedEntityGraph.name();
+    }
+
+    /**
+     * Entity 에 namedEntityGraph 를 체크하고 있다면 query 에 hint 를 추가한다.
+     *
+     * @author GEONLEE
+     * @since 2024-07-23
+     */
+    private void checkNamedEntityGraph(JPAQuery<T> query) {
+        String namedEntityGraphName = getNamedEntityGraph();
+        if (StringUtils.isNotEmpty(namedEntityGraphName)) {
+            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+        }
     }
 }
