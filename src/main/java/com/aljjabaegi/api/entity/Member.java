@@ -21,10 +21,27 @@ import java.time.LocalDate;
  * 2024-04-11 GEONLEE - DynamicSpecification 사용을 위한 @SearchableField 추가<br />
  * 2024-04-17 GEONLEE - passwordUpdateDate 추가<br />
  * 2024-04-26 GEONLEE - loginAttemptsCont 로그인 시도 횟수 컬럼 추가<br />
+ * 2024-07-22 GEONLEE - NamedEntityGraph 추가<br />
  */
 @Getter
 @Setter
 @Entity(name = "member")
+@NamedEntityGraph(
+        name = "Member_GRAPH",
+        attributeNodes = {
+                @NamedAttributeNode(value = "memberTeam", subgraph = "memberTeam"),
+                @NamedAttributeNode(value = "authority"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "memberTeam",
+                        attributeNodes = {
+                                @NamedAttributeNode("responsibilityCode"),
+                                @NamedAttributeNode("team")
+                        }
+                )
+        }
+)
 public class Member extends BaseEntity {
 
     @Id

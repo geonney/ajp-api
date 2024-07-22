@@ -9,8 +9,11 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.PathBuilderFactory;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NamedEntityGraph;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +30,16 @@ import java.util.List;
  * querydsl 사용 방식<br />
  *
  * @author GEONLEE
- * @since 2024-04-19
+ * @since 2024-04-19<br />
+ * 2024-07-22 GEONLEE - N + 1 문제 보완용 namedEntityGraph 있을 때 hint 추가하도록 개선<br />
  */
 public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements JpaDynamicRepository<T, ID> {
-
     private final DynamicBooleanBuilder dynamicBooleanBuilder;
     private final JPAQueryFactory queryFactory;
     private final Class<T> entity;
     private final PathBuilder<T> pathBuilder;
     private final EntityManager entityManager;
+    private final String HINT_NAME = "jakarta.persistence.loadgraph";
 
     public JpaDynamicDslRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
@@ -84,30 +88,42 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
             add(dynamicFilter);
         }};
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicFilters);
-        return this.queryFactory
+        JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
-                .where(booleanBuilder)
-                .fetch();
+                .where(booleanBuilder);
+        String namedEntityGraphName = getNamedEntityGraph();
+        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
+            query.setHint(HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+        }
+        return query.fetch();
     }
 
     @Override
     public List<T> findDynamic(List<DynamicFilter> dynamicFilters) {
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicFilters);
-        return this.queryFactory
+        JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
-                .where(booleanBuilder)
-                .fetch();
+                .where(booleanBuilder);
+        String namedEntityGraphName = getNamedEntityGraph();
+        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
+            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+        }
+        return query.fetch();
     }
 
     @Override
     public List<T> findDynamic(DynamicRequest dynamicRequest) {
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicRequest.filter());
         List<OrderSpecifier<?>> orderSpecifiers = dynamicBooleanBuilder.generateSort(this.entity, dynamicRequest.sorter());
-        return this.queryFactory
+        JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder)
-                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
-                .fetch();
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new));
+        String namedEntityGraphName = getNamedEntityGraph();
+        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
+            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+        }
+        return query.fetch();
     }
 
     @Override
@@ -117,13 +133,32 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         Long totalSize = countDynamic(dynamicRequest.filter());
         totalSize = (totalSize == null) ? 0L : totalSize;
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize());
-        List<T> list = this.queryFactory
+        JPAQuery<T> query = this.queryFactory
                 .selectFrom(this.pathBuilder)
                 .where(booleanBuilder)
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+        String namedEntityGraphName = getNamedEntityGraph();
+        if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
+            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+        }
+        List<T> list = query.fetch();
         return new PageImpl<>(list, pageable, totalSize);
+    }
+
+    /**
+     * Entity 의 namedEntityGraph annotation 이 있다면 명을 추출하여 리턴한다.
+     *
+     * @return NamedEntityGraph name
+     * @author GEONLEE
+     * @since 2024-07-22
+     */
+    private String getNamedEntityGraph() {
+        NamedEntityGraph namedEntityGraph = this.entity.getAnnotation(NamedEntityGraph.class);
+        if (ObjectUtils.isEmpty(namedEntityGraph)) {
+            return null;
+        }
+        return namedEntityGraph.name();
     }
 }
