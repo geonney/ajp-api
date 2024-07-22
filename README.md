@@ -74,7 +74,28 @@
     - BooleanBuilder 사용 시 조회할 값을 객체를 부모부터 참조해 가지 않으면 right join 으로 hibernate 에서 쿼리를 생성하니 주의!
   - DynamicDslRepository (Custom JpaRepository)
     - DynamicRepository 와 같은 기능 (Querydsl 로 동작)
-
+- N + 1 문제 보완
+  - @EntityGraph (1depth)
+    ```java
+    @EntityGraph(attributePaths = {"authority", "memberTeam"})
+  - @NamedEnttiyGraph (2depth more)
+    ```java
+    @NamedEntityGraph(
+          name = "memberGraph",
+          attributeNodes = {
+                  @NamedAttributeNode(value = "memberTeam", subgraph = "memberTeam"),
+                  @NamedAttributeNode(value = "authority"),
+          },
+          subgraphs = {
+                  @NamedSubgraph(
+                          name = "memberTeam",
+                          attributeNodes = {
+                                  @NamedAttributeNode("responsibilityCode"),
+                                  @NamedAttributeNode("team")
+                          }
+                  )
+          }
+    )
 ## :heavy_check_mark:Dynamic 관련 클래스 (common/jpa/dynamicSearch) :star2:
 - DynamicRequest record 를 사용한 동적 조회 및 정렬 조건, 페이징 처리
 - DynamicConditions interface
