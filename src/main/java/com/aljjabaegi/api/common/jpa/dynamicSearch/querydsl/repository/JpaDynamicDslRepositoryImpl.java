@@ -93,7 +93,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
                 .where(booleanBuilder);
         String namedEntityGraphName = getNamedEntityGraph();
         if (ObjectUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
         }
         return query.fetch();
     }
