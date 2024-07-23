@@ -40,7 +40,6 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
     private final Class<T> entity;
     private final PathBuilder<T> pathBuilder;
     private final EntityManager entityManager;
-    private final String HINT_NAME = "jakarta.persistence.loadgraph";
 
     public JpaDynamicDslRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
@@ -160,7 +159,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
     private void checkNamedEntityGraph(JPAQuery<T> query) {
         String namedEntityGraphName = getNamedEntityGraph();
         if (StringUtils.isNotEmpty(namedEntityGraphName)) {
-            query.setHint(this.HINT_NAME, this.entityManager.getEntityGraph(namedEntityGraphName));
+            query.setHint("jakarta.persistence.loadgraph", this.entityManager.getEntityGraph(namedEntityGraphName));
         }
     }
 }
