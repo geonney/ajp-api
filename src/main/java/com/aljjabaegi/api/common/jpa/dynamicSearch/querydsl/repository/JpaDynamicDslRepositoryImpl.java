@@ -153,6 +153,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
     /**
      * Entity 에 namedEntityGraph 를 체크하고 있다면 query 에 hint 를 추가한다.
      *
+     * @param query entity JPAQuery
      * @author GEONLEE
      * @since 2024-07-23
      */
