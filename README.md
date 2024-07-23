@@ -16,23 +16,112 @@
 - filter 추가
 
 ## :heavy_check_mark:JPA (common/jpa)
-- BaseEntity (@MappedSuperclass) 적용
+- BaseEntity (@MappedSuperclass)
+  - 많은 Entity 에서 공통적으로 사용되는 생성/수정일시 와 같은 필드를 선언하고 상속해서 사용
+```java
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+public abstract class BaseEntity {
+
+    @CreatedDate
+    @Column(name = "create_dt", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @SearchableField
+    private LocalDateTime createDate;
+
+    @LastModifiedDate
+    @Column(name = "update_dt")
+    @Temporal(TemporalType.TIMESTAMP)
+    @SearchableField
+    private LocalDateTime modifyDate;
+}
+```
 - @EnableJpaAuditing 적용
-  - 영속화 시 값 자동 바인딩
-  - AuditorAware 구현체 (SpringSecurityAuditorAware.class) - @LastModifiedBy 시 Spring Security 에서 UserId 바인딩
-  - @CreatedDate, @LastModifiedDate, @LastModifiedBy
+  - 영속화 시에 특정 Annotaion (@CreatedDate, @LastModifiedDate, @LastModifiedBy)을 사용하여 값을 자동으로 바인딩하게 설정
+  - AuditorAware 구현체 (SpringSecurityAuditorAware.class), @LastModifiedBy 시 Spring Security 에서 UserId 바인딩
+  - SpringBoot main class 에 추가, AuditorAware 구현
+```java
+@Component
+public class SpringSecurityAuditorAware implements AuditorAware<String> {
+
+    @Override
+    @Nonnull
+    public Optional<String> getCurrentAuditor() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return Optional.empty();
+        }
+        return Optional.of(((UserDetails) authentication.getPrincipal()).getUsername());
+    }
+}
+```    
 - Mapstruct 적용
   - Entity to record
   - record to Entity
 - Key generator
   - @SequenceGenerator (Board Entity)
+```java
+@SequenceGenerator(
+        name = "BOARD_SEQ_GENERATOR"
+        , sequenceName = "board_seq"
+        , initialValue = 1
+        , allocationSize = 1
+)
+public class Board extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQ_GENERATOR")
+    @Column(name = "board_seq")
+    @SearchableField
+    private Long boardSequence;
+      .
+      .
+      .
+```
   - @GenericGenerator (Project Entity)
+    - IdentifierGenerator 구현 (IdGeneratorUtil)
+```java
+@Id
+@GenericGenerator(name = "ProjectIdGenerator", type = IdGeneratorUtil.class
+        , parameters = @org.hibernate.annotations.Parameter(name = GENERATOR_PARAM_KEY, value = "project"))
+@GeneratedValue(generator = "ProjectIdGenerator")
+@Column(name = "project_id")
+private String projectId;
+```
 - Bulk 연산 @Modifying(clearAutomatically = true)
+  - Bulk 연산 쿼리 수행 직후 영속성 컨텍스트를 clear 하여 1차 캐시와 실제 데이터간 싱크가 맞지 않는 문제를 보완
+```java
+@Modifying(clearAutomatically = true)
+@Query(value = "update member set authority_cd = null where authority_cd = :authorityCode", nativeQuery = true)
+int updateAuthority(@Param("authorityCode") String authorityCode);
+```
 - 연관 관계 (Sample)
-  - @JoinColumn (자식-부모 간의 키가 다르거나 명칭이 다를 경우 꼭 referenceColumnName을 명시해야 함)
+  - @JoinColumn
+    - referenceColumnName 을 꼭 명시해야 하는 경우
+      - Join 을 하고자 하는 Entity 간의 키가 다르다
+      - Join 을 하고자 하는 필드의 명칭이 다르다
+        
   - @ManyToOne - @OneToMany 양방향 (Member - Team)
+    - 보통 Many 쪽에 FK 가 있음.
+    - cascade.REMOVE -> PK 데이터 삭제 시 FK 삭제 (영속성 전이)
+    - orphanRemoval = true -> 연관관계 끊기면 FK 삭제
+
   - @JoincolumnOrFormula (특정 값을 참조 컬럼의 값으로 조인 시 사용, MemberTeam - Code)
+```java
+@JoinColumnsOrFormulas(value = {
+        @JoinColumnOrFormula(column =
+                  @JoinColumn(name = "rpbt_cd", referencedColumnName = "code_id", insertable = false, updatable = false)),
+        @JoinColumnOrFormula(formula =
+                  @JoinFormula(value = "'rpbt_cd'", referencedColumnName = "code_group_id"))
+})
+```
   - @OrderBy - 연관관계 설정 시 기본 정렬 조건 추가
+```java
+@OneToMany(mappedBy = "codeGroup")
+@OrderBy("key.codeId ASC")
+List<Code> codes = new ArrayList<>();
+```
 - 복합키 관련 (HistoryLogin Entity)
   - @Embeddable
   - @EmbeddedId
