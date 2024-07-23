@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -26,23 +27,29 @@ import java.util.stream.Stream;
  * @since 2024-06-26<br />
  * 2024-07-10 GEONLEE - @FieldValid 를 사용한 유효성 체크 로직 추가<br />
  * 2024-07-19 GEONLEE - filter null 처리 추가<br />
+ * 2024-07-23 GEONLEE - essentialFields 가 없을 때는 filter 가 넘어 왔을 때만 validation 체크 하도록 수정<br />
  */
 public class DynamicValidator implements ConstraintValidator<DynamicValid, DynamicRequest> {
 
-    private List<String> essentialFields;
+    private List<String> essentialFields = new ArrayList<>();
     private List<FieldValid> fieldValidations;
 
     @Override
     public void initialize(DynamicValid constraintAnnotation) {
-        this.essentialFields = List.of(constraintAnnotation.essentialFields());
+        if (constraintAnnotation.essentialFields().length > 0 && !constraintAnnotation.essentialFields()[0].isEmpty()) {
+            this.essentialFields = List.of(constraintAnnotation.essentialFields());
+        }
         this.fieldValidations = List.of(constraintAnnotation.fieldValidations());
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(DynamicRequest dynamicRequest, ConstraintValidatorContext context) {
+        if (ObjectUtils.isNotEmpty(this.essentialFields) && ObjectUtils.isEmpty(dynamicRequest.filter())) {
+            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Filter cannot be empty.");
+        }
         if (ObjectUtils.isEmpty(dynamicRequest.filter())) {
-            throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, "Filter cannot be null.");
+            return true;
         }
         //Filter only non-null values
         Map<String, String> filterFields = dynamicRequest.filter().stream()
@@ -58,11 +65,11 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
         //Validation check
         List<String> inValidFieldList = this.fieldValidations.stream()
                 .filter(fieldValid -> filterFields.containsKey(getFieldName(fieldValid.fieldName(), 0)))
-                .filter(fieldValid -> !Pattern.compile(fieldValid.pattern().format())
-                        .matcher(filterFields.get(getFieldName(fieldValid.fieldName(), 0))).matches())
                 .filter(fieldValid -> {
                     int byteSize = filterFields.get(getFieldName(fieldValid.fieldName(), 0)).getBytes(StandardCharsets.UTF_8).length;
-                    return byteSize >= fieldValid.length();
+                    return !Pattern.compile(fieldValid.pattern().format())
+                            .matcher(filterFields.get(getFieldName(fieldValid.fieldName(), 0))).matches()
+                            || byteSize >= fieldValid.length();
                 })
                 .map(fieldValid -> (StringUtils.isEmpty(fieldValid.message()))
                         ? getFieldName(fieldValid.fieldName(), 1) + " value is invalid."
@@ -71,7 +78,7 @@ public class DynamicValidator implements ConstraintValidator<DynamicValid, Dynam
         List<String> invalidList = Stream.concat(notPresentList.stream(), inValidFieldList.stream()).toList();
         if (invalidList.size() > 0) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(CommonErrorCode.REQUIRED_PARAMETER.message())
+            context.buildConstraintViolationWithTemplate(CommonErrorCode.INVALID_PARAMETER.message())
                     .addPropertyNode(String.join(", ", invalidList))
                     .addConstraintViolation();
         }
