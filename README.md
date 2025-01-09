@@ -203,6 +203,15 @@ List<Code> codes = new ArrayList<>();
   - @FieldValid 를 사용한 동적 필드 유효성 체크
 - @NumericSort
   - DB column type 은 varchar 이지만 데이터가 숫자만 있는 경우, 1, 11, 12, 2, 3.. 과 같이 유니코드 정렬을 1, 2, 3, 11, 12 (으)로 정렬해야 할 때 사용
+- @SearchableField
+  - Entity field 에 적용하여, 해당 field 가 조회되도록 설정
+  - 연관관계에 있는 field 조회시에는 columnPath 를 사용하여 객체의 field와 연결. alias 속성을 사용하여 해당 alias 로 조회 및 정렬 가능하게 설정.
+    ```java
+    @JoinColumn(name = "modify_member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY) //ManyToOne 단방향
+    @SearchableField(columnPath = "member.memberName", alias = "userName")
+    private Member member;
+    ```
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
@@ -247,6 +256,7 @@ List<Code> codes = new ArrayList<>();
 - 403 Handler, JwtAccessDeniedHandler
 - 로그인 한 브라우져 간 인증 유지 -> Cookie 에 Access token 을 담아 전달
 - Refresh token -> 로그인 시 전달. Access token 만료 시 Header Bearer 에 refresh token을 전달하면 자동으로 AccessToken 갱신.
+  - 어떠한 Token 도 response 로 전달하지 않음. AccessToken은 Session Cookie에. Refresh Token은 DB에만 저장. (Refresh Token은 중복 로그인 체크 시 활용)
 
 #### Jasypt
 - application 설정파일 Text 암호화
@@ -268,6 +278,7 @@ List<Code> codes = new ArrayList<>();
 
 #### Authentication logic
 ![image](https://github.com/aljjabaegiProgrammer/ajp_api/assets/148036230/d272debc-aff8-4281-961a-0da4accdbcf9)
+로그인 로직 변경 -> 추후 업로드 예정
 
 #### Excel
 - POI 사용
