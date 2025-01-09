@@ -58,6 +58,8 @@ public interface DynamicConditions {
             entity = BaseEntity.class;
         }
         Field[] fields = entity.getDeclaredFields();
+
+        fieldLoop:
         for (Field field : fields) {
             SearchableField searchableField = field.getAnnotation(SearchableField.class);
             // Check @SearchableField annotation
@@ -69,13 +71,17 @@ public interface DynamicConditions {
                 break;
             }
 
+            String[] alias = searchableField.alias();
+            boolean useAlias = !(alias.length == 1 && "".equals(alias[0]));
+
             // If the field name is different, determine it as a reference object and return the columnPath
             String[] paths = searchableField.columnPath();
-            for (String searchableFieldPath : paths) {
+            for (int i = 0, n = paths.length; i < n; i++) {
+                String searchableFieldPath = paths[i];
                 String lastFieldName = searchableFieldPath.substring(searchableFieldPath.lastIndexOf(".") + 1);
-                if (lastFieldName.equals(searchFieldName)) {
+                if (lastFieldName.equals(searchFieldName) || (useAlias && searchableField.alias()[i].equals(searchFieldName))) {
                     fieldPath = searchableFieldPath;
-                    break;
+                    break fieldLoop;
                 }
             }
         }

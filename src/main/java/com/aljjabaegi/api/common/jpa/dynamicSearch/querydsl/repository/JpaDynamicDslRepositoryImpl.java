@@ -130,7 +130,13 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
                 .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
-        checkNamedEntityGraph(query);
+        /*
+         * fetch join 과 limit (page) 을 함께 사용할 경우 HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
+         * 경고 발생. 쿼리 결과를 전부 메모리에 적재한 뒤 Pagination 작업을 어플리케이션 레벨에서 하기 때문에 위험.
+         * 실제 쿼리에서 limit 이 걸리지 않음.
+         * @ManyToOne 기준으로 조회하면 경고 발생하지 않음.
+         * */
+//        checkNamedEntityGraph(query);
         List<T> list = query.fetch();
         return new PageImpl<>(list, pageable, totalSize);
     }

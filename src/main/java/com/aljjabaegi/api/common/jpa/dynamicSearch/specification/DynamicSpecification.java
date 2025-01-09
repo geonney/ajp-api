@@ -1,11 +1,11 @@
 package com.aljjabaegi.api.common.jpa.dynamicSearch.specification;
 
+import com.aljjabaegi.api.common.jpa.dynamicSearch.converter.DateConverter;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
-import com.aljjabaegi.api.common.converter.Converter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
 import com.aljjabaegi.api.common.request.enumeration.Operator;
@@ -178,7 +178,7 @@ public class DynamicSpecification implements DynamicConditions {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                         if (fieldType == LocalDate.class) {
                             try {
-                                List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
+                                List<LocalDate> list = Arrays.stream(value.split(",")).map(DateConverter::toLocalDate).toList();
                                 predicates.add(criteriaBuilder.between(path.as(LocalDate.class), list.get(0), list.get(1)));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
@@ -186,7 +186,7 @@ public class DynamicSpecification implements DynamicConditions {
                         } else if (fieldType == LocalDateTime.class) {
                             try {
                                 List<LocalDateTime> list = Arrays.stream(value.split(","))
-                                        .map(Converter::dateTimeStringToLocalDateTime).toList();
+                                        .map(DateConverter::toLocalDateTime).toList();
                                 predicates.add(criteriaBuilder.between(path.as(LocalDateTime.class), list.get(0), list.get(1)));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
@@ -200,7 +200,7 @@ public class DynamicSpecification implements DynamicConditions {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                         if (fieldType == LocalDate.class) {
                             Path<LocalDate> localDatePath = root.get(dynamicFilter.field());
-                            List<LocalDate> list = Arrays.stream(value.split(",")).map(Converter::dateStringToLocalDate).toList();
+                            List<LocalDate> list = Arrays.stream(value.split(",")).map(DateConverter::toLocalDate).toList();
                             predicates.add(localDatePath.in(list));
                         } else {
                             List<String> list = Arrays.asList(value.split(","));
@@ -211,14 +211,14 @@ public class DynamicSpecification implements DynamicConditions {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                         if (fieldType == LocalDate.class) {
                             try {
-                                LocalDate localDate = Converter.dateStringToLocalDate(value);
+                                LocalDate localDate = DateConverter.toLocalDate(value);
                                 predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDate.class), localDate));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                             }
                         } else if (fieldType == LocalDateTime.class) {
                             try {
-                                LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
+                                LocalDateTime localDateTime = DateConverter.toLocalDateTime(value);
                                 predicates.add(criteriaBuilder.lessThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
@@ -231,14 +231,14 @@ public class DynamicSpecification implements DynamicConditions {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                         if (fieldType == LocalDate.class) {
                             try {
-                                LocalDate localDate = Converter.dateStringToLocalDate(value);
+                                LocalDate localDate = DateConverter.toLocalDate(value);
                                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDate.class), localDate));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                             }
                         } else if (fieldType == LocalDateTime.class) {
                             try {
-                                LocalDateTime localDateTime = Converter.dateTimeStringToLocalDateTime(value);
+                                LocalDateTime localDateTime = DateConverter.toLocalDateTime(value);
                                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(path.as(LocalDateTime.class), localDateTime));
                             } catch (DateTimeParseException e) {
                                 throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);

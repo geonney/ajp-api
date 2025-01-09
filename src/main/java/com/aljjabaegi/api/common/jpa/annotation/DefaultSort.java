@@ -20,4 +20,6 @@ public @interface DefaultSort {
     String[] columnName();
 
     SortDirection[] direction();
+
+    String[] alias() default "";
 }

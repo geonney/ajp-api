@@ -8,11 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
 
 /**
  * mapstruct 용 static converter
@@ -84,93 +79,6 @@ public class Converter {
         RsaProvider rsaProvider = ApplicationContextHolder.getContext().getBean(RsaProvider.class);
         PasswordEncoder passwordEncoder = ApplicationContextHolder.getContext().getBean(PasswordEncoder.class);
         return passwordEncoder.encode(rsaProvider.decrypt(password));
-    }
-
-    /**
-     * Date time string(yyyyMMddHHmmss) to LocalDateTime
-     *
-     * @param dateTimeString date time string
-     * @return parsed LocalDateTime
-     */
-    public static LocalDateTime dateTimeStringToLocalDateTime(String dateTimeString) throws DateTimeParseException, IllegalArgumentException {
-        if (!StringUtils.isEmpty(dateTimeString)) {
-            String replacedDateString = getStringToNumbers(dateTimeString);
-            DateTimeFormatter toTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.KOREA);
-            return LocalDateTime.parse(replacedDateString, toTimeFormatter);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Date string(yyyyMMdd) to LocalDate
-     *
-     * @param dateString date string
-     * @return parsed LocalDate
-     */
-    public static LocalDate dateStringToLocalDate(String dateString) throws DateTimeParseException, IllegalArgumentException {
-        if (!StringUtils.isEmpty(dateString)) {
-            String replacedDateString = getStringToNumbers(dateString);
-            return LocalDate.parse(replacedDateString, DateTimeFormatter.ofPattern("yyyyMMdd", Locale.KOREA));
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Date string(yyyyMMdd) to LocalDate
-     *
-     * @param localDateTime LocalDateTime
-     * @return formatted
-     */
-    public static String localDateTimeToString(LocalDateTime localDateTime) throws DateTimeParseException {
-        if (localDateTime != null) {
-            return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.KOREA));
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * LocalDate to formatted String
-     *
-     * @param localDate LocalDate
-     * @return String formatted date
-     */
-    public static String localDateToString(LocalDateTime localDate) throws DateTimeParseException {
-        if (localDate != null) {
-            return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA));
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 현재 시간 리턴
-     *
-     * @return current date time
-     */
-    public static LocalDateTime getNow() {
-        return LocalDateTime.now();
-    }
-
-    /**
-     * 금일 날짜 리턴
-     *
-     * @return today localDate
-     */
-    public static LocalDate getToday() {
-        return LocalDate.now();
-    }
-
-    /**
-     * String 중에 숫자만 리턴
-     *
-     * @param str text
-     * @return numeric string
-     */
-    public static String getStringToNumbers(String str) {
-        return str.replaceAll("[^0-9]+", "");
     }
 
     /**

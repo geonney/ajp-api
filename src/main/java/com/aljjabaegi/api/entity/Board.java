@@ -53,5 +53,6 @@ public class Board extends BaseEntity {
 
     @JoinColumn(name = "modify_member_id", referencedColumnName = "member_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY) //ManyToOne 단방향
+    @SearchableField(columnPath = "member.memberName", alias = "userName")
     private Member member;
 }

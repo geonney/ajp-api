@@ -121,14 +121,20 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             return new ArrayList<>();
         }
         String[] columnNames = defaultSort.columnName();
+        String[] alias = defaultSort.alias();
+        boolean useAlias = !(alias.length == 1 && "".equals(alias[0]));
         SortDirection[] sortDirections = defaultSort.direction();
-        if (columnNames.length != sortDirections.length) {
+        if (columnNames.length != sortDirections.length || (useAlias && columnNames.length != alias.length)) {
             throw new ServiceException(CommonErrorCode.SERVICE_ERROR,
                     "Check '" + entity.getSimpleName() + "' entity @DefaultSort settings. different lengths. (columnName-direction)");
         }
         List<DynamicSorter> dynamicSorters = new ArrayList<>();
         for (int i = 0, n = columnNames.length; i < n; i++) {
-            DynamicSorter dynamicSorter = new DynamicSorter(columnNames[i], sortDirections[i]);
+            String columnName = columnNames[i];
+            if ( useAlias && StringUtils.isNotEmpty(alias[i]) && columnName.contains(".")) {
+                columnName = alias[i];
+            }
+            DynamicSorter dynamicSorter = new DynamicSorter(columnName, sortDirections[i]);
             dynamicSorters.add(dynamicSorter);
         }
         return parseSort(entity, dynamicSorters);
@@ -158,20 +164,21 @@ public class DynamicBooleanBuilder implements DynamicConditions {
             PathBuilder<Object> rootPath = getParentPath(root, fieldPath);
             Class<?> fieldType = getType(entity, fieldPath);
             String value = dynamicFilter.value();
+            String searchFieldName = (fieldPath.contains(".")) ? fieldPath.substring(fieldPath.lastIndexOf(".") + 1) : fieldPath;
             // Possible search to null data
             if (StringUtils.isEmpty(value)) {
-                booleanBuilder.and(rootPath.get(dynamicFilter.field()).isNull());
+                booleanBuilder.and(rootPath.get(searchFieldName).isNull());
                 continue;
             }
             switch (dynamicFilter.operator()) {
                 case EQUAL -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                     if (fieldType.isEnum()) {
-                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(stringToEnum(fieldType, value)));
+                        booleanBuilder.and(rootPath.get(searchFieldName).eq(stringToEnum(fieldType, value)));
                     } else if (fieldType == LocalDate.class) {
-                        booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).eq(dateStringToLocalDate(value)));
+                        booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).eq(dateStringToLocalDate(value)));
                     } else {
-                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).eq(value));
+                        booleanBuilder.and(rootPath.get(searchFieldName).eq(value));
                     }
                 }
                 case NOT_EQUAL -> {
@@ -180,24 +187,24 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                 }
                 case LIKE -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
-                    booleanBuilder.and(rootPath.getString(dynamicFilter.field()).likeIgnoreCase("%" + value + "%"));
+                    booleanBuilder.and(rootPath.getString(searchFieldName).likeIgnoreCase("%" + value + "%"));
                 }
                 case BETWEEN -> {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                     if (fieldType == LocalDate.class) {
                         List<LocalDate> list = Arrays.stream(value.split(",")).map(this::dateStringToLocalDate).toList();
-                        booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).between(list.get(0), list.get(1)));
+                        booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).between(list.get(0), list.get(1)));
                     } else if (fieldType == LocalDateTime.class) {
                         try {
                             List<LocalDateTime> list = Arrays.stream(value.split(","))
                                     .map(this::dateTimeStringToLocalDateTime).toList();
-                            booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).between(list.get(0), list.get(1)));
+                            booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDateTime.class).between(list.get(0), list.get(1)));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else {
                         List<String> list = Arrays.asList(value.split(","));
-                        booleanBuilder.and(rootPath.getNumber(dynamicFilter.field(), Double.class)
+                        booleanBuilder.and(rootPath.getNumber(searchFieldName, Double.class)
                                 .between(Double.valueOf(list.get(0)), Double.valueOf(list.get(1))));
                     }
                 }
@@ -205,13 +212,13 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
                     if (fieldType == LocalDate.class) {
                         List<LocalDate> list = Arrays.stream(value.split(",")).map(this::dateStringToLocalDate).toList();
-                        booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDate.class).in(list));
+                        booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDate.class).in(list));
                     } else if (fieldType.isEnum()) {
                         List<? extends Enum<?>> list = Arrays.stream(value.split(",")).map(s -> stringToEnum(fieldType, s)).toList();
-                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).in(list));
+                        booleanBuilder.and(rootPath.get(searchFieldName).in(list));
                     } else {
                         List<String> list = Arrays.asList(value.split(","));
-                        booleanBuilder.and(rootPath.get(dynamicFilter.field()).in(list));
+                        booleanBuilder.and(rootPath.get(searchFieldName).in(list));
                     }
                 }
                 case LT -> {
@@ -219,19 +226,19 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = dateStringToLocalDate(value);
-                            booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).lt(localDate));
+                            booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).lt(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = dateTimeStringToLocalDateTime(value);
-                            booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).lt(localDateTime));
+                            booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDateTime.class).lt(localDateTime));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else {
-                        booleanBuilder.and(rootPath.getNumber(dynamicFilter.field(), Double.class).lt(Double.valueOf(value)));
+                        booleanBuilder.and(rootPath.getNumber(searchFieldName, Double.class).lt(Double.valueOf(value)));
                     }
                 }
                 case LTE -> {
@@ -239,19 +246,19 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = dateStringToLocalDate(value);
-                            booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).loe(localDate));
+                            booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).loe(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = dateTimeStringToLocalDateTime(value);
-                            booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).loe(localDateTime));
+                            booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDateTime.class).loe(localDateTime));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else {
-                        booleanBuilder.and(rootPath.getNumber(dynamicFilter.field(), Double.class).loe(Double.valueOf(value)));
+                        booleanBuilder.and(rootPath.getNumber(searchFieldName, Double.class).loe(Double.valueOf(value)));
                     }
                 }
                 case GT -> {
@@ -259,19 +266,19 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = dateStringToLocalDate(value);
-                            booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).gt(localDate));
+                            booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).gt(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = dateTimeStringToLocalDateTime(value);
-                            booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).gt(localDateTime));
+                            booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDateTime.class).gt(localDateTime));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else {
-                        booleanBuilder.and(rootPath.getNumber(dynamicFilter.field(), Double.class).gt(Double.valueOf(value)));
+                        booleanBuilder.and(rootPath.getNumber(searchFieldName, Double.class).gt(Double.valueOf(value)));
                     }
                 }
                 case GTE -> {
@@ -279,19 +286,19 @@ public class DynamicBooleanBuilder implements DynamicConditions {
                     if (fieldType == LocalDate.class) {
                         try {
                             LocalDate localDate = dateStringToLocalDate(value);
-                            booleanBuilder.and(rootPath.getDate(dynamicFilter.field(), LocalDate.class).goe(localDate));
+                            booleanBuilder.and(rootPath.getDate(searchFieldName, LocalDate.class).goe(localDate));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else if (fieldType == LocalDateTime.class) {
                         try {
                             LocalDateTime localDateTime = dateTimeStringToLocalDateTime(value);
-                            booleanBuilder.and(rootPath.getDateTime(dynamicFilter.field(), LocalDateTime.class).goe(localDateTime));
+                            booleanBuilder.and(rootPath.getDateTime(searchFieldName, LocalDateTime.class).goe(localDateTime));
                         } catch (DateTimeParseException e) {
                             throw new ServiceException(CommonErrorCode.INVALID_PARAMETER, e);
                         }
                     } else {
-                        booleanBuilder.and(rootPath.getNumber(dynamicFilter.field(), Double.class).goe(Double.valueOf(value)));
+                        booleanBuilder.and(rootPath.getNumber(searchFieldName, Double.class).goe(Double.valueOf(value)));
                     }
                 }
             }
