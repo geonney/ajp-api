@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.team.specification;
 
-import com.aljjabaegi.api.common.converter.Converter;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.converter.DateConverter;
 import com.aljjabaegi.api.entity.Team;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,8 +41,8 @@ public class TeamSpecification {
     public static Specification<Team> betweenCreateDate(String startDateString, String endDateString) {
         return ((root, query, criteriaBuilder) -> {
             Path<LocalDateTime> createDatePath = root.get("createDate");
-            LocalDateTime startDate = Converter.dateTimeStringToLocalDateTime(startDateString);
-            LocalDateTime endDate = Converter.dateTimeStringToLocalDateTime(endDateString);
+            LocalDateTime startDate = DateConverter.toLocalDateTime(startDateString);
+            LocalDateTime endDate = DateConverter.toLocalDateTime(endDateString);
             return criteriaBuilder.between(createDatePath, startDate, endDate);
         });
     }

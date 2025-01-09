@@ -1,4 +1,4 @@
-package egovframework.kt.dxp.api.config.jwt.exception;
+package com.aljjabaegi.api.config.security.jwt.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

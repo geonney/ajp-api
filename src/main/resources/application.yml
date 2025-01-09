@@ -30,7 +30,7 @@ springdoc:
     filter: true
 security:
   jwt:
-    secret-key: ${jwt-key}
+    auth-key: ${jwt-key}
     issuer: aljjabaegi.tistory.com
   jasypt:
     secret-key: ${jasypt-key}

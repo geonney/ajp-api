@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.domain.project;
 
-import com.aljjabaegi.api.common.converter.Converter;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.converter.DateConverter;
 import com.aljjabaegi.api.domain.project.record.*;
 import com.aljjabaegi.api.entity.Project;
 import org.mapstruct.*;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author GEONLEE
  * @since 2024-04-04
  */
-@Mapper(componentModel = "spring", imports = Converter.class)
+@Mapper(componentModel = "spring", imports = {DateConverter.class})
 public interface ProjectMapper {
     ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
 
@@ -85,8 +85,8 @@ public interface ProjectMapper {
      * @since 2024-04-04<br />
      */
     @Mappings({
-            @Mapping(target = "projectStartDate", expression = "java(Converter.dateStringToLocalDate(projectCreateRequest.projectStartDate()))"),
-            @Mapping(target = "projectEndDate", expression = "java(Converter.dateStringToLocalDate(projectCreateRequest.projectEndDate()))"),
+            @Mapping(target = "projectStartDate", expression = "java(DateConverter.toLocalDate(projectCreateRequest.projectStartDate()))"),
+            @Mapping(target = "projectEndDate", expression = "java(DateConverter.toLocalDate(projectCreateRequest.projectEndDate()))"),
     })
     Project toEntity(ProjectCreateRequest projectCreateRequest);
 
@@ -100,8 +100,8 @@ public interface ProjectMapper {
      * @since 2024-04-01<br />
      */
     @Mappings({
-            @Mapping(target = "projectStartDate", expression = "java(Converter.dateStringToLocalDate(projectModifyRequest.projectStartDate()))"),
-            @Mapping(target = "projectEndDate", expression = "java(Converter.dateStringToLocalDate(projectModifyRequest.projectEndDate()))"),
+            @Mapping(target = "projectStartDate", expression = "java(DateConverter.toLocalDate(projectModifyRequest.projectStartDate()))"),
+            @Mapping(target = "projectEndDate", expression = "java(DateConverter.toLocalDate(projectModifyRequest.projectEndDate()))"),
     })
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     Project updateFromRequest(ProjectModifyRequest projectModifyRequest, @MappingTarget Project entity);

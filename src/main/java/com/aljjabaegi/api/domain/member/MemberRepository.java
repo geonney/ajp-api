@@ -69,4 +69,8 @@ public interface MemberRepository extends JpaDynamicRepository<Member, String>, 
     List<Member> findByAuthorityAuthorityCode(String authorityCode);
 
     Optional<Member> findByMemberIdAndAuthorityAuthorityCodeNot(String memberId, String authorityCode);
+
+    Optional<Member> findByAccessToken(String accessToken);
+    boolean existsByAccessToken(String accessToken);
+
 }

@@ -65,14 +65,14 @@ public class LoginService {
 
     public ResponseEntity<ItemResponse<TokenResponse>> login(
             LoginRequest parameter, HttpServletResponse httpServletResponse) throws ServiceException {
-        // 1. ID가 존재하는지 체크
+        // 1. 존재하는 ID 인지 확인
         Member entity = memberRepository.findById(parameter.id())
                 .orElseThrow(() -> new ServiceException(CommonErrorCode.ID_NOT_FOUND));
-        // 2. 잠긴 회원 체크
+        // 2. 잠긴 회원인지 확인
         if (Objects.isNull(entity.getUseYn()) || UseYn.N == entity.getUseYn()) {
             throw new ServiceException(CommonErrorCode.LOCKED_MEMBER, "'" + entity.getMemberId() + "' is a locked member.");
         }
-        // 3. Password 가 일치하는지 체크
+        // 3. Password 일치여부 확인
         String encodePassword = "";
         try {
             encodePassword = rsaProvider.decrypt(parameter.password());
@@ -124,7 +124,6 @@ public class LoginService {
                 .body(ItemResponse.<TokenResponse>builder()
                         .status("OK")
                         .message("로그인에 성공하였습니다.")
-                        .item(tokenResponse)
                         .build());
     }
 

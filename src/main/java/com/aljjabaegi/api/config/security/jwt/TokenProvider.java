@@ -1,15 +1,19 @@
 package com.aljjabaegi.api.config.security.jwt;
 
+import com.aljjabaegi.api.config.security.jwt.enumeration.TokenType;
+import com.aljjabaegi.api.config.security.jwt.exception.DuplicateLoginException;
 import com.aljjabaegi.api.config.security.jwt.record.TokenResponse;
+import com.aljjabaegi.api.domain.member.MemberRepository;
 import com.aljjabaegi.api.entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
@@ -30,17 +35,23 @@ import java.util.stream.Collectors;
  * @author GEONLEE
  * @since 2024-04-02<br />
  */
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class TokenProvider {
-    public static final String AUTHORIZATION_FAIL_TYPE = "AJP_AUT_FT";
     protected static final long ACCESS_EXPIRATION_MILLISECONDS = 24 * (1000 * 3600); //24시간
     protected static final long REFRESH_EXPIRATION_MILLISECONDS = (24 * 7) * (1000 * 3600); //일주일
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
+
+    private final MemberRepository memberRepository;
+
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final String jwtCookieName = "AJP_AUT";
     private final String authorityClaimName = "AJP_ATC";
-    private final String tokenType = "Bearer";
-    private final SecretKey secretKey;
-    private final JwtParser jwtParser;
+    private JwtParser jwtParser;
+    private SecretKey secretKey;
+
+    @Value("${security.jwt.auth-key}")
+    private String authoritiesKey;
 
     @Value("${security.jwt.issuer}")
     private String issuer;
@@ -48,16 +59,10 @@ public class TokenProvider {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    /**
-     * 설정파일의 jwt.secret-key 를 사용하여 secretKey 생성<br />
-     * jwt key ->  base64 encoding
-     *
-     * @param secretKey base64 encoded key
-     * @author GEONLEE
-     * @since 2024-04-02
-     */
-    public TokenProvider(@Value("${security.jwt.secret-key}") String secretKey) {
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
+    @PostConstruct
+    private void init() {
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.authoritiesKey));
         this.jwtParser = Jwts.parser().verifyWith(this.secretKey).build();
     }
 
@@ -82,11 +87,12 @@ public class TokenProvider {
                 .subject(authentication.getName())
                 .issuer(this.issuer)
                 .signWith(this.secretKey)
-                .claim(authorityClaimName, authority)
+                .claim(this.authorityClaimName, authority)
                 .claim("name", entity.getMemberName())
                 .expiration(validity)
                 .compact();
     }
+
 
     /**
      * Generate Access and refresh token
@@ -101,10 +107,11 @@ public class TokenProvider {
      * 2024-04-17 GEONLEE - isChangeParameter 추가<br />
      */
     public TokenResponse generateTokenResponse(Authentication authentication, Member entity, boolean isChangePassword) {
+        String tokenType = "Bearer";
         return TokenResponse.builder()
                 .token(generateToken(authentication, ACCESS_EXPIRATION_MILLISECONDS, entity))
                 .refreshToken(generateToken(authentication, REFRESH_EXPIRATION_MILLISECONDS, entity))
-                .tokenType(this.tokenType)
+                .tokenType(tokenType)
                 .expirationSeconds(ACCESS_EXPIRATION_MILLISECONDS)
                 .isChangePassword(isChangePassword)
                 .build();
@@ -158,7 +165,7 @@ public class TokenProvider {
     public Authentication generateAuthorityFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority((String) claims.get(authorityClaimName)));
+        grantedAuthorities.add(new SimpleGrantedAuthority((String) claims.get(this.authorityClaimName)));
         User principal = new User(claims.getSubject(), "", grantedAuthorities);
         return new UsernamePasswordAuthenticationToken(principal, token, grantedAuthorities);
     }
@@ -199,56 +206,49 @@ public class TokenProvider {
      */
     public String getTokenFromCookie(HttpServletRequest httpServletRequest) {
         Cookie[] cookies = httpServletRequest.getCookies();
-        String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
-        if (cookies != null) {
-            Optional<String> optionalAccessToken = Arrays.stream(cookies)
-                    .filter(cookie -> jwtCookieName.equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst();
-            if (optionalAccessToken.isPresent()) {
-                return doXssFilter(optionalAccessToken.get());
+        if (ObjectUtils.isEmpty(cookies)) {
+            return null;
+        }
+        Optional<String> optionalAccessToken = Arrays.stream(cookies)
+                .filter(cookie -> jwtCookieName.equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst();
+        if (optionalAccessToken.isPresent()) {
+            return doXssFilter(optionalAccessToken.get());
+        } else {
+            String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
+            log.error("Access token in cookie does not exist. request URI: {}", requestURI);
+            return null;
+        }
+    }
+
+    public String getRefreshTokenFromDatabase(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        String accessToken = this.getTokenFromCookie(httpServletRequest);
+        Optional<Member> manager = memberRepository.findByAccessToken(accessToken);
+        if (manager.isPresent() && StringUtils.hasText(manager.get().getAccessToken())) {
+            return doXssFilter(manager.get().getRefreshToken());
+        } else {
+            if (!memberRepository.existsByAccessToken(accessToken)) {
+                log.error("Duplicated login. Access token does not exist in the database. access token: {}", accessToken);
+                this.jwtAuthenticationEntryPoint.commence(httpServletRequest, httpServletResponse
+                        , new DuplicateLoginException("Duplicate login detection."));
             }
         }
-        LOGGER.error("Access token in cookie does not exist. request URI: {}", requestURI);
         return null;
     }
 
-    /**
-     * HttpServletRequest 에서 refresh token 추출
-     *
-     * @author GEONLEE
-     * @since 2024-04-02<br />
-     */
-    public String getRefreshTokenFromRequest(HttpServletRequest httpServletRequest) throws NullPointerException {
-        String requestURI = httpServletRequest.getRequestURI().replace(this.contextPath, "");
-        String bearerToken = httpServletRequest.getHeader("Authorization");
-        String token = bearerToken.substring(7);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(this.tokenType + " ") && !"null".equals(token)) {
-            return bearerToken.substring(7);
-        }
-        LOGGER.error("Refresh token in header does not exist. request URI: {}", requestURI);
-        return null;
-    }
-
-    /**
-     * token 유효성 검증
-     *
-     * @param token token 값
-     * @author GEONLEE
-     * @since 2024-04-02
-     */
-    public boolean validateToken(String token, String tokenType) {
+    public boolean validateToken(TokenType tokenType, String token) {
         try {
             this.jwtParser.parseSignedClaims(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            LOGGER.info("Invalid jwt signature.");
+            log.info("Invalid jwt signature.");
         } catch (ExpiredJwtException e) {
-            LOGGER.error("{} token is expired.", tokenType);
+            log.error("{} token is expired.", tokenType);
         } catch (UnsupportedJwtException e) {
-            LOGGER.info("This jwt token is not supported.");
+            log.info("This jwt token is not supported.");
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Invalid jwt token.");
+            log.info("Invalid jwt token.");
         }
         return false;
     }

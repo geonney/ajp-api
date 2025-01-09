@@ -4,9 +4,11 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.code.ErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.response.ErrorResponse;
+import com.aljjabaegi.api.config.security.jwt.exception.DuplicateLoginException;
 import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
@@ -122,6 +124,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         CommonErrorCode errorCode = CommonErrorCode.ENTITY_NOT_FOUND;
+        return handleExceptionInternal(errorCode, e);
+    }
+
+    @ExceptionHandler(value = DuplicateLoginException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateLogin(PersistenceException e) {
+        CommonErrorCode errorCode = CommonErrorCode.DUPLICATION_LOGIN;
         return handleExceptionInternal(errorCode, e);
     }
 

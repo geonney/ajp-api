@@ -16,11 +16,14 @@ import lombok.Builder;
 @Builder
 public record TokenResponse(
         @Schema(description = "Access Token", example = "eyJhbGciOiJSUzI1NiJ9...", hidden = true)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonIgnore
         String token,
         @Schema(description = "Refresh Token", example = "eyJhbGciOiJSUzI1NiJ9...")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         String refreshToken,
         @Schema(description = "Token 타입", example = "Bearer")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         String tokenType,
         @Schema(description = "Token 만료 시간 (초)", example = "600000")
         Long expirationSeconds,

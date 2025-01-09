@@ -1,10 +1,10 @@
 package com.aljjabaegi.api.config.security.springSecurity;
 
-import com.aljjabaegi.api.config.filter.RequestFilter;
 import com.aljjabaegi.api.config.security.jwt.JwtAccessDeniedHandler;
 import com.aljjabaegi.api.config.security.jwt.JwtAuthenticationEntryPoint;
 import com.aljjabaegi.api.config.security.jwt.JwtFilter;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
+import com.aljjabaegi.api.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,7 +61,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           MemberRepository memberRepository) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -76,7 +77,8 @@ public class SpringSecurityConfig {
                 .exceptionHandling(c ->
                         c.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler))
 //                .apply(new JwtSecurityConfig(tokenProvider, messageConfig)); /*spring 6.2 deprecated*/
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(tokenProvider, jwtAuthenticationEntryPoint, memberRepository)
+                        , UsernamePasswordAuthenticationFilter.class);
 //                .addFilterAfter(new RequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

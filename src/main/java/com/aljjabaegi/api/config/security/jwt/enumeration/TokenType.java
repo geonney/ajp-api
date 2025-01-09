@@ -1,4 +1,4 @@
-package egovframework.kt.dxp.api.config.jwt.enumeration;
+package com.aljjabaegi.api.config.security.jwt.enumeration;
 
 /**
  * @author GEONLEE
