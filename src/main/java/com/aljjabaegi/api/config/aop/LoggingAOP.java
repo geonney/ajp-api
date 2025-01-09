@@ -6,6 +6,7 @@ import com.aljjabaegi.api.common.response.ItemsResponse;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -77,7 +78,9 @@ public class LoggingAOP {
         switch (clazz.getSimpleName()) {
             case "ItemResponse" -> {
                 ItemResponse<?> itemResponse = (ItemResponse<?>) body;
-                LOGGER.info("[Body][ItemResponse][{}]{}\n", itemResponse.item().getClass().getSimpleName(), new Gson().toJson(itemResponse.item()));
+                if (ObjectUtils.isNotEmpty(itemResponse.item())) {
+                    LOGGER.info("[Body][ItemResponse][{}]{}\n", itemResponse.item().getClass().getSimpleName(), new Gson().toJson(itemResponse.item()));
+                }
             }
             case "ItemsResponse" -> {
                 ItemsResponse<?> itemsResponse = (ItemsResponse<?>) body;
