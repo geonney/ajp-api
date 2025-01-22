@@ -3,6 +3,7 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.repository;
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.querydsl.core.BooleanBuilder;
@@ -82,6 +83,14 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
                 .fetchOne();
     }
 
+    public Long countDynamic(BooleanBuilder booleanBuilder) {
+        return this.queryFactory
+                .select(this.pathBuilder.count())
+                .from(this.pathBuilder)
+                .where(booleanBuilder)
+                .fetchOne();
+    }
+
     @Override
     public List<T> findDynamic(DynamicFilter dynamicFilter) {
         List<DynamicFilter> dynamicFilters = new ArrayList<>() {{
@@ -117,6 +126,18 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         return query.fetch();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<T> findDynamic(QueryCondition queryCondition) {
+        BooleanBuilder booleanBuilder = (BooleanBuilder) queryCondition.getCondition();
+        List<OrderSpecifier<?>> orderSpecifiers = (List<OrderSpecifier<?>>) queryCondition.getSorter();
+        JPAQuery<T> query = this.queryFactory
+                .selectFrom(this.pathBuilder)
+                .where(booleanBuilder)
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new));
+        checkNamedEntityGraph(query);
+        return query.fetch();
+    }
+
     @Override
     public Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest) {
         BooleanBuilder booleanBuilder = dynamicBooleanBuilder.generateConditions(this.entity, dynamicRequest.filter());
@@ -137,6 +158,22 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
          * @ManyToOne 기준으로 조회하면 경고 발생하지 않음.
          * */
 //        checkNamedEntityGraph(query);
+        List<T> list = query.fetch();
+        return new PageImpl<>(list, pageable, totalSize);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Page<T> findDynamicWithPageable(QueryCondition queryCondition, Pageable pageable) {
+        BooleanBuilder booleanBuilder = (BooleanBuilder) queryCondition.getCondition();
+        List<OrderSpecifier<?>> orderSpecifiers = (List<OrderSpecifier<?>>) queryCondition.getSorter();
+        Long totalSize = countDynamic(booleanBuilder);
+        totalSize = (totalSize == null) ? 0L : totalSize;
+        JPAQuery<T> query = this.queryFactory
+                .selectFrom(this.pathBuilder)
+                .where(booleanBuilder)
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
         List<T> list = query.fetch();
         return new PageImpl<>(list, pageable, totalSize);
     }

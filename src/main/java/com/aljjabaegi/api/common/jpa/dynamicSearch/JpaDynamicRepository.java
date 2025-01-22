@@ -1,8 +1,10 @@
 package com.aljjabaegi.api.common.jpa.dynamicSearch;
 
+import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -49,5 +51,7 @@ public interface JpaDynamicRepository<T, ID extends Serializable> extends JpaRep
      * DynamicRequest 를 활용한 List 조회, with paging
      */
     Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest);
+
+    Page<T> findDynamicWithPageable(QueryCondition queryCondition, Pageable pageable);
 
 }

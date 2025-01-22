@@ -3,6 +3,7 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.specification.repository;
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import jakarta.persistence.EntityManager;
@@ -69,11 +70,20 @@ public class JpaDynamicRepositoryImpl<T, ID extends Serializable> extends Simple
         return super.findAll(specification, sort);
     }
 
+    public List<T> findDynamic(QueryCondition queryCondition) {
+        return super.findAll((Specification<T>) queryCondition.getCondition(), (Sort) queryCondition.getSorter());
+    }
+
     @Override
     public Page<T> findDynamicWithPageable(DynamicRequest dynamicRequest) {
         Sort sort = dynamicSpecification.generateSort(this.entity, dynamicRequest.sorter());
         Pageable pageable = PageRequest.of(dynamicRequest.pageNo(), dynamicRequest.pageSize(), sort);
         Specification<T> specification = (Specification<T>) dynamicSpecification.generateConditions(this.entity, dynamicRequest.filter());
+        return super.findAll(specification, pageable);
+    }
+
+    public Page<T> findDynamicWithPageable(QueryCondition queryCondition, Pageable pageable) {
+        Specification<T> specification = (Specification<T>) queryCondition.getCondition();
         return super.findAll(specification, pageable);
     }
 }

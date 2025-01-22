@@ -86,4 +86,10 @@ public record DynamicRequest(
                 .map(DynamicFilter::value)
                 .findFirst();
     }
+
+    public List<DynamicFilter> extractFilterByFields(List<String> filters) {
+        return this.filter.stream()
+                .filter(dynamicFilter -> filters.contains(dynamicFilter.field())
+                ).toList();
+    }
 }
