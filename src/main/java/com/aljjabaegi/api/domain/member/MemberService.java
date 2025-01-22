@@ -6,6 +6,7 @@ import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilde
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
+import com.aljjabaegi.api.common.request.enumeration.Operator;
 import com.aljjabaegi.api.common.response.GridResponse;
 import com.aljjabaegi.api.common.util.password.PasswordUtils;
 import com.aljjabaegi.api.config.security.jwt.TokenProvider;
@@ -19,16 +20,14 @@ import com.aljjabaegi.api.entity.MemberTeam;
 import com.aljjabaegi.api.entity.QMember;
 import com.aljjabaegi.api.entity.Team;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -185,6 +184,44 @@ public class MemberService {
         Member entity = memberRepository.findByMemberIdAndAuthorityAuthorityCodeNot(memberId, "ROLE_ADMIN")
                 .orElseThrow(() -> new EntityNotFoundException(memberId));
         return memberMapper.toSearchResponse(entity);
+    }
+
+    @Transactional
+    public List<MemberSearchResponse> getMembersOrCondition(DynamicRequest parameter) {
+
+        BooleanBuilder memberIdBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , List.of(DynamicFilter.builder()
+                        .field("memberId")
+                        .value(parameter.getFieldValue("memberId"))
+                        .operator(Operator.LIKE)
+                        .build()));
+
+        BooleanBuilder memberNameBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , List.of(DynamicFilter.builder()
+                        .field("memberName")
+                        .value(parameter.getFieldValue("memberName"))
+                        .operator(Operator.LIKE)
+                        .build()));
+
+        BooleanBuilder orBooleanBuilder = memberIdBooleanBuilder.or(memberNameBooleanBuilder);
+        List<OrderSpecifier<?>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Member.class, parameter.sorter());
+        QMember member = new QMember("member");
+        Long totalSize = query.select(member.count())
+                .from(member)
+                .where(orBooleanBuilder)
+                .fetchOne();
+        totalSize = (totalSize == null) ? 0L : totalSize;
+        Pageable pageable = PageRequest.of(parameter.pageNo(), parameter.pageSize());
+
+        List<Member> members = query.selectFrom(member)
+                .where(orBooleanBuilder)
+                .orderBy(orderSpecifiers.toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Page<Member> page = new PageImpl<>(members, pageable, totalSize);
+        return memberMapper.toSearchResponseList(page.getContent());
     }
 
     /**

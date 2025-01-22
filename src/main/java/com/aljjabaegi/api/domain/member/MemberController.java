@@ -391,6 +391,47 @@ public class MemberController {
                         .item(userSearchResponse).build());
     }
 
+
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            examples = {
+                    @ExampleObject(name = "Or Condition", value = """
+                                    {
+                                        "pageNo":0,
+                                        "pageSize":10,
+                                        "filter": [
+                                            {
+                                                "field":"memberName",
+                                                "operator":"contains",
+                                                "value":"홍"
+                                            },
+                                            {
+                                                "field":"memberId",
+                                                "operator":"contains",
+                                                "value":"hong"
+                                            }
+                                        ],
+                                        "sorter": [
+                                            {
+                                                "field":"createDate",
+                                                "direction":"DESC"
+                                            }
+                                        ]
+                                    }
+                            """)
+            }
+    ))
+    @PostMapping(value = "/v1/members")
+    @Operation(summary = "Search member (or Condition)", operationId = "API-MEMBER-03")
+    public ResponseEntity<ItemsResponse<MemberSearchResponse>> getMembersOrCondition(@RequestBody DynamicRequest parameter) {
+        List<MemberSearchResponse> userSearchResponse = memberService.getMembersOrCondition(parameter);
+        return ResponseEntity.ok()
+                .body(ItemsResponse.<MemberSearchResponse>builder()
+                        .status("OK")
+                        .message("데이터를 조회하는데 성공하였습니다.")
+                        .items(userSearchResponse)
+                        .build());
+    }
+
     @GetMapping(value = "/v1/check/member-id/{memberId}")
     @Operation(summary = "Check for ID duplicates", operationId = "API-MEMBER-04")
     public ResponseEntity<ItemResponse<Boolean>> checkMemberId(@PathVariable String memberId) {
