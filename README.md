@@ -212,6 +212,28 @@ List<Code> codes = new ArrayList<>();
     @SearchableField(columnPath = "member.memberName", alias = "userName")
     private Member member;
     ```
+- DynamicRequest 사용 시 별도의 Field를 or 조건으로 만들어야 할 경우 활용 방식 🆕
+  ```java
+  //TODO. 각 And 조건으로 묶을 field 를 extractFilterByFields 를 호출하여 추출
+  BooleanBuilder memberIdBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , parameter.extractFilterByFields(List.of("memberId")));
+
+  BooleanBuilder memberNameBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+          , parameter.extractFilterByFields(List.of("memberName")));
+
+  //TODO. 추출한 And 조건을 or로 묶어 줌
+  BooleanBuilder orBooleanBuilder = memberIdBooleanBuilder.or(memberNameBooleanBuilder);
+  ```
+- QueryCondition 🆕
+  - JpaDynamicRepository 에서 Specification 과 BooleanBuilder 를 같이 처리하기 위한 상위 타입 Interface
+  - BooleanBuilderCondition 과 SpecificationCondition 구현체가 있음.
+  - 사용 예)
+    ```java
+    Page<Member> page = memberRepository.findDynamicWithPageable(
+        new BooleanBuilderCondition(orBooleanBuilder, orderSpecifiers),
+        pageable
+      );
+    ```
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
