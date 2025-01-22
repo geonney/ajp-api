@@ -212,6 +212,32 @@ List<Code> codes = new ArrayList<>();
     @SearchableField(columnPath = "member.memberName", alias = "userName")
     private Member member;
     ```
+- QueryCondition
+  - JpaDynamicRepository 에서 findDynamicWithPageable 호출 시 BooleanBuilder 와 Specification 을 모두 사용할 수 있도록 한 상위 Interface
+  - BooleanBuilderCondition, SpecificationCondition 구현체가 있음.
+  - 사용 예)
+    ```java
+    //JpaDynamicRepository
+    Page<T> findDynamicWithPageable(QueryCondition queryCondition, Pageable pageable);
+
+    //Service 에서 활용
+    Page<Member> page = memberRepository.findDynamicWithPageable(
+        new BooleanBuilderCondition(orBooleanBuilder, orderSpecifiers),
+        pageable
+      );
+    ```
+- DynamicRequest 사용 시 Or 조건을 활용하는 방식 예제
+```java
+BooleanBuilder memberIdBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , parameter.extractFilterByFields(List.of("memberId")));
+
+BooleanBuilder memberNameBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+        , parameter.extractFilterByFields(List.of("memberName")));
+
+BooleanBuilder orBooleanBuilder = memberIdBooleanBuilder.or(memberNameBooleanBuilder);
+
+//where lower(m1_0.member_id) like ? escape ''  or lower(m1_0.member_nm) like ? escape '' 
+```
 
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
