@@ -1,5 +1,6 @@
-package com.aljjabaegi.api.common.jpa.dynamicSearch.strategy;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.impl;
 
+import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 

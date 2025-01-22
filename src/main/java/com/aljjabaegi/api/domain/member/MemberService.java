@@ -4,7 +4,7 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
-import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.BooleanBuilderCondition;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.impl.BooleanBuilderCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
