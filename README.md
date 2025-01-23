@@ -239,6 +239,9 @@ BooleanBuilder orBooleanBuilder = memberIdBooleanBuilder.or(memberNameBooleanBui
 //where lower(m1_0.member_id) like ? escape ''  or lower(m1_0.member_nm) like ? escape '' 
 ```
 
+- DynamicConverter
+  - Record (Request) 를 DynamicFilter list 로 변경해주는 Converter
+
 ## :heavy_check_mark:Exception (common/exception)
 - 전역 Exception Handler 적용, GlobalExceptionHandler
 - Custom Exception 활용, checked Exception 처리, ServiceException
