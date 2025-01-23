@@ -1,6 +1,6 @@
 package com.aljjabaegi.api.common.jpa.dynamicSearch;
 
-import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.QueryCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import org.springframework.data.domain.Page;
@@ -46,6 +46,8 @@ public interface JpaDynamicRepository<T, ID extends Serializable> extends JpaRep
      * DynamicRequest 를 사용한 복수조건, 복수 정렬 List 조회, No paging
      */
     List<T> findDynamic(DynamicRequest dynamicRequest);
+
+    List<T> findDynamic(QueryCondition queryCondition);
 
     /**
      * DynamicRequest 를 활용한 List 조회, with paging

@@ -2,8 +2,8 @@ package com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.repository;
 
 import com.aljjabaegi.api.common.contextHolder.ApplicationContextHolder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.JpaDynamicRepository;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.QueryCondition;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
-import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.querydsl.core.BooleanBuilder;
@@ -126,6 +126,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         return query.fetch();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<T> findDynamic(QueryCondition queryCondition) {
         BooleanBuilder booleanBuilder = (BooleanBuilder) queryCondition.getCondition();
@@ -162,6 +163,7 @@ public class JpaDynamicDslRepositoryImpl<T, ID extends Serializable> extends Sim
         return new PageImpl<>(list, pageable, totalSize);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Page<T> findDynamicWithPageable(QueryCondition queryCondition, Pageable pageable) {
         BooleanBuilder booleanBuilder = (BooleanBuilder) queryCondition.getCondition();

@@ -4,7 +4,7 @@ import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
-import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.impl.BooleanBuilderCondition;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.impl.BooleanBuilderCondition;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicRequest;
 import com.aljjabaegi.api.common.response.GridResponse;
@@ -191,13 +191,13 @@ public class MemberService {
 
     @Transactional
     public List<MemberSearchResponse> getMembersOrCondition(DynamicRequest parameter) {
-        BooleanBuilder memberIdBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
-                , parameter.extractFilterByFields(List.of("memberId")));
+        BooleanBuilder firstBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , parameter.extractFilterByFields(List.of("memberId", "memberName")));
 
-        BooleanBuilder memberNameBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
-                , parameter.extractFilterByFields(List.of("memberName")));
+        BooleanBuilder secondBooleanBuilder = dynamicBooleanBuilder.generateConditions(Member.class
+                , parameter.extractFilterByFields(List.of("age", "height")));
 
-        BooleanBuilder orBooleanBuilder = memberIdBooleanBuilder.or(memberNameBooleanBuilder);
+        BooleanBuilder orBooleanBuilder = firstBooleanBuilder.or(secondBooleanBuilder);
         List<OrderSpecifier<?>> orderSpecifiers = dynamicBooleanBuilder.generateSort(Member.class, parameter.sorter());
         Pageable pageable = PageRequest.of(parameter.pageNo(), parameter.pageSize());
 

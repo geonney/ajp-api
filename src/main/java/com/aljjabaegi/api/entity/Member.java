@@ -71,6 +71,7 @@ public class Member extends BaseEntity {
     private Integer age;
 
     @Column(name = "height")
+    @SearchableField
     private Double height;
 
     @Column(name = "use_yn")

@@ -1,6 +1,6 @@
-package com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.impl;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.impl;
 
-import com.aljjabaegi.api.common.jpa.dynamicSearch.strategy.QueryCondition;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.QueryCondition;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;

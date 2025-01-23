@@ -1,4 +1,4 @@
-package com.aljjabaegi.api.common.jpa.dynamicSearch.strategy;
+package com.aljjabaegi.api.common.jpa.dynamicSearch.conditions;
 
 /**
  * @author GEONLEE
