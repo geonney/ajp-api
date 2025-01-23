@@ -2,6 +2,7 @@ package com.aljjabaegi.api.domain.member;
 
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.impl.SpecificationCondition;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.querydsl.DynamicBooleanBuilder;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.specification.DynamicSpecification;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.conditions.impl.BooleanBuilderCondition;
