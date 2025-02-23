@@ -1,11 +1,11 @@
 package com.aljjabaegi.api.common.jpa.dynamicSearch.specification;
 
-import com.aljjabaegi.api.common.jpa.dynamicSearch.converter.DateConverter;
 import com.aljjabaegi.api.common.exception.code.CommonErrorCode;
 import com.aljjabaegi.api.common.exception.custom.ServiceException;
 import com.aljjabaegi.api.common.jpa.annotation.DefaultSort;
 import com.aljjabaegi.api.common.jpa.base.BaseEntity;
 import com.aljjabaegi.api.common.jpa.dynamicSearch.DynamicConditions;
+import com.aljjabaegi.api.common.jpa.dynamicSearch.converter.DateConverter;
 import com.aljjabaegi.api.common.request.DynamicFilter;
 import com.aljjabaegi.api.common.request.DynamicSorter;
 import com.aljjabaegi.api.common.request.enumeration.Operator;
@@ -172,7 +172,19 @@ public class DynamicSpecification implements DynamicConditions {
                     }
                     case LIKE -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
+                        //How to use this type of Like search, not String type,
+                        //Naturally, the Like Case of the checkAvailableFieldTypes method is commented.
+//                        if (fieldType != String.class) {
+//                            predicates.add(criteriaBuilder.like(
+//                                    criteriaBuilder.function("CONCAT", String.class,
+//                                            criteriaBuilder.literal(""),
+//                                            path
+//                                    ),
+//                                    "%" + value + "%"
+//                            ));
+//                        } else {
                         predicates.add(criteriaBuilder.like(criteriaBuilder.lower(path), "%" + value.toLowerCase() + "%"));
+//                        }
                     }
                     case BETWEEN -> {
                         checkAvailableFieldTypes(dynamicFilter.operator(), fieldType);
